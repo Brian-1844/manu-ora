@@ -1,0 +1,14 @@
+{
+  "name": "Manu Ora",
+  "short_name": "Manu Ora",
+  "description": "Ton manu, tes émotions. Compagnon polynésien pour nommer ce que tu ressens et trouver de l'aide.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#EDF5F4",
+  "theme_color": "#1AA3B1",
+  "lang": "fr",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}

@@ -1,0 +1,748 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1AA3B1">
+<meta name="description" content="Manu Ora : un compagnon-oiseau polynésien pour nommer ses émotions en reo tahiti et en français, et trouver de l'aide.">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" href="./icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="./icon.svg">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>Manu Ora</title>
+</head>
+<body>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:ital,wght@0,400;0,600;0,700;1,400&display=swap">
+<style>
+/* Layout: a one-screen phone app. A roaming bird lives on a fixed layer above a scrolling panel; four tabs below; check-in and help open as bottom sheets. */
+:root{
+  --bg:#EDF5F4;        /* lagoon-tinted off-white */
+  --surface:#FFFFFF;
+  --surface-2:#DFEFEE;
+  --fg:#10303B;        /* deep reef */
+  --muted:#5A7881;
+  --line:#CBE0DF;
+  --lagoon:#1AA3B1;    /* accent */
+  --lagoon-ink:#0F6E78;
+  --coral:#E4583F;     /* warning / crisis */
+  --sun:#F0A23A;
+  --fern:#3B8C58;
+  --tiare:#FFF6E3;
+  --shadow:0 10px 30px rgba(16,48,59,.12);
+  --display:"Fredoka","Trebuchet MS","Segoe UI",sans-serif;
+  --body:"Nunito","Segoe UI",Helvetica,Arial,sans-serif;
+  --r:18px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0B1C25; --surface:#13303B; --surface-2:#0F2730; --fg:#E7F3F2; --muted:#9FBBC1; --line:#22434F;
+    --lagoon:#38C8D3; --lagoon-ink:#9EE6EC; --coral:#FF7A62; --sun:#FFBB5E; --fern:#62C486; --tiare:#2B3F3C;
+    --shadow:0 10px 30px rgba(0,0,0,.45); color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0B1C25; --surface:#13303B; --surface-2:#0F2730; --fg:#E7F3F2; --muted:#9FBBC1; --line:#22434F;
+  --lagoon:#38C8D3; --lagoon-ink:#9EE6EC; --coral:#FF7A62; --sun:#FFBB5E; --fern:#62C486; --tiare:#2B3F3C;
+  --shadow:0 10px 30px rgba(0,0,0,.45); color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;font-family:var(--body);font-size:16px;line-height:1.45;background:var(--bg);color:var(--fg);-webkit-font-smoothing:antialiased;overflow:hidden}
+button,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--lagoon);outline-offset:2px}
+h1,h2,h3{font-family:var(--display);font-weight:600;line-height:1.15;margin:0;text-wrap:balance}
+h1{font-size:1.5rem}
+h2{font-size:1.25rem}
+h3{font-size:1.05rem}
+p{margin:0}
+.muted{color:var(--muted)}
+.small{font-size:.85rem}
+.eyebrow{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:700}
+
+.app{height:100%;max-width:520px;margin:0 auto;display:flex;flex-direction:column;position:relative;padding-top:env(safe-area-inset-top,0px)}
+.top{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 16px 8px}
+.brand{display:flex;align-items:center;gap:10px}
+.brand .logo{width:34px;height:34px;border-radius:12px;background:var(--lagoon);display:grid;place-items:center;color:#fff}
+.brand h1{font-size:1.25rem}
+.brand .sub{font-size:.75rem;color:var(--muted);line-height:1.1}
+.topbtns{display:flex;gap:8px}
+.tbtn{border:1.5px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 12px;font-family:var(--display);font-weight:600;font-size:.9rem}
+.tbtn.on{background:var(--lagoon);border-color:var(--lagoon);color:#fff}
+.tbtn.help{border-color:var(--coral);color:var(--coral)}
+
+.panel{flex:1;overflow:auto;padding-block:6px 150px;padding-inline:16px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.card{background:var(--surface);border-radius:var(--r);padding:16px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:10px;min-width:0}
+.card.flat{box-shadow:none;border:1.5px solid var(--line)}
+.btn{border:0;border-radius:14px;padding:12px 16px;background:var(--surface-2);font-family:var(--display);font-weight:600;font-size:1rem;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.btn.primary{background:var(--lagoon);color:#fff}
+.btn.coral{background:var(--coral);color:#fff}
+.btn.ghost{background:transparent;border:1.5px solid var(--line)}
+.btn.sm{padding:8px 12px;font-size:.9rem;border-radius:12px}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.row>*{flex:1 1 140px;min-width:0}
+.stack{display:flex;flex-direction:column;gap:8px}
+
+/* week strip */
+.week{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;text-align:center}
+.week .d{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:.72rem;color:var(--muted);font-weight:700}
+.week .dot{width:26px;height:26px;border-radius:50%;border:2px dashed var(--line);background:transparent}
+.week .dot.on{border-style:solid;border-color:transparent}
+.week.example .dot.on{opacity:.45}
+
+/* vaʻa bars */
+.bars{display:grid;grid-template-columns:1fr;gap:8px}
+.bar{display:grid;grid-template-columns:92px 1fr 28px;align-items:center;gap:10px;font-size:.9rem}
+.bar .track{height:10px;border-radius:99px;background:var(--surface-2);overflow:hidden}
+.bar .fill{height:100%;border-radius:99px;background:var(--lagoon);width:0;transition:width .5s}
+.bar .n{font-variant-numeric:tabular-nums;color:var(--muted);text-align:right;font-size:.8rem}
+
+/* chips */
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1.5px solid var(--line);background:var(--surface);border-radius:14px;padding:8px 12px;display:flex;flex-direction:column;align-items:flex-start;gap:0;min-width:0;text-align:left}
+.chip b{font-family:var(--display);font-weight:600;font-size:1rem}
+.chip span{font-size:.78rem;color:var(--muted)}
+.chip.on{border-color:var(--c,var(--lagoon));box-shadow:inset 0 0 0 2px var(--c,var(--lagoon))}
+.chip .sw{width:10px;height:10px;border-radius:50%;background:var(--c);display:inline-block;margin-right:6px;vertical-align:middle}
+.chip.crisis{border-color:var(--coral);color:var(--coral);width:100%;align-items:center}
+.chip.crisis span{color:var(--coral)}
+
+/* tabs */
+.tabs{position:relative;z-index:20;display:grid;grid-template-columns:repeat(4,1fr);background:var(--surface);border-top:1.5px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
+.tabs button{border:0;background:none;padding:10px 4px 8px;display:flex;flex-direction:column;align-items:center;gap:3px;font-family:var(--display);font-weight:600;font-size:.78rem;color:var(--muted)}
+.tabs button svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.tabs button.on{color:var(--lagoon-ink)}
+
+/* bird layer */
+.birdlayer{position:fixed;inset:0;pointer-events:none;z-index:30;overflow:hidden}
+.bird{position:absolute;left:0;top:0;width:96px;height:88px;pointer-events:auto;cursor:pointer;will-change:transform;-webkit-tap-highlight-color:transparent}
+.bird .flip{width:100%;height:100%;transform-origin:50% 50%}
+.bird .bob{width:100%;height:100%}
+.bird svg{width:100%;height:100%;overflow:visible;display:block;filter:drop-shadow(0 6px 6px rgba(0,0,0,.18))}
+.bird .wing{transform-origin:48px 60px;transform-box:view-box}
+.bird.flying .wing{animation:flap .22s ease-in-out infinite alternate}
+.bird .leg{transform-origin:50px 88px;transform-box:view-box}
+.bird.walking .leg.l1{animation:step .36s ease-in-out infinite alternate}
+.bird.walking .leg.l2{animation:step .36s ease-in-out infinite alternate-reverse}
+.bird.walking .bob{animation:bob .36s ease-in-out infinite alternate}
+.bird .eye{transform-origin:89px 42px;transform-box:view-box;animation:blink 5.5s infinite}
+.bird.pecking .head{animation:peck .5s ease-in-out 2;transform-origin:70px 60px;transform-box:view-box}
+.bird .head{transform-origin:70px 60px;transform-box:view-box}
+.bird{touch-action:none;user-select:none;-webkit-user-select:none}
+.bird.petted .eye{animation:none;transform:scaleY(.12)}
+.bird.petted .bob{animation:purr .55s ease-in-out infinite alternate}
+@keyframes purr{from{transform:rotate(-3deg) scale(1.03)}to{transform:rotate(3deg) scale(1.07)}}
+.petal{position:absolute;left:0;top:0;width:18px;height:18px;pointer-events:none;animation:floatUp 1.2s ease-out forwards}
+.petal svg{width:100%;height:100%;display:block}
+@keyframes floatUp{from{opacity:.95;margin-top:0}to{opacity:0;margin-top:-70px}}
+.uke{display:none}
+.bird.playing .uke{display:inline}
+.bird.playing .wing{animation:strum .3s ease-in-out infinite alternate}
+.bird.playing .bob{animation:sway .6s ease-in-out infinite alternate}
+@keyframes strum{from{transform:rotate(-4deg)}to{transform:rotate(16deg)}}
+@keyframes sway{from{transform:rotate(-4deg)}to{transform:rotate(4deg)}}
+.petal.note{color:var(--lagoon-ink)}
+@keyframes flap{from{transform:rotate(-38deg)}to{transform:rotate(22deg)}}
+@keyframes step{from{transform:rotate(-22deg)}to{transform:rotate(22deg)}}
+@keyframes bob{from{transform:translateY(0)}to{transform:translateY(-3px)}}
+@keyframes blink{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.1)}}
+@keyframes peck{0%,100%{transform:rotate(0)}50%{transform:rotate(22deg)}}
+.bubble{position:absolute;max-width:210px;background:var(--surface);color:var(--fg);border-radius:16px;padding:10px 12px;font-family:var(--display);font-weight:500;font-size:.95rem;box-shadow:var(--shadow);border:1.5px solid var(--line);pointer-events:auto;opacity:0;transform:translateY(6px);transition:opacity .25s,transform .25s}
+.bubble.show{opacity:1;transform:translateY(0)}
+.bubble:after{content:"";position:absolute;bottom:-9px;left:24px;width:16px;height:16px;background:var(--surface);border-right:1.5px solid var(--line);border-bottom:1.5px solid var(--line);transform:rotate(45deg)}
+.bubble.right:after{left:auto;right:24px}
+.bubble .cta{display:block;margin-top:4px;color:var(--lagoon-ink);font-size:.85rem}
+
+/* sheets */
+.sheet{position:fixed;inset:0;z-index:40;background:rgba(6,20,28,.45);display:flex;align-items:flex-end;justify-content:center}
+.sheet .inner{width:100%;max-width:520px;max-height:88%;overflow:auto;background:var(--bg);border-radius:24px 24px 0 0;padding:14px 16px calc(24px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:12px;min-width:0}
+.sheet .grab{width:44px;height:5px;border-radius:9px;background:var(--line);margin:0 auto}
+.sheet .head{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.x{border:0;background:var(--surface-2);width:34px;height:34px;border-radius:50%;font-size:1.1rem;flex:none}
+.crisis .inner{background:var(--surface)}
+.crisis h2{color:var(--coral)}
+.num{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--surface-2);border-radius:14px;padding:12px 14px}
+.num b{font-family:var(--display);font-size:1.3rem;letter-spacing:.02em;font-variant-numeric:tabular-nums}
+.num .who{font-size:.85rem;color:var(--muted)}
+.num .copy{border:0;background:var(--surface);border-radius:10px;padding:8px 10px;font-weight:700;font-size:.85rem;flex:none}
+
+/* inputs */
+input[type=text],input[type=tel],textarea{width:100%;border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--surface);min-width:0}
+textarea{min-height:76px;resize:vertical}
+input[type=range]{width:100%;accent-color:var(--lagoon)}
+.scale{display:flex;justify-content:space-between;font-size:.78rem;color:var(--muted)}
+.bodymap{display:grid;grid-template-columns:120px 1fr;gap:12px;align-items:center}
+.bodymap svg{width:120px;height:170px;max-width:100%}
+.bodymap .zone{fill:var(--surface-2);stroke:var(--line);stroke-width:1.5;cursor:pointer}
+.bodymap .zone.on{fill:var(--lagoon);stroke:var(--lagoon-ink)}
+.zones{display:flex;flex-wrap:wrap;gap:6px}
+.zones button{border:1.5px solid var(--line);background:var(--surface);border-radius:10px;padding:6px 10px;font-size:.85rem}
+.zones button.on{background:var(--lagoon);border-color:var(--lagoon);color:#fff}
+
+/* activity cards */
+.act{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;border:1.5px solid var(--line);border-radius:16px;padding:12px;background:var(--surface)}
+.act .p{font-size:.72rem;color:var(--lagoon-ink);font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.act h3{margin-top:2px}
+.act p.d{font-size:.9rem;color:var(--muted);margin-top:4px}
+
+/* breathing */
+.breath{position:fixed;inset:0;z-index:55;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:24px 16px}
+.breath .sea{width:min(70vw,260px);aspect-ratio:1;max-width:100%;border-radius:50%;background:radial-gradient(circle at 40% 35%,var(--lagoon),var(--lagoon-ink));box-shadow:0 0 0 18px color-mix(in srgb,var(--lagoon) 18%,transparent);transform:scale(.6);transition:transform 4s ease-in-out}
+.breath .sea.in{transform:scale(1)}
+.breath .sea.out{transition-duration:6s;transform:scale(.6)}
+.breath .txt{font-family:var(--display);font-size:1.5rem;font-weight:600;text-align:center}
+.breath .cnt{font-variant-numeric:tabular-nums;color:var(--muted)}
+
+/* customization */
+.sw-row{display:flex;flex-wrap:wrap;gap:8px}
+.swatch{width:36px;height:36px;border-radius:50%;border:3px solid transparent;cursor:pointer;flex:none}
+.swatch.on{border-color:var(--fg)}
+.opt{display:flex;flex-wrap:wrap;gap:8px}
+.opt button{border:1.5px solid var(--line);background:var(--surface);border-radius:12px;padding:8px 12px;font-weight:700;font-size:.9rem}
+.opt button.on{background:var(--lagoon);border-color:var(--lagoon);color:#fff}
+.preview{display:grid;place-items:center;background:linear-gradient(180deg,var(--surface-2),var(--surface));border-radius:var(--r);padding:10px}
+.preview svg{width:170px;height:156px;overflow:visible}
+
+.lex{display:grid;grid-template-columns:auto 1fr;gap:10px 12px;align-items:start}
+.lex .w{font-family:var(--display);font-weight:600;font-size:1.05rem;white-space:nowrap}
+.lex .w i{display:block;font-style:normal;font-family:var(--body);font-weight:700;font-size:.78rem;color:var(--muted)}
+.lex .n{font-size:.9rem}
+.lex .n .b{font-size:.78rem;color:var(--lagoon-ink);font-weight:700}
+.sep{height:1.5px;background:var(--line);grid-column:1/-1}
+.note{background:var(--tiare);border-radius:12px;padding:10px 12px;font-size:.85rem}
+.ama-item{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 10px;border:1.5px solid var(--line);border-radius:12px}
+.toast{position:fixed;left:50%;bottom:110px;transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:10px 14px;border-radius:12px;font-family:var(--display);font-weight:600;z-index:70;opacity:0;transition:opacity .25s;pointer-events:none;max-width:90vw;text-align:center}
+.toast.show{opacity:1}
+.feather{display:inline-flex;align-items:center;gap:6px;background:var(--surface-2);border-radius:999px;padding:4px 10px;font-weight:700;font-size:.85rem}
+
+@media (prefers-reduced-motion: reduce){
+  .bird .wing,.bird .leg,.bird .bob,.bird .head{animation:none !important}
+  .breath .sea{transition:none}
+}
+</style>
+
+<div class="app">
+  <header class="top">
+    <div class="brand">
+      <div class="logo" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 14c4 0 6-2 8-5 2 3 5 4 10 4-2 4-6 6-10 6-5 0-8-2-8-5Z"/><circle cx="15" cy="9" r="1" fill="currentColor"/></svg></div>
+      <div><h1>Manu Ora</h1><div class="sub" data-i18n="tag">Ton manu, tes émotions</div></div>
+    </div>
+    <div class="topbtns">
+      <button class="tbtn" id="reoBtn" aria-pressed="false">Reo</button>
+      <button class="tbtn help" id="helpNow" data-i18n="helpnow">Aide</button>
+    </div>
+  </header>
+
+  <main class="panel" id="panel">
+    <!-- HOME -->
+    <section id="tab-home">
+      <div class="stack" style="gap:14px">
+        <div class="card">
+          <div class="eyebrow" data-i18n="hello">ʻIa ora na !</div>
+          <h2 data-i18n="q">Comment tu te sens aujourdʼhui ?</h2>
+          <p class="small" style="color:var(--lagoon-ink);font-weight:700">Stressé·e ? Caresse ton manu lentement avec le doigt.</p>
+          <p class="muted small" id="lastLine">Ton manu attend de tes nouvelles. Un point dure une minute.</p>
+          <div class="row">
+            <button class="btn primary" id="btnCheck" data-i18n="checkin">Faire le point</button>
+            <button class="btn" id="btnBreathe" data-i18n="breathe">Respirer 1 min</button>
+            <button class="btn" id="btnUke">Ukulele</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+            <h3 data-i18n="week">Ta semaine</h3>
+            <span class="feather" id="feathers">0 plumes</span>
+          </div>
+          <div class="week" id="week"></div>
+          <p class="small muted" id="weekNote"></p>
+        </div>
+
+        <div class="card">
+          <h3 data-i18n="vaa">Ton vaʻa</h3>
+          <p class="small muted">Un vaʻa tient grâce à ses quatre parties. Chaque activité faite nourrit lʼune dʼelles.</p>
+          <div class="bars" id="bars"></div>
+        </div>
+
+        <div class="note">Manu Ora nʼest pas un soin médical. Si tu vas mal, parle à quelquʼun : le bouton <b>Aide</b> est toujours en haut à droite.</div>
+      </div>
+    </section>
+
+    <!-- WORDS -->
+    <section id="tab-words" hidden>
+      <div class="stack" style="gap:14px">
+        <div class="card">
+          <h2>Les mots du ʻāʻau</h2>
+          <p class="small muted">En reo, les sentiments vivent dans le ʻāʻau, les entrailles : on a « un bon ʻāʻau », pas « un bon cœur ». Nommer ce quʼon sent, et où on le sent, cʼest déjà le tenir un peu.</p>
+        </div>
+        <div class="card"><div class="lex" id="lex"></div></div>
+        <div class="note">Vocabulaire indicatif, à faire valider par des locuteurs de reo tahiti (Fare Vānaʻa). Les variantes paʻumotu, marquisienne et australe viendront ensuite.</div>
+      </div>
+    </section>
+
+    <!-- BIRD -->
+    <section id="tab-bird" hidden>
+      <div class="stack" style="gap:14px">
+        <div class="card">
+          <h2 data-i18n="mybird">Mon manu</h2>
+          <div class="preview" id="preview"></div>
+          <label class="small muted" for="birdName">Son nom</label>
+          <input type="text" id="birdName" maxlength="16" placeholder="Vini">
+        </div>
+        <div class="card">
+          <div class="eyebrow">Plumage</div>
+          <div class="sw-row" id="swBody"></div>
+          <div class="eyebrow" style="margin-top:6px">Ventre</div>
+          <div class="sw-row" id="swBelly"></div>
+        </div>
+        <div class="card">
+          <div class="eyebrow">Tātau</div>
+          <div class="opt" id="optTattoo"></div>
+          <p class="small muted">Chaque motif a un sens : niho mano (dents de requin) pour la protection, ʻōrama (vagues) pour le mouvement, honu pour la famille, tiare pour la douceur. Ils se gagnent avec les plumes.</p>
+        </div>
+        <div class="card">
+          <div class="eyebrow">Parures</div>
+          <div class="opt" id="optAcc"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- HELP -->
+    <section id="tab-help" hidden>
+      <div class="stack" style="gap:14px">
+        <div class="card">
+          <h2 data-i18n="helptitle">Aide maintenant</h2>
+          <p class="small muted">Appels anonymes et gratuits. Si tu es en danger tout de suite, appelle le 15.</p>
+          <div class="stack" id="numbers"></div>
+          <p class="small muted">Numéros à vérifier avant publication, puis à mettre à jour chaque année.</p>
+        </div>
+        <div class="card">
+          <h3>Mon ama</h3>
+          <p class="small muted">Les gens que tu peux appeler. Le ama, cʼest le balancier : il empêche le vaʻa de chavirer.</p>
+          <div class="stack" id="amaList"></div>
+          <div class="row">
+            <input type="text" id="amaName" placeholder="Prénom">
+            <input type="tel" id="amaTel" placeholder="Numéro (facultatif)">
+          </div>
+          <button class="btn sm" id="amaAdd">Ajouter</button>
+        </div>
+        <div class="card">
+          <h3>Mon plan</h3>
+          <label class="small muted" for="planSigns">Ce qui me dit que ça va mal</label>
+          <textarea id="planSigns" placeholder="Je ne réponds plus aux messages, je dors le jour…"></textarea>
+          <label class="small muted" for="planHelps">Ce qui mʼaide, même un peu</label>
+          <textarea id="planHelps" placeholder="Aller à la mer, le ukulele, appeler Teiva, le hīmene…"></textarea>
+          <label class="small muted" for="planPlaces">Les endroits où je me sens en sécurité</label>
+          <textarea id="planPlaces" placeholder="Chez mamie, le fare de la paroisse, la plage de…"></textarea>
+          <p class="small muted">Tout reste sur ton téléphone. Rien nʼest envoyé.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <nav class="tabs" aria-label="Navigation">
+    <button class="on" data-tab="home"><svg viewBox="0 0 24 24"><path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/></svg><span data-i18n="tab.home">Accueil</span></button>
+    <button data-tab="words"><svg viewBox="0 0 24 24"><path d="M4 5h11a3 3 0 0 1 3 3v11H7a3 3 0 0 1-3-3Z"/><path d="M8 9h6M8 13h6"/></svg><span data-i18n="tab.words">Mots</span></button>
+    <button data-tab="bird"><svg viewBox="0 0 24 24"><path d="M4 14c4 0 6-2 8-5 2 3 5 4 9 4-2 4-5 6-9 6-5 0-8-2-8-5Z"/><circle cx="15" cy="10" r="1"/></svg><span data-i18n="tab.bird">Mon manu</span></button>
+    <button data-tab="help"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg><span data-i18n="tab.help">Aide</span></button>
+  </nav>
+</div>
+
+<div class="birdlayer" id="birdlayer">
+  <div class="bird" id="bird" role="button" aria-label="Ton manu" tabindex="0"><div class="bob"><div class="flip" id="birdFlip"></div></div></div>
+  <div class="bubble" id="bubble"></div>
+</div>
+
+<div class="sheet" id="sheet" hidden><div class="inner" id="sheetInner"></div></div>
+<div class="sheet crisis" id="crisis" hidden><div class="inner" id="crisisInner"></div></div>
+<div class="breath" id="breath" hidden>
+  <div class="eyebrow">Hā · respirer avec la vague</div>
+  <div class="sea" id="sea"></div>
+  <div class="txt" id="breathTxt">Prépare-toi…</div>
+  <div class="cnt" id="breathCnt"></div>
+  <button class="btn ghost" id="breathStop">Arrêter</button>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ---------- storage ---------- */
+const store = {
+  get(k, d){ try{ const v = localStorage.getItem('manuora.'+k); return v ? JSON.parse(v) : d; }catch(e){ return d; } },
+  set(k, v){ try{ localStorage.setItem('manuora.'+k, JSON.stringify(v)); }catch(e){} }
+};
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function toast(m){ const t=$('#toast'); t.textContent=m; t.classList.add('show'); clearTimeout(toast.t); toast.t=setTimeout(()=>t.classList.remove('show'),2200); }
+
+/* ---------- i18n (fr / reo tahiti, to validate) ---------- */
+const I18N = {
+  fr:{ tag:'Ton manu, tes émotions', hello:'ʻIa ora na !', q:'Comment tu te sens aujourdʼhui ?', checkin:'Faire le point', breathe:'Respirer 1 min', week:'Ta semaine', vaa:'Ton vaʻa', mybird:'Mon manu', helptitle:'Aide maintenant', helpnow:'Aide', 'tab.home':'Accueil','tab.words':'Mots','tab.bird':'Mon manu','tab.help':'Aide' },
+  ty:{ tag:'Tō ʻoe manu, tō ʻoe mau manaʻo', hello:'ʻIa ora na !', q:'E aha tō ʻoe huru i teie mahana ?', checkin:'Parau mai', breathe:'Hā', week:'Tō ʻoe hepetoma', vaa:'Tō ʻoe vaʻa', mybird:'Tōʻu manu', helptitle:'Tauturu', helpnow:'Tauturu', 'tab.home':'Fare','tab.words':'Taʻo','tab.bird':'Tōʻu manu','tab.help':'Tauturu' }
+};
+let lang = store.get('lang','fr');
+function applyLang(){
+  document.querySelectorAll('[data-i18n]').forEach(el=>{ const k=el.dataset.i18n; if(I18N[lang][k]) el.textContent=I18N[lang][k]; });
+  const b=$('#reoBtn'); b.classList.toggle('on', lang==='ty'); b.setAttribute('aria-pressed', lang==='ty');
+}
+$('#reoBtn').onclick = ()=>{ lang = lang==='fr'?'ty':'fr'; store.set('lang',lang); applyLang(); };
+
+/* ---------- emotions ---------- */
+const EMO = [
+  {id:'oaoa', ty:'ʻoaʻoa', fr:'joie', cat:'ok', color:'#F0A23A', body:['mata','ouma'], note:'Joie. Se dit aussi pour fêter : ʻoaʻoa roa !', acts:['thanks','share','move']},
+  {id:'hau', ty:'hau', fr:'calme, paix', cat:'ok', color:'#1AA3B1', body:['tino'], note:'Paix, calme. Hau, cʼest aussi la paix entre les gens.', acts:['thanks','spirit','share']},
+  {id:'mauruuru', ty:'māuruuru', fr:'content·e, reconnaissant·e', cat:'ok', color:'#3B8C58', body:['ouma'], note:'Merci, content·e, satisfait·e : le remerciement et le contentement sont le même mot.', acts:['thanks','share']},
+  {id:'anaanatae', ty:'ʻanaʻanatae', fr:'motivé·e, enthousiaste', cat:'ok', color:'#E4583F', body:['rima','ouma'], note:'Envie, intérêt, élan.', acts:['move','net','share']},
+  {id:'here', ty:'here', fr:'aimé·e, tendresse', cat:'ok', color:'#E05D8A', body:['ouma'], note:'Amour, affection active : aimer quelquʼun, cʼest prendre soin de lui.', acts:['share','thanks']},
+  {id:'fiu', ty:'fiu', fr:'saturé·e, lassé·e', cat:'hard', color:'#8C7B6B', body:['upoo','tapono'], note:'Le mot du fenua : plus envie, trop plein, lassé·e. Un signal, pas un défaut.', acts:['move','net','spirit']},
+  {id:'rohirohi', ty:'rohirohi', fr:'épuisé·e', cat:'hard', color:'#6F7F8A', body:['tino'], note:'Fatigue, épuisement du corps et de la tête.', acts:['rest','senses','breathe']},
+  {id:'peapea', ty:'peʻapeʻa', fr:'inquiet·ète, tracassé·e', cat:'hard', color:'#5B6FB8', body:['opu','upoo'], note:'Tracas, souci, ce qui dérange. Dʼaprès lʼanthropologue Robert Levy, cʼest souvent le mot employé là où le français dirait « triste ».', acts:['breathe','net','ama']},
+  {id:'matau', ty:'mataʻu', fr:'peur', cat:'hard', color:'#7A5BB8', body:['opu','ouma'], note:'Peur, crainte.', acts:['breathe','senses','ama']},
+  {id:'riri', ty:'riri', fr:'colère', cat:'hard', color:'#C8402F', body:['opu','rima'], note:'Colère. Levy notait quʼelle se sent dans le ventre et quʼelle est toujours vue comme mauvaise. Ici on la nomme pour la laisser passer.', acts:['breathe','move','net']},
+  {id:'haama', ty:'haʻamā', fr:'honte, gêne', cat:'hard', color:'#B87A5B', body:['mata','ouma'], note:'Honte, gêne, timidité. ʻAita e haʻamā : nʼaie pas honte.', acts:['aroha','ama']},
+  {id:'moemoe', ty:'moʻemoʻe', fr:'seul·e', cat:'hard', color:'#4F6B7A', body:['ouma'], note:'Solitude, isolement. Souvent le premier signe à écouter.', acts:['ama','spirit','move']},
+  {id:'oto', ty:'ʻoto', fr:'chagrin, tristesse', cat:'hard', color:'#355C7D', body:['arapoa','ouma'], note:'Chagrin, pleurs, deuil.', acts:['ama','spirit','breathe']}
+];
+const BODY = {upoo:'upoʻo · tête', mata:'mata · visage', arapoa:'arapoʻa · gorge', tapono:'tapono · épaules', ouma:'ʻōuma · poitrine', opu:'ʻōpū · ventre', rima:'rima · mains', avae:'ʻāvae · jambes', tino:'tino · tout le corps'};
+
+/* ---------- activities ---------- */
+const PILLARS = {tino:'Tino · corps', manao:'Manaʻo · pensées', fetii:'Fetiʻi · liens', varua:'Vārua · esprit'};
+const ACT = {
+  breathe:{t:'Hā, respirer avec la vague', p:'tino', d:'Une minute. Inspire quand la vague monte, expire longtemps quand elle redescend.'},
+  senses:{t:'Cinq sens au fenua', p:'tino', d:'Revenir ici, maintenant : ce que tu vois, entends, touches, sens, goûtes.'},
+  ama:{t:'Appelle ton ama', p:'fetii', d:'Sans balancier, le vaʻa chavire. Qui est ton ama aujourdʼhui ?'},
+  share:{t:'Dis-le à quelquʼun', p:'fetii', d:'Une bonne nouvelle partagée compte double. Envoie un message à un fetiʻi.'},
+  move:{t:'Bouge le tino', p:'tino', d:'Dix minutes : marche jusquʼà la mer, nage, vaʻa, ʻori, ukulele.'},
+  thanks:{t:'Trois māuruuru', p:'manao', d:'Trois choses pour lesquelles tu dis merci aujourdʼhui, même petites.'},
+  net:{t:'Démêler le upeʻa', p:'manao', d:'Un problème, cʼest un filet emmêlé. On prend un fil à la fois.'},
+  spirit:{t:'Un moment pour ton vārua', p:'varua', d:'Deux minutes de silence, une prière ou un hīmene, comme tu veux.'},
+  aroha:{t:'Aroha pour toi', p:'manao', d:'Parle-toi comme tu parlerais à un fetiʻi qui vit la même chose.'},
+  pet:{t:'Caresser ton manu', p:'tino', d:'Des gestes lents sur ses plumes, en respirant doucement.'},
+  uke:{t:'Un air de ukulele', p:'varua', d:'Ton manu joue, toi tu souris.'},
+  rest:{t:'Repos', p:'tino', d:'Le corps a parlé. Dix minutes allongé·e, sans écran, avant de décider quoi que ce soit.'}
+};
+
+/* ---------- bird drawing ---------- */
+const COLORS = ['#2F7FD8','#1AA3B1','#3B8C58','#F0A23A','#E4583F','#E05D8A','#8A5BC4','#2B2F3A','#F4EFE4'];
+const BELLY = ['#F6F1E7','#FFD9A8','#CDEFF1','#F9C9D6','#DDEBC8','#FFFFFF'];
+const TATTOO = {none:'Aucun', niho:'Niho mano', orama:'ʻŌrama', honu:'Honu', tiare:'Tiare'};
+const ACC = {hei:'Hei (couronne)', tiare:'Tiare à lʼoreille', pareu:'Pāreu', pupu:'Collier de pūpū'};
+let cfg = Object.assign({name:'Vini', body:'#2F7FD8', belly:'#F6F1E7', tattoo:'none', hei:false, tiare:true, pareu:false, pupu:false}, store.get('cfg',{}));
+
+function shade(hex, f){ const n=parseInt(hex.slice(1),16); let r=n>>16,g=(n>>8)&255,b=n&255; r=Math.round(r*f);g=Math.round(g*f);b=Math.round(b*f); return '#'+[r,g,b].map(v=>Math.max(0,Math.min(255,v)).toString(16).padStart(2,'0')).join(''); }
+function lum(hex){ const n=parseInt(hex.slice(1),16); return (0.299*(n>>16)+0.587*((n>>8)&255)+0.114*(n&255))/255; }
+
+function birdSVG(c, id){
+  const wing = shade(c.body, .78), ink = lum(c.body) > .55 ? '#10303B' : '#F4EFE4';
+  const pats = `
+    <pattern id="${id}-niho" width="10" height="10" patternUnits="userSpaceOnUse"><polygon points="0,10 5,0 10,10" fill="${ink}"/></pattern>
+    <pattern id="${id}-orama" width="16" height="8" patternUnits="userSpaceOnUse"><path d="M0 5 Q4 0 8 5 T16 5" fill="none" stroke="${ink}" stroke-width="2"/></pattern>
+    <pattern id="${id}-honu" width="14" height="12" patternUnits="userSpaceOnUse"><polygon points="7,1 12,4 12,9 7,12 2,9 2,4" fill="none" stroke="${ink}" stroke-width="1.6"/></pattern>
+    <pattern id="${id}-tiare" width="14" height="14" patternUnits="userSpaceOnUse"><g fill="${ink}"><circle cx="7" cy="3.2" r="1.7"/><circle cx="10.6" cy="5.4" r="1.7"/><circle cx="10.6" cy="9.6" r="1.7"/><circle cx="7" cy="11.8" r="1.7"/><circle cx="3.4" cy="9.6" r="1.7"/><circle cx="3.4" cy="5.4" r="1.7"/></g></pattern>
+    <pattern id="${id}-pareu" width="8" height="8" patternUnits="userSpaceOnUse"><rect width="8" height="8" fill="#E4583F"/><circle cx="4" cy="4" r="1.6" fill="#FFF6E3"/></pattern>`;
+  const tattoo = c.tattoo!=='none' ? `<rect x="20" y="40" width="70" height="60" fill="url(#${id}-${c.tattoo})" opacity=".6" clip-path="url(#${id}-clip)"/>` : '';
+  const pareu = c.pareu ? `<rect x="20" y="74" width="70" height="30" fill="url(#${id}-pareu)" clip-path="url(#${id}-clip)"/><path d="M26 74 L84 74" stroke="#FFF6E3" stroke-width="2"/>` : '';
+  const hei = c.hei ? ['#FFF4C2','#F28CB1','#F0A23A','#FFF4C2','#F28CB1','#F0A23A','#FFF4C2'].map((col,i)=>{ const a=(200+i*24)*Math.PI/180; return `<circle cx="${(82+18*Math.cos(a)).toFixed(1)}" cy="${(46+18*Math.sin(a)).toFixed(1)}" r="3.4" fill="${col}" stroke="#3B8C58" stroke-width=".8"/>`; }).join('') : '';
+  const tiare = c.tiare ? `<g transform="translate(66 36)">${[0,72,144,216,288].map(a=>`<circle cx="${(4.6*Math.cos(a*Math.PI/180)).toFixed(1)}" cy="${(4.6*Math.sin(a*Math.PI/180)).toFixed(1)}" r="3.6" fill="#FFF9EE" stroke="#E8D9B5" stroke-width=".6"/>`).join('')}<circle r="2.2" fill="#F2C94C"/></g>` : '';
+  const pupu = c.pupu ? [0,1,2,3,4,5].map(i=>`<circle cx="${64+i*5.2}" cy="${56+Math.sin(i/5*Math.PI)*5}" r="2.3" fill="#FFF6E3" stroke="#C9B890" stroke-width=".7"/>`).join('') : '';
+  return `<svg viewBox="0 0 120 110" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>${pats}<clipPath id="${id}-clip"><ellipse cx="55" cy="68" rx="30" ry="24"/></clipPath></defs>
+    <g class="tail"><polygon points="30,66 4,56 10,74 4,86 30,76" fill="${wing}"/><polygon points="30,70 12,66 14,80 30,76" fill="${c.body}"/></g>
+    <g class="legs">
+      <g class="leg l1"><line x1="48" y1="88" x2="46" y2="103" stroke="#F0A23A" stroke-width="3" stroke-linecap="round"/><polyline points="38,104 46,103 54,105" fill="none" stroke="#F0A23A" stroke-width="3" stroke-linecap="round"/></g>
+      <g class="leg l2"><line x1="58" y1="88" x2="60" y2="103" stroke="#D98B2B" stroke-width="3" stroke-linecap="round"/><polyline points="52,104 60,103 68,105" fill="none" stroke="#D98B2B" stroke-width="3" stroke-linecap="round"/></g>
+    </g>
+    <g class="body"><ellipse cx="55" cy="68" rx="30" ry="24" fill="${c.body}"/><ellipse cx="60" cy="74" rx="18" ry="14" fill="${c.belly}"/>${tattoo}${pareu}</g>
+    <g class="uke"><line x1="60" y1="74" x2="30" y2="54" stroke="#8A5A2B" stroke-width="4.5" stroke-linecap="round"/><rect x="24" y="48" width="9" height="8" rx="2" transform="rotate(34 28 52)" fill="#5A3A1E"/><ellipse cx="66" cy="78" rx="12" ry="9" transform="rotate(34 66 78)" fill="#C98A4B" stroke="#8A5A2B" stroke-width="1.2"/><circle cx="64" cy="77" r="3" fill="#5A3A1E"/><line x1="72" y1="82" x2="30" y2="54" stroke="#FFF6E3" stroke-width=".7"/></g>
+    <g class="wing"><ellipse cx="44" cy="66" rx="19" ry="11" transform="rotate(-18 44 66)" fill="${wing}"/><ellipse cx="40" cy="64" rx="12" ry="6" transform="rotate(-18 40 64)" fill="${shade(c.body,.9)}"/></g>
+    ${pupu}
+    <g class="head"><circle cx="82" cy="46" r="18" fill="${c.body}"/><circle cx="84" cy="52" r="9" fill="${c.belly}" opacity=".9"/><polygon points="98,45 114,50 98,55" fill="#F0A23A"/><circle cx="92" cy="50" r="3.6" fill="#F28CB1" opacity=".6"/><g class="eye"><circle cx="89" cy="42" r="4.2" fill="#10303B"/><circle cx="90.5" cy="40.5" r="1.4" fill="#fff"/></g>${hei}${tiare}</g>
+  </svg>`;
+}
+function renderBird(){ $('#birdFlip').innerHTML = birdSVG(cfg,'live'); $('#preview').innerHTML = birdSVG(cfg,'pv'); }
+
+/* ---------- bird motion ---------- */
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const birdEl = $('#bird'), flipEl = $('#birdFlip'), bubbleEl = $('#bubble');
+const B = {x:60, y:0, dir:1, state:'idle', t:1.5, from:null, to:null, dur:1, p:0, perched:false};
+const BW=96, BH=88;
+function groundY(){ const tabs=document.querySelector('.tabs').getBoundingClientRect(); return tabs.top - BH + 16; }
+function perchPoints(){ const w=innerWidth, hdr=document.querySelector('.top').getBoundingClientRect(); return [{x:Math.max(8,w-BW-14), y:hdr.bottom-8}, {x:8, y:hdr.bottom-8}]; }
+function place(){ birdEl.style.transform=`translate(${B.x}px,${B.y}px)`; flipEl.style.transform=`scaleX(${B.dir})`; placeBubble(); }
+function setState(s){ B.state=s; birdEl.classList.toggle('walking', s==='walk'); birdEl.classList.toggle('flying', s==='fly'); birdEl.classList.toggle('petted', s==='pet'); birdEl.classList.toggle('playing', s==='play'); }
+function idle(sec){ setState('idle'); B.t = sec || (2+Math.random()*4); }
+function startWalk(){ const w=innerWidth; B.to={x: 10+Math.random()*(w-BW-20), y:groundY()}; B.dir = B.to.x>B.x?1:-1; setState('walk'); }
+function startFly(target){ B.from={x:B.x,y:B.y}; B.to=target; B.dir = target.x>B.x?1:-1; B.p=0; const d=Math.hypot(target.x-B.x,target.y-B.y); B.dur=Math.max(.9, d/260); setState('fly'); }
+function nextMove(){
+  if(RM){ idle(6); return; }
+  const r=Math.random();
+  if(B.perched){ if(r<.6){ B.perched=false; startFly({x:20+Math.random()*(innerWidth-BW-40), y:groundY()}); } else idle(4); return; }
+  if(r<.5) startWalk();
+  else if(r<.72){ const ps=perchPoints(); B.perched=true; startFly(ps[Math.random()<.7?0:1]); }
+  else if(r<.86){ birdEl.classList.add('pecking'); setTimeout(()=>birdEl.classList.remove('pecking'),1100); idle(2.5); }
+  else idle(3);
+}
+let last=0;
+function loop(ts){
+  const dt=Math.min(.05,(ts-last)/1000||0); last=ts;
+  if(B.state==='idle'){ B.t-=dt; if(B.t<=0) nextMove(); }
+  else if(B.state==='walk'){ const sp=62; const dx=B.to.x-B.x; if(Math.abs(dx)<2){ B.x=B.to.x; idle(); } else B.x += Math.sign(dx)*sp*dt; B.y=groundY(); }
+  else if(B.state==='fly'){ B.p=Math.min(1,B.p+dt/B.dur); const t=B.p, e=t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2; const cx=(B.from.x+B.to.x)/2, cy=Math.min(B.from.y,B.to.y)-140;
+    B.x=(1-e)*(1-e)*B.from.x+2*(1-e)*e*cx+e*e*B.to.x; B.y=(1-e)*(1-e)*B.from.y+2*(1-e)*e*cy+e*e*B.to.y;
+    if(B.p>=1){ B.x=B.to.x; B.y=B.to.y; idle(B.perched?4+Math.random()*4:1.5); if(Math.random()<.5) say(randomLine()); } }
+  place(); requestAnimationFrame(loop);
+}
+/* bubble */
+const LINES = ['Un petit air de ukulele ?','Caresse-moi doucement, ça apaise.','ʻIa ora na !','E aha tō ʻoe huru ?','Je suis là.','Un petit point ensemble ?','Regarde la mer deux secondes.','Faʻaitoito !','Tu as bu de lʼeau aujourdʼhui ?','ʻAita peʻapeʻa, on y va doucement.'];
+function randomLine(){ return LINES[Math.floor(Math.random()*LINES.length)]; }
+function say(txt, cta){ bubbleEl.innerHTML = esc(txt) + (cta?`<span class="cta">${esc(cta)}</span>`:''); bubbleEl.classList.add('show'); placeBubble(); clearTimeout(say.t); say.t=setTimeout(()=>bubbleEl.classList.remove('show'), 4200); }
+function placeBubble(){ if(!bubbleEl.classList.contains('show')) return; const bw=bubbleEl.offsetWidth, bh=bubbleEl.offsetHeight; let x=B.x+10, right=false; if(x+bw>innerWidth-8){ x=B.x+BW-bw-10; right=true; } x=Math.max(8,x); let y=B.y-bh-14; if(y<4){ y=B.y+BH+10; } bubbleEl.style.transform=`translate(${x}px,${y}px)`; bubbleEl.classList.toggle('right',right); }
+setInterval(()=>{ if(B.state==='idle' && Math.random()<.45 && $('#sheet').hidden && $('#crisis').hidden && $('#breath').hidden) say(randomLine(), 'Touche-moi pour faire le point'); }, 14000);
+birdEl.addEventListener('click', ()=>{ if(PET.just) return; say('Parau mai, raconte-moi.'); openCheckin(); });
+birdEl.addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); openCheckin(); } });
+/* petting: stroke the bird with a finger or the mouse */
+const PET={down:false,active:false,dist:0,total:0,lx:0,ly:0,lastP:0,just:false,endT:null,lastAward:0};
+function petal(x,y){ const d=document.createElement('div'); d.className='petal'; const heart=Math.random()<.5;
+  d.innerHTML = heart ? '<svg viewBox="0 0 20 20"><path d="M10 17 3 10a4 4 0 0 1 7-4 4 4 0 0 1 7 4Z" fill="#E05D8A"/></svg>' : '<svg viewBox="-10 -10 20 20"><g fill="#FFF9EE" stroke="#E8D9B5" stroke-width=".6"><circle cx="5" cy="0" r="4"/><circle cx="1.5" cy="4.8" r="4"/><circle cx="-4" cy="2.9" r="4"/><circle cx="-4" cy="-2.9" r="4"/><circle cx="1.5" cy="-4.8" r="4"/></g><circle r="2.4" fill="#F2C94C"/></svg>';
+  d.style.transform=`translate(${x-9+(Math.random()*24-12)}px,${y-24}px)`; $('#birdlayer').appendChild(d); d.addEventListener('animationend',()=>d.remove()); setTimeout(()=>d.remove(),1500); }
+function petReward(){ say('Tu sens comme ça ralentit ? Respire doucement avec moi.'); try{ navigator.vibrate && navigator.vibrate(30); }catch(e){}
+  if(Date.now()-PET.lastAward>600000){ PET.lastAward=Date.now(); award('pet'); } }
+birdEl.addEventListener('pointerdown', e=>{ PET.down=true; PET.dist=0; PET.lx=e.clientX; PET.ly=e.clientY; try{ birdEl.setPointerCapture(e.pointerId); }catch(_){} });
+birdEl.addEventListener('pointermove', e=>{ if(!PET.down) return; const d=Math.hypot(e.clientX-PET.lx, e.clientY-PET.ly); PET.lx=e.clientX; PET.ly=e.clientY; PET.dist+=d;
+  if(!PET.active && PET.dist>22){ PET.active=true; clearTimeout(PET.endT); setState('pet'); say('Mmm… māuruuru.'); }
+  if(PET.active){ PET.total+=d; const now=performance.now(); if(now-PET.lastP>110){ petal(e.clientX,e.clientY); PET.lastP=now; } if(PET.total>900){ PET.total=0; petReward(); } } });
+function petEnd(){ PET.down=false; if(!PET.active) return; PET.active=false; PET.just=true; setTimeout(()=>{ PET.just=false; },350);
+  PET.endT=setTimeout(()=>{ if(B.state!=='pet') return; const g=groundY(); const atPerch=perchPoints().some(p=>Math.hypot(p.x-B.x,p.y-B.y)<6);
+    if(atPerch){ B.perched=true; idle(3); } else if(Math.abs(B.y-g)>6){ B.perched=false; startFly({x:B.x+1,y:g}); } else { B.perched=false; idle(2); } },1600); }
+birdEl.addEventListener('pointerup', petEnd); birdEl.addEventListener('pointercancel', petEnd);
+/* ukulele: a short original tune, synthesised in the browser */
+let AC=null; const UKE={on:false, iv:null, lastAward:0};
+function settle(sec){ const g=groundY(); const atPerch=perchPoints().some(p=>Math.hypot(p.x-B.x,p.y-B.y)<6);
+  if(atPerch){ B.perched=true; idle(sec||3); } else if(Math.abs(B.y-g)>6){ B.perched=false; startFly({x:B.x+1,y:g}); } else { B.perched=false; idle(sec||2); } }
+function pluck(f,t,v,len){ const o=AC.createOscillator(), o2=AC.createOscillator(), g=AC.createGain(); o.type='triangle'; o2.type='sine'; o.frequency.value=f; o2.frequency.value=f*2;
+  g.gain.setValueAtTime(0.0001,t); g.gain.linearRampToValueAtTime(v,t+.006); g.gain.exponentialRampToValueAtTime(.0001,t+(len||.9));
+  o.connect(g); o2.connect(g); g.connect(AC.destination); o.start(t); o2.start(t); o.stop(t+(len||.9)+.05); o2.stop(t+(len||.9)+.05); }
+function noteFx(){ const d=document.createElement('div'); d.className='petal note';
+  d.innerHTML='<svg viewBox="0 0 20 20"><path d="M8 3v10.2a3 3 0 1 1-1.6-2.6V5.6l8-2v7.6a3 3 0 1 1-1.6-2.6V2Z" fill="currentColor"/></svg>';
+  d.style.transform=`translate(${B.x+BW/2-9+(Math.random()*50-25)}px,${B.y-6}px)`; $('#birdlayer').appendChild(d); setTimeout(()=>d.remove(),1500); }
+function playUke(){
+  if(UKE.on) return;
+  try{ AC = AC || new (window.AudioContext||window.webkitAudioContext)(); if(AC.state==='suspended') AC.resume(); }catch(e){ toast('Le son ne marche pas sur cet appareil.'); return; }
+  UKE.on=true; clearTimeout(PET.endT); setState('play'); say('Écoute ça…');
+  const N={C4:261.63,D4:293.66,E4:329.63,F4:349.23,G4:392,A4:440,B4:493.88,C5:523.25,D5:587.33,E5:659.25,F5:698.46,G5:783.99,A5:880};
+  const CH={C:[N.G4,N.C4,N.E4,N.C5], Am:[N.A4,N.C4,N.E4,N.A4], F:[N.A4,N.C4,N.F4,N.A4], G7:[N.G4,N.D4,N.F4,N.B4]};
+  const bars=[['C',[N.E5,N.G5,N.E5]],['Am',[N.C5,N.E5,N.A5]],['F',[N.A5,N.G5,N.F5]],['G7',[N.D5,N.F5,N.D5]]];
+  const beat=.28, t0=AC.currentTime+.15; const strum=(notes,t,up)=>{ (up?[...notes].reverse():notes).forEach((f,i)=>pluck(f,t+i*.018,up?.06:.09)); };
+  bars.forEach(([c,mel],b)=>{ const t=t0+b*8*beat; [[0,0],[2,0],[3,1],[5,1],[6,0],[7,1]].forEach(([k,up])=>strum(CH[c],t+k*beat,up)); mel.forEach((f,i)=>pluck(f,t+i*2*beat,.13,.7)); });
+  const tEnd=t0+32*beat; strum(CH.C,tEnd,0); pluck(N.C5,tEnd,.14,1.6); pluck(N.E5,tEnd+.12,.1,1.6);
+  UKE.iv=setInterval(noteFx,380);
+  setTimeout(()=>{ clearInterval(UKE.iv); UKE.on=false; if(B.state==='play') settle(2); say('ʻOaʻoa ! Tu as souri ?');
+    if(Date.now()-UKE.lastAward>600000){ UKE.lastAward=Date.now(); award('uke'); } }, (32*beat+1.6)*1000);
+}
+addEventListener('resize', ()=>{ B.y = B.perched ? perchPoints()[0].y : groundY(); B.x=Math.min(B.x, innerWidth-BW-8); });
+
+/* ---------- tabs ---------- */
+function showTab(id){ ['home','words','bird','help'].forEach(t=>{ $('#tab-'+t).hidden = t!==id; }); document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('on', b.dataset.tab===id)); $('#panel').scrollTop=0; if(id==='home') renderHome(); if(id==='help') renderHelp(); }
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>showTab(b.dataset.tab));
+
+/* ---------- home ---------- */
+let log = store.get('log', []), feathers = store.get('feathers', 0);
+const dayKey = d => { const x=new Date(d); return x.getFullYear()+'-'+(x.getMonth()+1)+'-'+x.getDate(); };
+function renderHome(){
+  $('#feathers').textContent = feathers + (feathers===1?' plume':' plumes');
+  const week=$('#week'); week.innerHTML=''; const names=['D','L','M','M','J','V','S']; const today=new Date(); let any=false;
+  const example = !log.some(l=>!l.quick); const exColors=['#1AA3B1','#8C7B6B','#F0A23A',null,'#5B6FB8','#3B8C58','#F0A23A'];
+  for(let i=6;i>=0;i--){ const d=new Date(today); d.setDate(today.getDate()-i); const k=dayKey(d); const e=[...log].reverse().find(l=>!l.quick && dayKey(l.ts)===k); const emo=e?EMO.find(x=>x.id===e.emo):null; const col = example ? exColors[6-i] : (emo?emo.color:null); if(col) any=true;
+    week.insertAdjacentHTML('beforeend', `<div class="d"><span>${names[d.getDay()]}</span><span class="dot ${col?'on':''}" style="${col?'background:'+col:''}" title="${emo?esc(emo.ty):''}"></span></div>`); }
+  week.classList.toggle('example', example);
+  $('#weekNote').textContent = example ? 'Exemple de semaine. Tes vrais points apparaîtront ici, un point par jour suffit.' : (any ? 'Chaque couleur est le dernier mot que tu as choisi ce jour-là.' : '');
+  const last=[...log].reverse().find(l=>!l.quick); if(last){ const emo=EMO.find(x=>x.id===last.emo); $('#lastLine').textContent = `Dernier point : ${emo.ty} (${emo.fr}), ${new Date(last.ts).toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'})}.`; }
+  const weekAgo=Date.now()-7*864e5; const counts={tino:0,manao:0,fetii:0,varua:0}; log.filter(l=>l.ts>weekAgo).forEach(l=>(l.acts||[]).forEach(a=>{ const p=ACT[a]&&ACT[a].p; if(p) counts[p]++; }));
+  if(example){ counts.tino=2;counts.manao=1;counts.fetii=1;counts.varua=0; }
+  $('#bars').innerHTML = Object.keys(PILLARS).map(p=>`<div class="bar"><span>${PILLARS[p].split(' · ')[0]}</span><div class="track"><div class="fill" style="width:${Math.min(100,counts[p]/4*100)}%"></div></div><span class="n">${counts[p]}/4</span></div>`).join('');
+}
+$('#btnCheck').onclick = openCheckin;
+$('#btnBreathe').onclick = ()=>openBreath(null);
+$('#btnUke').onclick = playUke;
+$('#helpNow').onclick = openCrisis;
+
+/* ---------- words ---------- */
+function renderWords(){
+  const groups=[['Agréables','ok'],['Difficiles','hard']]; let h='';
+  groups.forEach(([title,cat],gi)=>{ if(gi) h+='<div class="sep"></div>'; h+=`<div class="eyebrow" style="grid-column:1/-1">${title}</div>`;
+    EMO.filter(e=>e.cat===cat).forEach(e=>{ h+=`<div class="w" style="color:${e.color}">${esc(e.ty)}<i>${esc(e.fr)}</i></div><div class="n">${esc(e.note)}<div class="b">Se sent dans : ${e.body.map(b=>BODY[b].split(' · ')[0]).join(', ')}</div></div>`; }); });
+  $('#lex').innerHTML=h;
+}
+
+/* ---------- customize ---------- */
+function renderCustom(){
+  $('#birdName').value = cfg.name;
+  $('#swBody').innerHTML = COLORS.map(c=>`<button class="swatch ${cfg.body===c?'on':''}" style="background:${c}" data-c="${c}" aria-label="Plumage ${c}"></button>`).join('');
+  $('#swBelly').innerHTML = BELLY.map(c=>`<button class="swatch ${cfg.belly===c?'on':''}" style="background:${c};border-color:${cfg.belly===c?'var(--fg)':'var(--line)'}" data-c="${c}" aria-label="Ventre ${c}"></button>`).join('');
+  $('#optTattoo').innerHTML = Object.keys(TATTOO).map(k=>`<button class="${cfg.tattoo===k?'on':''}" data-k="${k}">${TATTOO[k]}</button>`).join('');
+  $('#optAcc').innerHTML = Object.keys(ACC).map(k=>`<button class="${cfg[k]?'on':''}" data-k="${k}">${ACC[k]}</button>`).join('');
+  renderBird();
+}
+function saveCfg(){ store.set('cfg',cfg); renderCustom(); }
+$('#swBody').addEventListener('click', e=>{ const b=e.target.closest('[data-c]'); if(b){ cfg.body=b.dataset.c; saveCfg(); } });
+$('#swBelly').addEventListener('click', e=>{ const b=e.target.closest('[data-c]'); if(b){ cfg.belly=b.dataset.c; saveCfg(); } });
+$('#optTattoo').addEventListener('click', e=>{ const b=e.target.closest('[data-k]'); if(b){ cfg.tattoo=b.dataset.k; saveCfg(); } });
+$('#optAcc').addEventListener('click', e=>{ const b=e.target.closest('[data-k]'); if(b){ cfg[b.dataset.k]=!cfg[b.dataset.k]; saveCfg(); } });
+$('#birdName').addEventListener('input', e=>{ cfg.name=e.target.value.trim()||'Vini'; store.set('cfg',cfg); });
+
+/* ---------- help ---------- */
+const NUMBERS = [
+  {n:'40 44 47 67', who:'SOS Suicide Polynésie · ligne dʼécoute'},
+  {n:'87 20 25 23', who:'SOS Suicide Polynésie · autre contact'},
+  {n:'3114', who:'Numéro national de prévention du suicide · 24h/24 (accès depuis le fenua à confirmer)'},
+  {n:'15', who:'SAMU · danger immédiat'}
+];
+let ama = store.get('ama', []), plan = store.get('plan', {});
+function numbersHTML(){ return NUMBERS.map(x=>`<div class="num"><div><b>${x.n}</b><div class="who">${x.who}</div></div><button class="copy" data-n="${x.n}">Copier</button></div>`).join(''); }
+function copyNum(e){ const b=e.target.closest('[data-n]'); if(!b) return; const n=b.dataset.n.replace(/\s/g,''); const done=()=>toast('Numéro copié : '+b.dataset.n); if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(n).then(done).catch(()=>{ toast('Numéro : '+b.dataset.n); }); } else toast('Numéro : '+b.dataset.n); }
+function renderHelp(){
+  $('#numbers').innerHTML = numbersHTML();
+  $('#amaList').innerHTML = ama.length ? ama.map((a,i)=>`<div class="ama-item"><span><b>${esc(a.name)}</b> <span class="muted small">${esc(a.tel||'')}</span></span><button class="btn sm ghost" data-del="${i}">Retirer</button></div>`).join('') : '<p class="small muted">Personne pour lʼinstant. Ajoute une ou deux personnes de confiance.</p>';
+  ['planSigns','planHelps','planPlaces'].forEach(id=>{ $('#'+id).value = plan[id]||''; });
+}
+$('#numbers').addEventListener('click', copyNum);
+$('#amaAdd').onclick = ()=>{ const n=$('#amaName').value.trim(); if(!n){ toast('Écris un prénom'); return; } ama.push({name:n, tel:$('#amaTel').value.trim()}); store.set('ama',ama); $('#amaName').value=''; $('#amaTel').value=''; renderHelp(); };
+$('#amaList').addEventListener('click', e=>{ const b=e.target.closest('[data-del]'); if(b){ ama.splice(+b.dataset.del,1); store.set('ama',ama); renderHelp(); } });
+['planSigns','planHelps','planPlaces'].forEach(id=>$('#'+id).addEventListener('input', e=>{ plan[id]=e.target.value; store.set('plan',plan); }));
+
+/* ---------- check-in ---------- */
+const sheet=$('#sheet'), sheetInner=$('#sheetInner');
+let cur=null;
+function openSheet(html){ sheetInner.innerHTML = `<div class="grab"></div>`+html; sheet.hidden=false; sheetInner.scrollTop=0; }
+function closeSheet(){ sheet.hidden=true; }
+sheet.addEventListener('click', e=>{ if(e.target===sheet) closeSheet(); });
+function openCheckin(){
+  cur={emo:null, intensity:3, body:[], text:'', acts:[], ts:Date.now()};
+  const chip = e => `<button class="chip" data-emo="${e.id}" style="--c:${e.color}"><b><span class="sw"></span>${esc(e.ty)}</b><span>${esc(e.fr)}</span></button>`;
+  openSheet(`<div class="head"><div><div class="eyebrow">Étape 1 sur 3</div><h2>E aha tō ʻoe huru ?</h2></div><button class="x" id="sx" aria-label="Fermer">×</button></div>
+    <p class="small muted">Choisis le mot le plus proche. Il nʼy a pas de mauvaise réponse.</p>
+    <div class="eyebrow">Agréable</div><div class="chips">${EMO.filter(e=>e.cat==='ok').map(chip).join('')}</div>
+    <div class="eyebrow">Difficile</div><div class="chips">${EMO.filter(e=>e.cat==='hard').map(chip).join('')}</div>
+    <div class="chips"><button class="chip crisis" id="darkBtn"><b>Idées noires</b><span>envie de disparaître, dʼen finir</span></button></div>`);
+  $('#sx').onclick=closeSheet;
+  $('#darkBtn').onclick=()=>{ closeSheet(); openCrisis(); };
+  sheetInner.querySelectorAll('[data-emo]').forEach(b=>b.onclick=()=>{ cur.emo=b.dataset.emo; step2(); });
+}
+function step2(){
+  const e=EMO.find(x=>x.id===cur.emo); cur.body=[...e.body];
+  const zonesSVG = `<svg viewBox="0 0 120 170" aria-hidden="true">
+    <circle class="zone" data-z="upoo" cx="60" cy="22" r="16"/>
+    <rect class="zone" data-z="arapoa" x="52" y="39" width="16" height="10" rx="4"/>
+    <rect class="zone" data-z="tapono" x="30" y="50" width="60" height="12" rx="6"/>
+    <rect class="zone" data-z="ouma" x="40" y="62" width="40" height="26" rx="8"/>
+    <rect class="zone" data-z="opu" x="42" y="90" width="36" height="24" rx="8"/>
+    <rect class="zone" data-z="rima" x="12" y="62" width="14" height="52" rx="7"/><rect class="zone" data-z="rima" x="94" y="62" width="14" height="52" rx="7"/>
+    <rect class="zone" data-z="avae" x="42" y="116" width="15" height="48" rx="7"/><rect class="zone" data-z="avae" x="63" y="116" width="15" height="48" rx="7"/></svg>`;
+  openSheet(`<div class="head"><div><div class="eyebrow">Étape 2 sur 3</div><h2 style="color:${e.color}">${esc(e.ty)} <span class="muted" style="font-size:1rem">· ${esc(e.fr)}</span></h2></div><button class="x" id="sx" aria-label="Fermer">×</button></div>
+    <div class="card flat"><div class="eyebrow">Cʼest fort comment ?</div><input type="range" id="intens" min="1" max="5" value="3"><div class="scale"><span>un peu</span><span>moyen</span><span>beaucoup</span></div></div>
+    <div class="card flat"><div class="eyebrow">Où tu le sens dans le tino ?</div><div class="bodymap">${zonesSVG}<div class="zones" id="zones">${Object.keys(BODY).map(k=>`<button data-z="${k}" class="${cur.body.includes(k)?'on':''}">${BODY[k]}</button>`).join('')}</div></div></div>
+    <div class="card flat"><label class="eyebrow" for="why">Quʼest-ce qui sʼest passé ? (facultatif)</label><textarea id="why" placeholder="Deux lignes suffisent. Ça reste sur ton téléphone."></textarea></div>
+    <div class="row"><button class="btn ghost" id="back">Retour</button><button class="btn primary" id="next">Voir ce que ${esc(cfg.name)} propose</button></div>`);
+  $('#sx').onclick=closeSheet; $('#back').onclick=openCheckin;
+  const syncZones=()=>{ sheetInner.querySelectorAll('[data-z]').forEach(el=>el.classList.toggle('on', cur.body.includes(el.dataset.z))); };
+  sheetInner.querySelectorAll('[data-z]').forEach(el=>el.addEventListener('click',()=>{ const z=el.dataset.z; cur.body = cur.body.includes(z)?cur.body.filter(x=>x!==z):[...cur.body,z]; syncZones(); }));
+  syncZones();
+  $('#next').onclick=()=>{ cur.intensity=+$('#intens').value; cur.text=$('#why').value.trim(); step3(); };
+}
+function reply(e, k){
+  const name=cfg.name;
+  if(e.cat==='ok') return k>=4 ? `${e.ty} roa ! ${name} danse sur place. Garde ça au chaud, et offre-le à quelquʼun.` : `Māuruuru de me le dire. Un peu de ${e.ty}, cʼest déjà beaucoup.`;
+  const where = cur.body.length ? ` Tu le sens dans ${cur.body.map(b=>BODY[b].split(' · ')[0]).join(', ')}.` : '';
+  const map={fiu:`Fiu, le mot dit tout. Tu nʼes pas paresseux·se : tu es plein·e. On vide un peu.`, rohirohi:`Le tino réclame du repos, et il a raison. On ne décide rien de grand quand on est rohirohi.`, peapea:`Peʻapeʻa… ce qui tracasse tourne en rond tant quʼon ne le pose pas. On va le poser.`, matau:`La peur protège, mais elle prend trop de place. Dʼabord on revient ici, maintenant.`, riri:`Le riri monte dans le ventre et veut sortir. On le laisse passer sans quʼil casse quoi que ce soit.`, haama:`La haʻamā fait baisser les yeux. Relève-les un peu : tout le monde a vécu ça.`, moemoe:`Moʻemoʻe… ${name} reste à côté de toi. Et il y a des gens pour toi, on les appelle.`, oto:`Le ʻoto a le droit dʼêtre là. On ne le chasse pas, on sʼassoit avec, et on nʼest pas seul·e.`};
+  return map[e.id] + where + (k>=4 ? ' Cʼest fort aujourdʼhui, alors on y va tout doucement.' : '');
+}
+function step3(){
+  const e=EMO.find(x=>x.id===cur.emo); const k=cur.intensity;
+  const heavy = e.cat==='hard' && k>=4;
+  const actsHTML = e.acts.map(a=>`<div class="act" data-a="${a}"><div><div class="p">${PILLARS[ACT[a].p]}</div><h3>${ACT[a].t}</h3><p class="d">${ACT[a].d}</p></div><button class="btn sm primary" data-run="${a}">Go</button></div>`).join('');
+  openSheet(`<div class="head"><div><div class="eyebrow">Étape 3 sur 3</div><h2>${esc(cfg.name)} te répond</h2></div><button class="x" id="sx" aria-label="Fermer">×</button></div>
+    <div class="card"><div style="display:flex;gap:10px;align-items:flex-start"><div style="width:64px;flex:none">${birdSVG(cfg,'r')}</div><p id="replyTxt">${esc(reply(e,k))}</p></div></div>
+    ${heavy ? `<div class="card flat" style="border-color:var(--coral)"><h3>Une question, sans jugement</h3><p class="small">Quand cʼest aussi lourd, il arrive dʼavoir des idées noires. Est-ce ton cas en ce moment ?</p><div class="row"><button class="btn coral" id="darkYes">Oui, un peu ou beaucoup</button><button class="btn ghost" id="darkNo">Non</button></div></div>` : ''}
+    <div class="eyebrow">Ce que ${esc(cfg.name)} propose</div>
+    <div class="stack" id="acts">${actsHTML}</div>
+    <button class="btn" id="done">Enregistrer ce point</button>`);
+  $('#sx').onclick=closeSheet;
+  if(heavy){ $('#darkYes').onclick=()=>{ finish(); openCrisis(); }; $('#darkNo').onclick=()=>{ $('#darkNo').closest('.card').hidden=true; }; }
+  sheetInner.querySelectorAll('[data-run]').forEach(b=>b.onclick=()=>runAct(b.dataset.run));
+  $('#done').onclick=()=>{ finish(); toast('Point enregistré. Māuruuru.'); say('Māuruuru. Je suis là demain aussi.'); };
+}
+function finish(){ if(!cur) return; log.push(cur); store.set('log',log); cur=null; closeSheet(); renderHome(); }
+function award(a){ feathers++; store.set('feathers',feathers); if(cur){ if(!cur.acts.includes(a)) cur.acts.push(a); } else { log.push({ts:Date.now(), emo:'hau', intensity:0, body:[], text:'', acts:[a], quick:true}); store.set('log',log); } renderHome(); toast('Une plume gagnée'); }
+
+/* ---------- activities ---------- */
+function runAct(a){
+  if(a==='breathe'){ openBreath(a); return; }
+  const back = `<button class="btn ghost" id="actBack">Retour</button>`;
+  const doneBtn = `<button class="btn primary" id="actDone">Cʼest fait</button>`;
+  let body='';
+  if(a==='senses') body = `<div class="stack">${[['5 choses que tu vois','la ligne du récif, un ʻuru, la couleur du ciel…'],['4 sons','les vagues, un coq, le vent dans les cocotiers…'],['3 choses que tu touches','le sable, ton pāreu, lʼeau fraîche…'],['2 odeurs','le monoï, la tiare, le poisson grillé…'],['1 goût','un ʻuru, un verre dʼeau, un morceau de coco…']].map(([t,h])=>`<label class="card flat" style="gap:4px"><b>${t}</b><input type="text" placeholder="${h}"></label>`).join('')}</div>`;
+  if(a==='ama' || a==='share'){ const list = ama.length ? ama.map(x=>`<div class="ama-item"><span><b>${esc(x.name)}</b> <span class="muted small">${esc(x.tel||'')}</span></span><button class="btn sm" data-msg="${esc(x.name)}">Message</button></div>`).join('') : `<p class="small muted">Tu nʼas pas encore noté ton ama. Ajoute une personne dans Aide → Mon ama, ou pense à quelquʼun maintenant.</p>`;
+    body = `<div class="stack">${list}<div class="note" id="msgBox">${a==='share' ? 'Idée de message : « ʻIa ora na ! Juste pour te dire que je pense à toi. Il mʼest arrivé un truc bien aujourdʼhui. »' : 'Idée de message : « ʻIa ora na. Je ne vais pas très bien aujourdʼhui. Tu as cinq minutes pour parler ? »'}</div><p class="small muted">Lʼappli ne peut pas envoyer de message à ta place : copie le texte, et envoie-le toi-même.</p><button class="btn sm" id="copyMsg">Copier le message</button></div>`; }
+  if(a==='move') body = `<div class="chips">${['Marcher jusquʼà la mer','Nager 10 min','Vaʻa ou surf','ʻOri (danser)','Ukulele','Ramasser des feuilles','Monter la colline'].map(t=>`<button class="chip"><b>${t}</b></button>`).join('')}</div><p class="small muted">Choisis-en une, et pose le téléphone.</p>`;
+  if(a==='thanks') body = `<div class="stack">${[1,2,3].map(i=>`<input type="text" placeholder="Māuruuru pour… (${i})">`).join('')}</div>`;
+  if(a==='net') body = `<div class="stack"><label class="card flat"><b>1. Le fil : cʼest quoi, le problème, en une phrase ?</b><input type="text" placeholder="Pas « tout va mal », mais une chose précise."></label><label class="card flat"><b>2. Trois idées, même bizarres</b><textarea placeholder="…"></textarea></label><label class="card flat"><b>3. Celle que je choisis</b><input type="text"></label><label class="card flat"><b>4. Le premier petit pas, aujourdʼhui</b><input type="text" placeholder="Un pas qui prend moins de 10 minutes."></label></div>`;
+  if(a==='spirit') body = `<div class="stack"><p>Deux minutes. Silence, prière, hīmene, ou juste regarder la montagne : ce qui nourrit ton vārua.</p><div class="card flat" style="align-items:center"><div class="txt" id="spTxt" style="font-family:var(--display);font-size:2rem;font-variant-numeric:tabular-nums">2:00</div><button class="btn sm" id="spStart">Lancer</button></div></div>`;
+  if(a==='aroha') body = `<div class="stack"><p>Imagine quʼun fetiʻi vit exactement ce que tu vis. Écris-lui trois phrases. Puis relis-les : elles sont pour toi.</p><textarea placeholder="Ce que tu ressens est normal… Tu as déjà traversé…"></textarea></div>`;
+  if(a==='rest') body = `<div class="stack"><p>Dix minutes allongé·e, sans écran, fenêtre ouverte si possible. Lʼappli te laisse tranquille.</p><div class="card flat" style="align-items:center"><div id="spTxt" style="font-family:var(--display);font-size:2rem;font-variant-numeric:tabular-nums">10:00</div><button class="btn sm" id="spStart">Lancer</button></div></div>`;
+  openSheet(`<div class="head"><div><div class="eyebrow">${PILLARS[ACT[a].p]}</div><h2>${ACT[a].t}</h2></div><button class="x" id="sx" aria-label="Fermer">×</button></div><p class="small muted">${ACT[a].d}</p>${body}<div class="row">${back}${doneBtn}</div>`);
+  $('#sx').onclick=closeSheet;
+  $('#actBack').onclick=()=>{ if(cur) step3(); else closeSheet(); };
+  $('#actDone').onclick=()=>{ award(a); if(cur) step3(); else closeSheet(); };
+  const cm=$('#copyMsg'); if(cm) cm.onclick=()=>{ const txt=$('#msgBox').textContent.replace(/^Idée de message : /,'').replace(/[«»]/g,'').trim(); const ok=()=>toast('Message copié'); if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(ok).catch(()=>toast('Sélectionne et copie le texte')); else toast('Sélectionne et copie le texte'); };
+  const sp=$('#spStart'); if(sp){ sp.onclick=()=>{ let s = a==='rest'?600:120; sp.disabled=true; const el=$('#spTxt'); const iv=setInterval(()=>{ s--; el.textContent=Math.floor(s/60)+':'+String(s%60).padStart(2,'0'); if(s<=0){ clearInterval(iv); toast('Cʼest fini. Māuruuru.'); } },1000); }; }
+  sheetInner.querySelectorAll('.chips .chip').forEach(c=>c.onclick=()=>{ sheetInner.querySelectorAll('.chips .chip').forEach(x=>x.classList.remove('on')); c.classList.add('on'); });
+}
+
+/* breathing */
+let breathTimer=null, breathAct=null;
+function openBreath(a){
+  breathAct=a; const o=$('#breath'), sea=$('#sea'), txt=$('#breathTxt'), cnt=$('#breathCnt'); o.hidden=false; sheet.hidden=true;
+  let cycle=0; const total=5;
+  const run=()=>{ if(cycle>=total){ txt.textContent='Māuruuru. La mer est calme.'; cnt.textContent=''; sea.classList.remove('in','out'); breathTimer=setTimeout(()=>{ closeBreath(true); }, 2500); return; }
+    cycle++; cnt.textContent=`Vague ${cycle} sur ${total}`;
+    txt.textContent='Inspire… la vague monte'; sea.classList.remove('out'); sea.classList.add('in');
+    breathTimer=setTimeout(()=>{ txt.textContent='Garde…'; breathTimer=setTimeout(()=>{ txt.textContent='Expire… la vague redescend'; sea.classList.remove('in'); sea.classList.add('out'); breathTimer=setTimeout(run, 6000); }, 1500); }, 4000); };
+  txt.textContent='Pose les pieds au sol. On commence.'; cnt.textContent=''; sea.classList.remove('in','out');
+  breathTimer=setTimeout(run, 1800);
+}
+function closeBreath(done){ clearTimeout(breathTimer); $('#breath').hidden=true; if(done){ award('breathe'); } if(cur) step3(); }
+$('#breathStop').onclick=()=>closeBreath(false);
+
+/* ---------- crisis / safety mode ---------- */
+function openCrisis(){
+  const c=$('#crisis'), inner=$('#crisisInner'); sheet.hidden=true; $('#breath').hidden=true;
+  const amaHTML = ama.length ? `<div class="stack">${ama.map(x=>`<div class="ama-item"><b>${esc(x.name)}</b><span class="muted small">${esc(x.tel||'')}</span></div>`).join('')}</div>` : `<p class="small muted">Pense à une personne, nʼimporte laquelle : un fetiʻi, un pasteur, un prof, un voisin. Dis-lui juste : « Je ne vais pas bien ».</p>`;
+  const helps = (plan.planHelps||'').trim();
+  inner.innerHTML = `<div class="grab"></div><div class="head"><div><div class="eyebrow">${esc(cfg.name)} reste avec toi</div><h2>Tu nʼas pas à porter ça seul·e</h2></div><button class="x" id="cx" aria-label="Fermer">×</button></div>
+    <div style="display:flex;gap:10px;align-items:flex-start"><div style="width:64px;flex:none">${birdSVG(cfg,'c')}</div><p>Ce que tu ressens là est très lourd, et ça peut changer. Pour lʼinstant, une seule chose à faire : parler à une personne, maintenant. Elle saura quoi faire ensuite.</p></div>
+    <div class="stack">${numbersHTML()}</div>
+    <div class="card flat"><h3>Mon ama</h3>${amaHTML}</div>
+    ${helps ? `<div class="card flat"><h3>Ce qui mʼaide, tu lʼas écrit toi-même</h3><p>${esc(helps)}</p></div>` : ''}
+    <div class="row"><button class="btn primary" id="cBreath">Respirer avec ${esc(cfg.name)}</button><button class="btn ghost" id="cSafe">Je suis en sécurité pour lʼinstant</button></div>
+    <p class="small muted">Si tu es en danger tout de suite, appelle le 15. Manu Ora ne remplace pas une personne ni un professionnel.</p>`;
+  c.hidden=false; inner.scrollTop=0;
+  inner.querySelector('.stack').addEventListener('click', copyNum);
+  $('#cx').onclick=()=>{ c.hidden=true; };
+  $('#cSafe').onclick=()=>{ c.hidden=true; say('Je reste là. Reviens quand tu veux.'); };
+  $('#cBreath').onclick=()=>{ c.hidden=true; openBreath(null); };
+}
+
+/* ---------- boot ---------- */
+function start(){
+  applyLang(); renderWords(); renderCustom(); renderHelp(); renderHome();
+  B.y = groundY(); B.x = Math.min(60, innerWidth-BW-8); place(); idle(1.2);
+  if(RM){ B.x = innerWidth-BW-16; B.y=groundY(); place(); }
+  requestAnimationFrame(loop);
+  setTimeout(()=>say(lang==='ty'?'ʻIa ora na ! E aha tō ʻoe huru ?':'ʻIa ora na ! Comment tu te sens ?', 'Touche-moi pour faire le point'), 1200);
+}
+start();
+if("serviceWorker" in navigator){ addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{})); }
+</script>
+
+</body>
+</html>
