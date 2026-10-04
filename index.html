@@ -951,12 +951,14 @@ function openCrisis(){
     <div style="display:flex;gap:10px;align-items:flex-start"><div style="width:64px;flex:none">${birdSVG(cfg,'c')}</div><p>Ce que tu ressens là est très lourd, et ça peut changer. Pour lʼinstant, une seule chose à faire : parler à une personne, maintenant. Elle saura quoi faire ensuite.</p></div>
     <div class="stack">${numbersHTML()}</div>
     <div class="card flat"><h3>Mon ama</h3>${amaHTML}</div>
+    ${trustHTML()}
     ${helps ? `<div class="card flat"><h3>Ce qui mʼaide, tu lʼas écrit toi-même</h3><p>${esc(helps)}</p></div>` : ''}
     <div class="row"><button class="btn primary" id="cBreath">Respirer avec ${esc(cfg.name)}</button><button class="btn ghost" id="cSafe">Je suis en sécurité pour lʼinstant</button></div>
     <p class="small muted">Si tu es en danger tout de suite, appelle le 15. Manu Ora ne remplace pas une personne ni un professionnel.</p>`;
   c.hidden=false; inner.scrollTop=0;
   inner.querySelector('.stack').addEventListener('click', copyNum);
   $('#cx').onclick=()=>{ c.hidden=true; };
+  const aa=$('#amaAlert'); if(aa) aa.onclick=()=>sendAid(aa);
   $('#cSafe').onclick=()=>{ c.hidden=true; say('Je reste là. Reviens quand tu veux.'); };
   $('#cBreath').onclick=()=>{ c.hidden=true; openBreath(null); };
 }
@@ -1057,7 +1059,7 @@ function friendsHTML(){ if(!friends.length) return '<p class="small muted">Aucun
   return friends.map((f,i)=>{ const d=FR[f.code]; let body;
     if(!SYNC_URL) body='<span class="small muted">partage non activé</span>'; else if(d===undefined) body='<span class="small muted">chargement…</span>'; else if(d==='err'||d===null||!isMutual(f.code)) body='<span class="small muted">en attente de son accord</span>';
     else { const ents=(d.day===dayKey(Date.now())&&Array.isArray(d.entries))?d.entries:[]; const ago=Math.max(0,Math.round((Date.now()-(d.updated||0))/60000)); body=`${heartSVG(ents,'f'+i,34)}<span class="small muted">${ents.length?ents.length+' couleur'+(ents.length>1?'s':''):'rien aujourdʼhui'} · il y a ${ago<60?ago+' min':Math.round(ago/60)+' h'}</span>`; }
-    return `<div class="friend"><div style="display:flex;align-items:center;gap:8px">${body}</div><div><b>${esc(f.name||(d&&d.name)||fmtCode(f.code))}</b><div class="small muted">${fmtCode(f.code)}</div></div><div class="stack">${isMutual(f.code)?`<button class="btn sm primary" data-sig="${i}">Envoyer un signe</button>`:''}<button class="btn sm ghost" data-unf="${i}">Couper le lien</button></div></div>`; }).join(''); }
+    return `<div class="friend"><div style="display:flex;align-items:center;gap:8px">${body}</div><div><b>${esc(f.name||(d&&d.name)||fmtCode(f.code))}</b><div class="small muted">${fmtCode(f.code)}</div></div><div class="stack">${isMutual(f.code)?`<button class="btn sm primary" data-sig="${i}">Envoyer un signe</button><button class="btn sm ${f.ama?'':'ghost'}" data-ama="${i}">${f.ama?'Personne de confiance ✓':'Choisir comme personne de confiance'}</button>`:''}<button class="btn sm ghost" data-unf="${i}">Couper le lien</button></div></div>`; }).join(''); }
 function renderFriends(){ const el=$('#friendList'); if(el) el.innerHTML=friendsHTML(); }
 function openHeart(){ const today=todayEntries();
   const list = today.length ? today.map(e=>{ const m=EMO.find(x=>x.id===e.emo); return `<div class="hrow"><span class="dot" style="background:${m.color}"></span><b>${esc(m.ty)}</b><span class="muted small">${esc(m.fr)}</span><span class="muted small">${new Date(e.ts).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})}</span><button class="x sm" data-del="${e.ts}" aria-label="Retirer">×</button></div>`; }).join('') : '<p class="small muted">Rien pour lʼinstant. Touche deux fois ton manu pour choisir une couleur.</p>';
@@ -1075,7 +1077,7 @@ function openHeart(){ const today=todayEntries();
       <button class="btn sm" id="linkBtn" ${off}>Envoyer une demande de lien</button>
       <div class="stack" id="reqList">${reqsHTML()}</div>
       <div class="stack" id="friendList">${friendsHTML()}</div>
-      ${SYNC_URL?'<button class="btn sm ghost" id="refreshBtn">Actualiser</button><p class="small muted">Un lien ne marche que si les deux ont accepté. Chacun peut le couper quand il veut : lʼautre ne voit plus ton cœur et ne peut plus tʼenvoyer de signe. En cas dʼabus, change aussi ton code.</p><button class="btn sm ghost" id="newCodeBtn">Changer mon code</button>':''}
+      ${SYNC_URL?'<button class="btn sm ghost" id="refreshBtn">Actualiser</button><p class="small muted">Un lien ne marche que si les deux ont accepté. Chacun peut le couper quand il veut : lʼautre ne voit plus ton cœur et ne peut plus tʼenvoyer de signe. En cas dʼabus, change aussi ton code.</p><p class="small muted">Une personne de confiance est celle que ton manu peut prévenir si tu le demandes, depuis lʼécran dʼaide. Rien ne part jamais sans ton accord.</p><button class="btn sm ghost" id="newCodeBtn">Changer mon code</button>':''}
     </div>`);
   $('#sx').onclick=closeSheet;
   $('#hlist').addEventListener('click', e=>{ const b=e.target.closest('[data-del]'); if(!b) return; const ts=+b.dataset.del; log=log.filter(l=>l.ts!==ts); store.set('log',log); renderHeart(); renderHome(); pushHeart(); openHeart(); });
@@ -1083,14 +1085,14 @@ function openHeart(){ const today=todayEntries();
   $('#shareOn').onchange=e=>{ share.on=e.target.checked; store.set('share',share); if(share.on) pushHeart(); };
   $('#shareName').oninput=e=>{ share.name=e.target.value.trim(); store.set('share',share); };
   $('#linkBtn').onclick=()=>{ const c=$('#friendCode').value.toUpperCase().replace(/[^A-Z0-9]/g,''); if(c.length!==8){ toast('Le code fait 8 lettres ou chiffres'); return; } if(c===myCode){ toast('Cʼest ton propre code'); return; } if(!friends.some(f=>f.code===c)) friends.push({code:c, name:$('#friendName').value.trim()}); store.set('friends',friends); blocked=blocked.filter(x=>x!==c); store.set('blocked',blocked); reqs=reqs.filter(q=>q.code!==c); store.set('reqs',reqs); renderReqs(); if(!share.on){ share.on=true; store.set('share',share); $('#shareOn').checked=true; } pushHeart(); sendAsk(c); if(!store.get('linkBonus',false)){ store.set('linkBonus',true); feathers+=10; store.set('feathers',feathers); renderFeathers(); setTimeout(()=>toast('Premier cœur lié : +10 plumes'),2500); } fetchFriends().then(renderFriends); renderFriends(); $('#friendCode').value=''; $('#friendName').value=''; toast('Demande envoyée. Le lien sera actif quand lʼautre aura accepté.'); };
-  $('#friendList').addEventListener('click', e=>{ const sg=e.target.closest('[data-sig]'); if(sg){ openGesture(+sg.dataset.sig); return; } const b=e.target.closest('[data-unf]'); if(!b) return; cutLink(+b.dataset.unf); });
+  $('#friendList').addEventListener('click', e=>{ const sg=e.target.closest('[data-sig]'); if(sg){ openGesture(+sg.dataset.sig); return; } const am=e.target.closest('[data-ama]'); if(am){ const f=friends[+am.dataset.ama]; if(f){ if(!f.ama && trusted().length>=2){ toast('Deux personnes de confiance au plus'); return; } f.ama=!f.ama; store.set('friends',friends); renderFriends(); toast(f.ama?'Personne de confiance choisie':'Retirée des personnes de confiance'); } return; } const b=e.target.closest('[data-unf]'); if(!b) return; cutLink(+b.dataset.unf); });
   $('#reqList').addEventListener('click', e=>{ const a=e.target.closest('[data-acc]'); if(a){ acceptReq(+a.dataset.acc); return; } const r=e.target.closest('[data-ref]'); if(r) refuseReq(+r.dataset.ref); });
   const nc=$('#newCodeBtn'); if(nc) nc.onclick=()=>{ if(nc.dataset.sure!=='1'){ nc.dataset.sure='1'; nc.textContent='Confirmer : nouveau code (tes ami·e·s devront accepter à nouveau)'; return; } newCode(); openHeart(); toast('Nouveau code créé'); };
   const rb=$('#refreshBtn'); if(rb) rb.onclick=()=>{ rb.disabled=true; pollVisits(); fetchFriends().then(()=>{ renderFriends(); rb.disabled=false; }); };
   fetchFriends().then(renderFriends); }
 
 /* ---------- rencontres entre manu (accord des deux requis) ---------- */
-const GEST={salut:{l:'Salut', t:'te dit ʻIa ora na !'}, calin:{l:'Câlin', t:'te fait un câlin.'}, tiare:{l:'Fleur de tiare', t:'tʼoffre une tiare.'}, uke:{l:'Air de ukulele', t:'te joue un air de ukulele.'}};
+const GEST={salut:{l:'Salut', t:'te dit ʻIa ora na !'}, calin:{l:'Câlin', t:'te fait un câlin.'}, tiare:{l:'Fleur de tiare', t:'tʼoffre une tiare.'}, uke:{l:'Air de ukulele', t:'te joue un air de ukulele.'}, aide:{l:'', t:'est venu te chercher : ton ami·e a besoin de toi.'}};
 const VIS={queue:[],busy:false};
 let seenV=store.get('seenV',{});
 function cleanCfg(c){ c=c||{}; const hex=v=>typeof v==='string' && /^#[0-9a-fA-F]{6}$/.test(v);
@@ -1102,7 +1104,7 @@ function isMutual(code){ const d=FR[code]; return !!(d && d!=='err' && Array.isA
 function sendGesture(code,g,name){ if(!SYNC_URL) return; fetch(`${SYNC_URL}/visits/${code}/${myCode}.json`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({g, t:Date.now(), name:share.name||''})})
   .then(r=>{ toast(r.ok?'Signe envoyé':'Envoi impossible, réessaie plus tard'); if(r.ok) say('Je file voir '+(name||'ton ami·e')+' !'); }).catch(()=>toast('Pas de connexion, réessaie plus tard')); }
 function openGesture(i){ const f=friends[i]; if(!f) return; const nm=f.name||fmtCode(f.code);
-  openSheet(`<div class="head"><div><div class="eyebrow">Rencontre des manu</div><h2>Un signe pour ${esc(nm)}</h2></div><button class="x" id="sx" aria-label="Fermer">×</button></div><p class="small muted">Ton manu ira le porter. ${esc(nm)} le verra à sa prochaine ouverture de Manu Ora.</p><div class="row" id="gests">${Object.keys(GEST).map(k=>`<button class="btn" data-g="${k}">${GEST[k].l}</button>`).join('')}</div><button class="btn ghost" id="gBack">Retour à mon cœur</button>`);
+  openSheet(`<div class="head"><div><div class="eyebrow">Rencontre des manu</div><h2>Un signe pour ${esc(nm)}</h2></div><button class="x" id="sx" aria-label="Fermer">×</button></div><p class="small muted">Ton manu ira le porter. ${esc(nm)} le verra à sa prochaine ouverture de Manu Ora.</p><div class="row" id="gests">${Object.keys(GEST).filter(k=>k!=='aide').map(k=>`<button class="btn" data-g="${k}">${GEST[k].l}</button>`).join('')}</div><button class="btn ghost" id="gBack">Retour à mon cœur</button>`);
   $('#sx').onclick=closeSheet; $('#gBack').onclick=openHeart;
   $('#gests').addEventListener('click', e=>{ const b=e.target.closest('[data-g]'); if(!b) return; closeSheet(); sendGesture(f.code,b.dataset.g,nm); }); }
 async function pollVisits(){ if(!SYNC_URL||!share.on) return;
@@ -1130,12 +1132,28 @@ function playVisit(v, look, done){ clearTimeout(PET.endT); B.onArrive=null; B.af
     if(v.g==='salut'){ el.classList.add('pecking'); birdEl.classList.add('pecking'); setTimeout(()=>{ el.classList.remove('pecking'); birdEl.classList.remove('pecking'); },1100); }
     else if(v.g==='calin'){ el.style.transition='transform .5s ease'; el.style.transform=`translate(${tx+(left?-22:22)}px,${ty}px)`; for(let i=0;i<7;i++) setTimeout(()=>petal(mx,my),i*220); }
     else if(v.g==='tiare'){ for(let i=0;i<9;i++) setTimeout(()=>petal(mx+(Math.random()*60-30),my-10),i*180); }
+    else if(v.g==='aide'){ setTimeout(()=>openAid(v),1800); }
     else { el.classList.add('playing'); iv=setInterval(noteFx,380); }
   },1600);
   setTimeout(()=>{ if(iv) clearInterval(iv); el.classList.remove('playing','pecking'); el.classList.add('flying'); el.style.transition='transform 1.5s ease-in'; el.style.transform=`translate(${sx}px,${sy}px)`; },6800);
   setTimeout(()=>{ el.remove(); if(B.state==='show') settle(2); done(); },8400); }
 setInterval(pollVisits,45000); setTimeout(pollVisits,8000);
 document.addEventListener('visibilitychange', ()=>{ if(!document.hidden) pollVisits(); });
+
+/* ---------- prévenir mon ama : seulement si la personne le demande ---------- */
+function trusted(){ return friends.filter(f=>f.ama); }
+function trustHTML(){ if(!SYNC_URL) return ''; const tr=trusted();
+  if(!tr.length) return '<div class="card flat"><h3>Prévenir une personne de confiance</h3><p class="small muted">Tu nʼen as pas encore choisi. Tu peux le faire dans ton cœur, sous « Cœurs liés ».</p></div>';
+  const names=tr.map(f=>esc(f.name||fmtCode(f.code))).join(' et ');
+  return `<div class="card flat" style="border-color:var(--lagoon)"><h3>Prévenir ${names} ?</h3><p class="small">Ton manu ira lui dire que tu as besoin de lui ou dʼelle. Rien dʼautre nʼest envoyé.</p><p class="small muted">Il ou elle le verra en ouvrant Manu Ora. Si cʼest urgent, appelle un des numéros.</p><button class="btn primary" id="amaAlert">Oui, préviens ${names}</button></div>`; }
+function sendAid(btn){ const tr=trusted(); if(!tr.length||!SYNC_URL) return; const last=store.get('aidAt',0); if(Date.now()-last<10*60000){ toast('Déjà envoyé il y a quelques minutes'); return; }
+  store.set('aidAt',Date.now()); if(btn){ btn.disabled=true; btn.textContent='Envoi…'; }
+  Promise.all(tr.map(f=>fetch(`${SYNC_URL}/visits/${f.code}/${myCode}.json`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({g:'aide', t:Date.now(), name:share.name||''})}).then(r=>r.ok).catch(()=>false)))
+    .then(res=>{ const ok=res.some(Boolean); if(!ok) store.set('aidAt',0); if(btn){ btn.textContent = ok ? 'Envoyé. En attendant, appelle quelquʼun.' : 'Envoi impossible : appelle directement.'; btn.disabled=ok; } }); }
+function openAid(v){ const who=esc(v.name), when=new Date(v.t).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+  const steps=['<b>Appelle ou va le voir maintenant.</b> Pas besoin de trouver les bons mots : « Je suis là » suffit.','<b>Écoute</b>, sans juger ni faire la leçon. Laisse parler.','<b>Ne reste pas seul·e avec ça.</b> Préviens un adulte de confiance : parent, prof, infirmière, pasteur.','<b>Sʼil y a un danger tout de suite</b>, appelle le 15.'];
+  openSheet(`<div class="head"><div><div class="eyebrow">Ton ama tʼappelle</div><h2>${who} a besoin de toi</h2></div><button class="x" id="sx" aria-label="Fermer">×</button></div><p class="small muted">${who} tʼa choisi·e comme personne de confiance et tʼa envoyé ce signe à ${when}.</p><div class="stack">${steps.map((t,i)=>`<div class="card flat"><p><b>${i+1}.</b> ${t}</p></div>`).join('')}</div><div class="stack" id="aidNums">${numbersHTML()}</div><button class="btn primary" id="aidOk">Compris, je mʼen occupe</button>`);
+  $('#sx').onclick=closeSheet; $('#aidOk').onclick=closeSheet; $('#aidNums').addEventListener('click', copyNum); }
 
 /* ---------- install button ---------- */
 const CAN_INSTALL = !!document.querySelector('link[rel="manifest"]');
