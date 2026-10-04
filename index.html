@@ -278,6 +278,10 @@ body.quiet .app{display:none}
 .bird.visitor{pointer-events:none;cursor:default}
 .friend{display:flex;flex-wrap:wrap}
 .friend>div:nth-child(2){flex:1 1 90px;min-width:0}
+.qfeather{border:1.5px solid var(--line);background:var(--surface);color:var(--lagoon-ink);border-radius:999px;padding:5px 11px 5px 8px;display:inline-flex;align-items:center;gap:5px;font-family:var(--display);font-weight:600;font-size:.95rem;font-variant-numeric:tabular-nums}
+.qfeather svg{width:18px;height:18px}
+.gauge{height:12px;border-radius:99px;background:var(--surface-2);overflow:hidden}
+.gaugeFill{height:100%;width:0;border-radius:99px;background:var(--sun);transition:width .5s}
 @media (prefers-reduced-motion: reduce){
   .bird .wing,.bird .leg,.bird .bob,.bird .head{animation:none !important}
   .breath .sea{transition:none}
@@ -351,6 +355,8 @@ body.quiet .app{display:none}
       <div class="stack" style="gap:14px">
         <div class="card">
           <div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><h2 data-i18n="mybird">Mon manu</h2><span class="feather" id="feathers2">0 plumes</span></div>
+          <div class="gauge"><div class="gaugeFill" id="gaugeFill"></div></div>
+          <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap" class="small"><b id="gaugeLbl"></b><span class="muted" id="featherTotal"></span></div>
           <p class="small muted">Une journée complète (une couleur dans ton cœur + une activité) rapporte 10 plumes. Chaque activité : 1 plume, 3 par jour au plus. Tous les 7 jours : 20 de plus.</p>
           <div class="preview" id="preview"></div>
           <label class="small muted" for="birdName">Son nom</label>
@@ -439,7 +445,7 @@ body.quiet .app{display:none}
 
 <div class="quiet" id="quiet">
   <div class="qtop">
-    <button class="heartbtn" id="heartBtn" aria-label="Mon cœur aujourdʼhui"></button>
+    <div style="display:flex;gap:6px;align-items:center"><button class="heartbtn" id="heartBtn" aria-label="Mon cœur aujourdʼhui"></button><button class="qfeather" id="qfeather" aria-label="Mes plumes"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 3C12 3 6 8 5 16l-2 5 2-.5C9 20 13 19 16 15c2-3 4-7 4-12Z" fill="currentColor" opacity=".25"/><path d="M20 3C12 3 6 8 5 16l-2 5M5 16c4-1 8-4 11-9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span id="qfeatherN">0</span></button></div>
     <div style="display:flex;gap:8px;align-items:center"><button class="tbtn" id="installBtn" hidden>Installer</button><button class="menubtn" id="menuBtn" aria-label="Ouvrir tout Manu Ora">≡</button></div>
   </div>
   <p class="qhint" id="qhint">Touche deux fois ton manu pour dire comment tu te sens.</p>
@@ -768,7 +774,11 @@ const RIVAL={tiare:'aute',aute:'tiare',hei:'papale',papale:'hei',pupu:'poe',poe:
 if(!store.get('shopInit',false)){ ['c:'+cfg.body,'t:'+cfg.tattoo,...Object.keys(ACC).filter(k=>cfg[k]).map(k=>'a:'+k)].forEach(id=>OWN.add(id)); store.set('owned',[...OWN]); store.set('shopInit',true); }
 const has = id => FREE.has(id)||OWN.has(id);
 let days = store.get('days',[]);
-function renderFeathers(){ const t=feathers+(feathers===1?' plume':' plumes'); ['#feathers','#feathers2'].forEach(s=>{ const el=$(s); if(el) el.textContent=t; }); }
+function renderFeathers(){ const t=feathers+(feathers===1?' plume':' plumes'); ['#feathers','#feathers2'].forEach(s=>{ const el=$(s); if(el) el.textContent=t; });
+  const qn=$('#qfeatherN'); if(qn) qn.textContent=feathers;
+  const tiers=[[10,'une couleur'],[30,'un tātau'],[50,'une parure'],[100,'une animation'],[150,'un nouvel animal']]; const next=tiers.find(x=>feathers<x[0]);
+  const g=$('#gaugeFill'), gl=$('#gaugeLbl'); if(g&&gl){ if(next){ g.style.width=Math.round(feathers/next[0]*100)+'%'; gl.textContent=`${feathers} / ${next[0]} plumes pour ${next[1]}`; } else { g.style.width='100%'; gl.textContent='Tu peux tout débloquer, même un nouvel animal !'; } }
+  const tot=$('#featherTotal'); if(tot) tot.textContent='Gagnées depuis le début : '+(feathers+store.get('spent',0)); }
 function checkDay(){ const k=dayKey(Date.now()); if(days.includes(k)) return; const ents=log.filter(l=>dayKey(l.ts)===k);
   if(ents.some(l=>!l.quick) && ents.some(l=>(l.acts||[]).length)){ days.push(k); store.set('days',days); let gain=10, msg='Journée complète : +10 plumes';
     if(days.length%7===0){ gain=30; msg=days.length+' jours avec ton manu : +30 plumes'; }
@@ -777,7 +787,7 @@ function tryUse(id,price,label,apply){ if(has(id)){ apply(); return; }
   if(feathers<price){ const m=price-feathers; toast(`Il te manque ${m} plume${m>1?'s':''} pour « ${label} »`); return; }
   openSheet(`<div class="head"><h2>Débloquer ?</h2><button class="x" id="sx" aria-label="Fermer">×</button></div><p><b>${esc(label)}</b> coûte ${price} plumes. Tu en as ${feathers}.</p><div class="row"><button class="btn ghost" id="buyNo">Pas maintenant</button><button class="btn primary" id="buyYes">Débloquer</button></div>`);
   $('#sx').onclick=closeSheet; $('#buyNo').onclick=closeSheet;
-  $('#buyYes').onclick=()=>{ feathers-=price; store.set('feathers',feathers); OWN.add(id); store.set('owned',[...OWN]); closeSheet(); apply(); renderFeathers(); toast('Débloqué : '+label); }; }
+  $('#buyYes').onclick=()=>{ feathers-=price; store.set('feathers',feathers); store.set('spent',store.get('spent',0)+price); OWN.add(id); store.set('owned',[...OWN]); closeSheet(); apply(); renderFeathers(); toast('Débloqué : '+label); }; }
 function playAnim(k){ if(RING.open||UKE.on||B.state==='drag') return; clearTimeout(PET.endT); bubbleEl.classList.remove('show'); setState('show'); const cls=k==='dance'?'dancing':'flipping'; birdEl.classList.add(cls);
   let iv=null; if(k==='dance') iv=setInterval(noteFx,380);
   setTimeout(()=>{ birdEl.classList.remove(cls); if(iv) clearInterval(iv); if(B.state==='show') settle(2); }, k==='dance'?3400:1200); }
@@ -1003,6 +1013,7 @@ function pickRing(id){ closeRing(); if(id==='__dark'){ B.asking=false; openCrisi
 $('#quiet').addEventListener('pointerup', e=>{ if(e.target.closest('button')) return; const now=Date.now(); if(now-TAP.q<380){ TAP.q=0; askRing(false); } else TAP.q=now; });
 $('#menuBtn').onclick=()=>setQuiet(false);
 $('#heartBtn').onclick=openHeart;
+$('#qfeather').onclick=()=>{ setQuiet(false); showTab('bird'); };
 function quietFree(){ return QUIET && !RING.open && $('#sheet').hidden && $('#crisis').hidden && $('#breath').hidden && !UKE.on && !PET.active; }
 setInterval(()=>{ if(!quietFree()) return; const now=Date.now(); if(now-lastEntryTs()>ASK_EVERY && now-lastAsk>ASK_EVERY){ lastAsk=now; store.set('lastAsk',lastAsk); askRing(true); } }, 30000);
 setTimeout(()=>{ if(quietFree() && Date.now()-lastEntryTs()>ASK_EVERY && Date.now()-lastAsk>20*60e3){ lastAsk=Date.now(); store.set('lastAsk',lastAsk); askRing(true); } }, 12000);
@@ -1029,11 +1040,24 @@ const fmtCode = c => c.slice(0,4)+'-'+c.slice(4);
 function pushHeart(){ if(!SYNC_URL||!share.on) return; const body=JSON.stringify({name:share.name||'', day:dayKey(Date.now()), entries:todayEntries().map(e=>({t:e.ts,e:e.emo})), updated:Date.now(), cfg:myLook(), links:friends.map(f=>f.code)});
   fetch(`${SYNC_URL}/hearts/${myCode}.json`,{method:'PATCH',headers:{'Content-Type':'application/json'},body}).catch(()=>{}); }
 async function fetchFriends(){ if(!SYNC_URL) return; await Promise.all(friends.map(async f=>{ try{ const r=await fetch(`${SYNC_URL}/hearts/${f.code}.json`); FR[f.code]= r.ok ? await r.json() : 'err'; }catch(e){ FR[f.code]='err'; } })); }
+/* demandes de lien : l'autre doit accepter ; chacun peut couper */
+let reqs=store.get('reqs',[]), blocked=store.get('blocked',[]);
+const okCode = c => typeof c==='string' && /^[A-Z0-9]{8}$/.test(c);
+function dbDel(path){ if(SYNC_URL) fetch(`${SYNC_URL}/${path}.json`,{method:'DELETE'}).catch(()=>{}); }
+function sendAsk(code){ if(!SYNC_URL) return; fetch(`${SYNC_URL}/visits/${code}/${myCode}.json`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({g:'ask', t:Date.now(), name:share.name||''})}).catch(()=>{}); }
+function reqsHTML(){ if(!reqs.length) return ''; return '<div class="eyebrow">Demandes reçues</div>'+reqs.map((r,i)=>`<div class="friend" style="border-color:var(--lagoon)"><div><b>${esc(r.name||'Quelquʼun')}</b><div class="small muted">${fmtCode(r.code)} veut lier son cœur au tien</div></div><div class="stack"><button class="btn sm primary" data-acc="${i}">Accepter</button><button class="btn sm ghost" data-ref="${i}">Refuser</button></div></div>`).join(''); }
+function renderReqs(){ const el=$('#reqList'); if(el) el.innerHTML=reqsHTML(); }
+function acceptReq(i){ const r=reqs[i]; if(!r) return; reqs.splice(i,1); store.set('reqs',reqs); blocked=blocked.filter(c=>c!==r.code); store.set('blocked',blocked);
+  if(!friends.some(f=>f.code===r.code)) friends.push({code:r.code,name:r.name||''}); store.set('friends',friends); if(!share.on){ share.on=true; store.set('share',share); const cb=$('#shareOn'); if(cb) cb.checked=true; }
+  pushHeart(); dbDel(`visits/${myCode}/${r.code}`); renderReqs(); renderFriends(); fetchFriends().then(renderFriends); toast('Cœur lié'); }
+function refuseReq(i){ const r=reqs[i]; if(!r) return; reqs.splice(i,1); store.set('reqs',reqs); if(!blocked.includes(r.code)) blocked.push(r.code); store.set('blocked',blocked); dbDel(`visits/${myCode}/${r.code}`); renderReqs(); toast('Demande refusée'); }
+function cutLink(i){ const f=friends[i]; if(!f) return; friends.splice(i,1); store.set('friends',friends); if(!blocked.includes(f.code)) blocked.push(f.code); store.set('blocked',blocked); delete seenV[f.code]; pushHeart(); dbDel(`visits/${myCode}/${f.code}`); renderFriends(); toast('Lien coupé'); }
+function newCode(){ const old=myCode; const A='ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; let s=''; for(let i=0;i<8;i++) s+=A[Math.floor(Math.random()*A.length)]; myCode=s; store.set('code',s); dbDel(`hearts/${old}`); dbDel(`visits/${old}`); reqs=[]; store.set('reqs',reqs); pushHeart(); friends.forEach(f=>sendAsk(f.code)); }
 function friendsHTML(){ if(!friends.length) return '<p class="small muted">Aucun cœur lié pour lʼinstant.</p>';
   return friends.map((f,i)=>{ const d=FR[f.code]; let body;
-    if(!SYNC_URL) body='<span class="small muted">partage non activé</span>'; else if(d===undefined) body='<span class="small muted">chargement…</span>'; else if(d==='err'||d===null) body='<span class="small muted">pas encore de cœur partagé</span>';
+    if(!SYNC_URL) body='<span class="small muted">partage non activé</span>'; else if(d===undefined) body='<span class="small muted">chargement…</span>'; else if(d==='err'||d===null||!isMutual(f.code)) body='<span class="small muted">en attente de son accord</span>';
     else { const ents=(d.day===dayKey(Date.now())&&Array.isArray(d.entries))?d.entries:[]; const ago=Math.max(0,Math.round((Date.now()-(d.updated||0))/60000)); body=`${heartSVG(ents,'f'+i,34)}<span class="small muted">${ents.length?ents.length+' couleur'+(ents.length>1?'s':''):'rien aujourdʼhui'} · il y a ${ago<60?ago+' min':Math.round(ago/60)+' h'}</span>`; }
-    return `<div class="friend"><div style="display:flex;align-items:center;gap:8px">${body}</div><div><b>${esc(f.name||(d&&d.name)||fmtCode(f.code))}</b><div class="small muted">${fmtCode(f.code)}</div></div><div class="stack">${isMutual(f.code)?`<button class="btn sm primary" data-sig="${i}">Envoyer un signe</button>`:(SYNC_URL?'<span class="small muted">en attente de son accord</span>':'')}<button class="btn sm ghost" data-unf="${i}">Retirer</button></div></div>`; }).join(''); }
+    return `<div class="friend"><div style="display:flex;align-items:center;gap:8px">${body}</div><div><b>${esc(f.name||(d&&d.name)||fmtCode(f.code))}</b><div class="small muted">${fmtCode(f.code)}</div></div><div class="stack">${isMutual(f.code)?`<button class="btn sm primary" data-sig="${i}">Envoyer un signe</button>`:''}<button class="btn sm ghost" data-unf="${i}">Couper le lien</button></div></div>`; }).join(''); }
 function renderFriends(){ const el=$('#friendList'); if(el) el.innerHTML=friendsHTML(); }
 function openHeart(){ const today=todayEntries();
   const list = today.length ? today.map(e=>{ const m=EMO.find(x=>x.id===e.emo); return `<div class="hrow"><span class="dot" style="background:${m.color}"></span><b>${esc(m.ty)}</b><span class="muted small">${esc(m.fr)}</span><span class="muted small">${new Date(e.ts).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})}</span><button class="x sm" data-del="${e.ts}" aria-label="Retirer">×</button></div>`; }).join('') : '<p class="small muted">Rien pour lʼinstant. Touche deux fois ton manu pour choisir une couleur.</p>';
@@ -1048,18 +1072,21 @@ function openHeart(){ const today=todayEntries();
       <input type="text" id="shareName" placeholder="Ton prénom ou surnom" value="${esc(share.name||'')}" maxlength="20" ${off}>
       <p class="small muted">Seules les couleurs du jour et lʼapparence de ton manu sont partagées, jamais tes notes. Quand vous avez chacun entré le code de lʼautre, vos manu peuvent se rendre visite.</p>
       <div class="row"><input type="text" id="friendCode" placeholder="Code de lʼami·e" ${off}><input type="text" id="friendName" placeholder="Son prénom" ${off}></div>
-      <button class="btn sm" id="linkBtn" ${off}>Lier ce cœur</button>
+      <button class="btn sm" id="linkBtn" ${off}>Envoyer une demande de lien</button>
+      <div class="stack" id="reqList">${reqsHTML()}</div>
       <div class="stack" id="friendList">${friendsHTML()}</div>
-      ${SYNC_URL?'<button class="btn sm ghost" id="refreshBtn">Actualiser</button>':''}
+      ${SYNC_URL?'<button class="btn sm ghost" id="refreshBtn">Actualiser</button><p class="small muted">Un lien ne marche que si les deux ont accepté. Chacun peut le couper quand il veut : lʼautre ne voit plus ton cœur et ne peut plus tʼenvoyer de signe. En cas dʼabus, change aussi ton code.</p><button class="btn sm ghost" id="newCodeBtn">Changer mon code</button>':''}
     </div>`);
   $('#sx').onclick=closeSheet;
   $('#hlist').addEventListener('click', e=>{ const b=e.target.closest('[data-del]'); if(!b) return; const ts=+b.dataset.del; log=log.filter(l=>l.ts!==ts); store.set('log',log); renderHeart(); renderHome(); pushHeart(); openHeart(); });
   $('#copyCode').onclick=copyNum;
   $('#shareOn').onchange=e=>{ share.on=e.target.checked; store.set('share',share); if(share.on) pushHeart(); };
   $('#shareName').oninput=e=>{ share.name=e.target.value.trim(); store.set('share',share); };
-  $('#linkBtn').onclick=()=>{ const c=$('#friendCode').value.toUpperCase().replace(/[^A-Z0-9]/g,''); if(c.length!==8){ toast('Le code fait 8 lettres ou chiffres'); return; } if(c===myCode){ toast('Cʼest ton propre code'); return; } if(!friends.some(f=>f.code===c)) friends.push({code:c, name:$('#friendName').value.trim()}); store.set('friends',friends); pushHeart(); if(!store.get('linkBonus',false)){ store.set('linkBonus',true); feathers+=10; store.set('feathers',feathers); renderFeathers(); setTimeout(()=>toast('Premier cœur lié : +10 plumes'),2500); } fetchFriends().then(renderFriends); renderFriends(); $('#friendCode').value=''; $('#friendName').value=''; toast('Cœur lié'); };
-  $('#friendList').addEventListener('click', e=>{ const sg=e.target.closest('[data-sig]'); if(sg){ openGesture(+sg.dataset.sig); return; } const b=e.target.closest('[data-unf]'); if(!b) return; friends.splice(+b.dataset.unf,1); store.set('friends',friends); renderFriends(); pushHeart(); });
-  const rb=$('#refreshBtn'); if(rb) rb.onclick=()=>{ rb.disabled=true; fetchFriends().then(()=>{ renderFriends(); rb.disabled=false; }); };
+  $('#linkBtn').onclick=()=>{ const c=$('#friendCode').value.toUpperCase().replace(/[^A-Z0-9]/g,''); if(c.length!==8){ toast('Le code fait 8 lettres ou chiffres'); return; } if(c===myCode){ toast('Cʼest ton propre code'); return; } if(!friends.some(f=>f.code===c)) friends.push({code:c, name:$('#friendName').value.trim()}); store.set('friends',friends); blocked=blocked.filter(x=>x!==c); store.set('blocked',blocked); reqs=reqs.filter(q=>q.code!==c); store.set('reqs',reqs); renderReqs(); if(!share.on){ share.on=true; store.set('share',share); $('#shareOn').checked=true; } pushHeart(); sendAsk(c); if(!store.get('linkBonus',false)){ store.set('linkBonus',true); feathers+=10; store.set('feathers',feathers); renderFeathers(); setTimeout(()=>toast('Premier cœur lié : +10 plumes'),2500); } fetchFriends().then(renderFriends); renderFriends(); $('#friendCode').value=''; $('#friendName').value=''; toast('Demande envoyée. Le lien sera actif quand lʼautre aura accepté.'); };
+  $('#friendList').addEventListener('click', e=>{ const sg=e.target.closest('[data-sig]'); if(sg){ openGesture(+sg.dataset.sig); return; } const b=e.target.closest('[data-unf]'); if(!b) return; cutLink(+b.dataset.unf); });
+  $('#reqList').addEventListener('click', e=>{ const a=e.target.closest('[data-acc]'); if(a){ acceptReq(+a.dataset.acc); return; } const r=e.target.closest('[data-ref]'); if(r) refuseReq(+r.dataset.ref); });
+  const nc=$('#newCodeBtn'); if(nc) nc.onclick=()=>{ if(nc.dataset.sure!=='1'){ nc.dataset.sure='1'; nc.textContent='Confirmer : nouveau code (tes ami·e·s devront accepter à nouveau)'; return; } newCode(); openHeart(); toast('Nouveau code créé'); };
+  const rb=$('#refreshBtn'); if(rb) rb.onclick=()=>{ rb.disabled=true; pollVisits(); fetchFriends().then(()=>{ renderFriends(); rb.disabled=false; }); };
   fetchFriends().then(renderFriends); }
 
 /* ---------- rencontres entre manu (accord des deux requis) ---------- */
@@ -1070,6 +1097,7 @@ function cleanCfg(c){ c=c||{}; const hex=v=>typeof v==='string' && /^#[0-9a-fA-F
   const o={body:hex(c.body)?c.body:'#1AA3B1', belly:hex(c.belly)?c.belly:'#F6F1E7', tattoo:(typeof c.tattoo==='string' && Object.prototype.hasOwnProperty.call(TATTOO,c.tattoo))?c.tattoo:'none', animal:c.animal==='honu'?'honu':'manu', season:c.season!==false};
   Object.keys(ACC).forEach(k=>{ o[k]=c[k]===true; }); return o; }
 function myLook(){ const o={body:cfg.body, belly:cfg.belly, tattoo:cfg.tattoo, animal:cfg.animal||'manu', season:cfg.season!==false}; Object.keys(ACC).forEach(k=>{ o[k]=!!cfg[k]; }); return o; }
+function isMutualKnown(code){ return FR[code]===undefined || isMutual(code); }
 function isMutual(code){ const d=FR[code]; return !!(d && d!=='err' && Array.isArray(d.links) && d.links.includes(myCode)); }
 function sendGesture(code,g,name){ if(!SYNC_URL) return; fetch(`${SYNC_URL}/visits/${code}/${myCode}.json`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({g, t:Date.now(), name:share.name||''})})
   .then(r=>{ toast(r.ok?'Signe envoyé':'Envoi impossible, réessaie plus tard'); if(r.ok) say('Je file voir '+(name||'ton ami·e')+' !'); }).catch(()=>toast('Pas de connexion, réessaie plus tard')); }
@@ -1077,9 +1105,11 @@ function openGesture(i){ const f=friends[i]; if(!f) return; const nm=f.name||fmt
   openSheet(`<div class="head"><div><div class="eyebrow">Rencontre des manu</div><h2>Un signe pour ${esc(nm)}</h2></div><button class="x" id="sx" aria-label="Fermer">×</button></div><p class="small muted">Ton manu ira le porter. ${esc(nm)} le verra à sa prochaine ouverture de Manu Ora.</p><div class="row" id="gests">${Object.keys(GEST).map(k=>`<button class="btn" data-g="${k}">${GEST[k].l}</button>`).join('')}</div><button class="btn ghost" id="gBack">Retour à mon cœur</button>`);
   $('#sx').onclick=closeSheet; $('#gBack').onclick=openHeart;
   $('#gests').addEventListener('click', e=>{ const b=e.target.closest('[data-g]'); if(!b) return; closeSheet(); sendGesture(f.code,b.dataset.g,nm); }); }
-async function pollVisits(){ if(!SYNC_URL||!share.on||!friends.length) return;
+async function pollVisits(){ if(!SYNC_URL||!share.on) return;
   try{ const r=await fetch(`${SYNC_URL}/visits/${myCode}.json`); if(!r.ok) return; const d=await r.json(); if(!d || typeof d!=='object') return;
-    friends.forEach(f=>{ const v=d[f.code]; if(v && typeof v.t==='number' && typeof v.g==='string' && Object.prototype.hasOwnProperty.call(GEST,v.g) && v.t>(seenV[f.code]||0) && !VIS.queue.some(q=>q.from===f.code&&q.t===v.t))
+    let fresh=false; Object.keys(d).forEach(from=>{ const v=d[from]; if(!okCode(from) || !v || v.g!=='ask' || typeof v.t!=='number') return; if(blocked.includes(from) || friends.some(f=>f.code===from) || reqs.some(q=>q.code===from)) return; reqs.push({code:from, name:String(v.name||'').slice(0,20), t:v.t}); fresh=true; });
+    if(fresh){ store.set('reqs',reqs); renderReqs(); if(visitFree()) say('Quelquʼun veut lier son cœur au tien.','Touche ton cœur pour répondre'); }
+    friends.forEach(f=>{ const v=d[f.code]; if(v && isMutualKnown(f.code) && typeof v.t==='number' && typeof v.g==='string' && Object.prototype.hasOwnProperty.call(GEST,v.g) && v.t>(seenV[f.code]||0) && !VIS.queue.some(q=>q.from===f.code&&q.t===v.t))
       VIS.queue.push({from:f.code, g:v.g, t:v.t, name:f.name||String(v.name||'').slice(0,20)||'ton ami·e'}); });
     runVisits(); }catch(e){} }
 function visitFree(){ return !VIS.busy && !RING.open && !UKE.on && !PET.active && B.state!=='drag' && B.state!=='fly' && $('#sheet').hidden && $('#crisis').hidden && $('#breath').hidden; }

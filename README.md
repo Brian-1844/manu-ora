@@ -53,6 +53,8 @@ Le partage des couleurs demande un tout petit serveur. Version gratuite avec Fir
 { "rules": { "hearts": { "$code": { ".read": true, ".write": true, ".validate": "newData.hasChildren(['day','updated'])" } }, "visits": { "$to": { ".read": true, "$from": { ".write": true, ".validate": "newData.hasChildren(['g','t'])" } } } } }
 ```
 
+**Accord et coupure du lien.** Entrer le code d'un ami envoie une *demande*. L'ami la voit dans « Cœurs liés » et choisit Accepter ou Refuser. Tant qu'il n'a pas accepté, personne ne voit le cœur de l'autre. Chacun peut « Couper le lien » à tout moment ; la personne coupée ne peut plus envoyer de demande, sauf si on entre soi-même son code. En cas d'abus, « Changer mon code » rend l'ancien code inutilisable. Limite : ces protections sont appliquées par l'application ; la base de test reste lisible par quelqu'un qui connaît un code et sait interroger Firebase directement.
+
 **Rencontre des manu.** Quand deux personnes ont chacune entré le code de l'autre et coché « Partager », un bouton « Envoyer un signe » apparaît (salut, câlin, fleur de tiare, air de ukulele). Le manu de l'ami vient alors en visite sur l'écran de l'autre, avec son apparence et la couleur de son cœur du jour. Pas de messages écrits : uniquement ces gestes.
 
 Ensuite, dans l'appli : cœur → « Cœurs liés » → cocher « Partager », donner son code à l'ami, et entrer le sien. Seules les couleurs du jour sont partagées (jamais les notes), sous un code aléatoire sans nom ni téléphone. C'est un prototype : pour une vraie mise en service, prévoir des règles d'accès plus strictes.
