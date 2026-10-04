@@ -55,6 +55,26 @@ Six emplacements. On plante une graine, elle pousse avec le temps réel (appli o
 - **Récolte :** « Échanger » contre des plumes, ou « Offrir » à un ami lié. L'ami reçoit les plumes et une graine ; celui qui offre récupère une graine.
 - Le jardin est enregistré sur le téléphone ; seuls les cadeaux passent par Firebase.
 
+### Coffre et atelier
+
+À la récolte, « Mettre au coffre » range la fleur ou le fruit. Le coffre s'ouvre depuis le bouton à côté des plumes. Dans l'atelier, on choisit les quantités de chaque ingrédient et on mélange : le dosage décide du résultat. Un mélange inconnu ne fait rien perdre.
+
+| Création | Recette | Temps | Vaut | Aura (1 jour) |
+|---|---|---|---|---|
+| Hei tiare | 5 tiare | tout de suite | 30 | turquoise · la paix |
+| Hei ʻārearea | 3 tiare + 2 ʻaute | tout de suite | 35 | rose · la tendresse |
+| Salade de fruits | 1 meiʻa + 1 vī + 1 coco | tout de suite | 50 | orange · la joie |
+| Poʻe meiʻa | 2 meiʻa + 1 coco | tout de suite | 40 | jaune · la gratitude |
+| Monoï tiare | 3 tiare + 1 coco | 3 jours | 40 | dorée · le soin de soi |
+| Monoï ʻaute (secrète) | 2 tiare + 1 ʻaute + 1 coco | 3 jours | 55 | rouge · le courage |
+| Monoï ānuanua (secrète) | 3 tiare + 1 ʻaute + 1 vī + 1 coco | 4 jours | 90 | arc-en-ciel · l'espoir |
+
+Les recettes secrètes apparaissent comme « ??? » avec un indice dans le carnet, jusqu'à ce qu'on les trouve. Chaque création peut être utilisée (aura sur son manu ; les monoï ouvrent en plus « Un moment pour toi »), offerte à un ami lié (l'aura va à son manu) ou échangée contre des plumes. Le haʻari (cocotier) mûrit en 4 jours ; une graine au départ, puis une tous les 7 jours.
+
+### Étoile de confiance
+
+Quand quelqu'un choisit un ami comme personne de confiance, son manu lui porte une étoile qui brille en haut de l'écran de veille. En la touchant, l'ami lit ce que cela veut dire et peut la garder ou la rendre. S'il la rend, la personne est prévenue et peut choisir quelqu'un d'autre.
+
 ## Lier son cœur à un ami (optionnel)
 
 Le partage des couleurs demande un tout petit serveur. Version gratuite avec Firebase :

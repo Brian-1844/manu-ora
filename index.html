@@ -287,6 +287,24 @@ body.quiet .app{display:none}
 .plot svg{width:100%;max-width:86px;height:auto}
 .plot .btn{width:100%;padding:6px 4px;font-size:.78rem;border-radius:10px}
 .plot b{font-family:var(--display);font-weight:600}
+.bird.shiny svg{filter:drop-shadow(0 0 7px rgba(255,214,110,.95)) drop-shadow(0 6px 6px rgba(0,0,0,.18)) saturate(1.2) brightness(1.06)}
+.qtop{flex-wrap:wrap;gap:6px}
+.qfeather span:empty{display:none}
+.bird.shiny svg{filter:drop-shadow(0 0 7px var(--aura,#FFD66E)) drop-shadow(0 0 3px var(--aura,#FFD66E)) drop-shadow(0 6px 6px rgba(0,0,0,.18))}
+.bird.rainbow svg{animation:rainbowAura 5s linear infinite}
+@keyframes rainbowAura{0%,100%{filter:drop-shadow(0 0 8px #E4583F) drop-shadow(0 0 3px #E4583F)}20%{filter:drop-shadow(0 0 8px #F2C94C) drop-shadow(0 0 3px #F2C94C)}40%{filter:drop-shadow(0 0 8px #3B8C58) drop-shadow(0 0 3px #3B8C58)}60%{filter:drop-shadow(0 0 8px #1AA3B1) drop-shadow(0 0 3px #1AA3B1)}80%{filter:drop-shadow(0 0 8px #8A5BC4) drop-shadow(0 0 3px #8A5BC4)}}
+.mixrow{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:6px 0;border-bottom:1.5px solid var(--line)}
+.stepper{display:inline-flex;align-items:center;gap:10px}
+.stepper button{width:34px;height:34px;border-radius:50%;border:1.5px solid var(--line);background:var(--surface-2);font-size:1.2rem;font-weight:700;line-height:1}
+.stepper b{min-width:1.2em;text-align:center;font-family:var(--display);font-variant-numeric:tabular-nums}
+.auradot{width:22px;height:22px;border-radius:50%;flex:none;box-shadow:0 0 8px currentColor;border:2px solid var(--surface)}
+.stars{position:absolute;left:0;right:0;top:calc(64px + env(safe-area-inset-top,0px));display:flex;justify-content:center;gap:10px;pointer-events:none}
+.starbtn{pointer-events:auto;border:0;background:none;padding:4px;cursor:pointer;animation:twinkle 2.2s ease-in-out infinite alternate}
+.starbtn svg{width:34px;height:34px;display:block;filter:drop-shadow(0 0 8px #F2C94C)}
+@keyframes twinkle{from{transform:scale(.9);opacity:.75}to{transform:scale(1.1);opacity:1}}
+@media (prefers-reduced-motion: reduce){
+  .starbtn,.bird.rainbow svg{animation:none}
+}
 @media (prefers-reduced-motion: reduce){
   .bird .wing,.bird .leg,.bird .bob,.bird .head{animation:none !important}
   .breath .sea{transition:none}
@@ -452,9 +470,10 @@ body.quiet .app{display:none}
 
 <div class="quiet" id="quiet">
   <div class="qtop">
-    <div style="display:flex;gap:6px;align-items:center"><button class="heartbtn" id="heartBtn" aria-label="Mon cœur aujourdʼhui"></button><button class="qfeather" id="qfeather" aria-label="Mes plumes"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 3C12 3 6 8 5 16l-2 5 2-.5C9 20 13 19 16 15c2-3 4-7 4-12Z" fill="currentColor" opacity=".25"/><path d="M20 3C12 3 6 8 5 16l-2 5M5 16c4-1 8-4 11-9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span id="qfeatherN">0</span></button><button class="qfeather" id="qgarden" aria-label="Mon faʻaʻapu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21V11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M12 12C12 7 8 5 4 5c0 5 3 8 8 7Z" fill="currentColor" opacity=".3" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M12 15c0-4 3-6 8-6 0 5-3 7-8 6Z" fill="currentColor" opacity=".3" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg><span id="qgardenN"></span></button></div>
+    <div style="display:flex;gap:6px;align-items:center"><button class="heartbtn" id="heartBtn" aria-label="Mon cœur aujourdʼhui"></button><button class="qfeather" id="qfeather" aria-label="Mes plumes"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 3C12 3 6 8 5 16l-2 5 2-.5C9 20 13 19 16 15c2-3 4-7 4-12Z" fill="currentColor" opacity=".25"/><path d="M20 3C12 3 6 8 5 16l-2 5M5 16c4-1 8-4 11-9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span id="qfeatherN">0</span></button><button class="qfeather" id="qgarden" aria-label="Mon faʻaʻapu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21V11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M12 12C12 7 8 5 4 5c0 5 3 8 8 7Z" fill="currentColor" opacity=".3" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M12 15c0-4 3-6 8-6 0 5-3 7-8 6Z" fill="currentColor" opacity=".3" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg><span id="qgardenN"></span></button><button class="qfeather" id="qchest" aria-label="Mon coffre"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10V8a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v2" fill="currentColor" opacity=".3" stroke="currentColor" stroke-width="1.6"/><rect x="4" y="10" width="16" height="9" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.6"/><rect x="10.5" y="9" width="3" height="4" rx="1" fill="currentColor"/></svg><span id="qchestN"></span></button></div>
     <div style="display:flex;gap:8px;align-items:center"><button class="tbtn" id="installBtn" hidden>Installer</button><button class="menubtn" id="menuBtn" aria-label="Ouvrir tout Manu Ora">≡</button></div>
   </div>
+  <div class="stars" id="stars"></div>
   <p class="qhint" id="qhint">Touche deux fois ton manu pour dire comment tu te sens.</p>
 </div>
 <div class="ringbg" id="ringbg" hidden></div>
@@ -788,7 +807,7 @@ function renderFeathers(){ const t=feathers+(feathers===1?' plume':' plumes'); [
   const tot=$('#featherTotal'); if(tot) tot.textContent='Gagnées depuis le début : '+(feathers+store.get('spent',0)); }
 function checkDay(){ const k=dayKey(Date.now()); if(days.includes(k)) return; const ents=log.filter(l=>dayKey(l.ts)===k);
   if(ents.some(l=>!l.quick) && ents.some(l=>(l.acts||[]).length)){ days.push(k); store.set('days',days); let gain=10, msg='Journée complète : +10 plumes';
-    if(days.length%7===0){ gain=30; msg=days.length+' jours avec ton manu : +30 plumes'; }
+    if(days.length%7===0){ gain=30; msg=days.length+' jours avec ton manu : +30 plumes'; addSeed('haari'); msg+=' · 1 graine de haʻari'; }
     feathers+=gain; store.set('feathers',feathers); const sd=addSeed(); msg+=' · 1 graine de '+PLANTS[sd].name; renderFeathers(); setTimeout(()=>toast(msg),2500); } }
 function tryUse(id,price,label,apply){ if(has(id)){ apply(); return; }
   if(feathers<price){ const m=price-feathers; toast(`Il te manque ${m} plume${m>1?'s':''} pour « ${label} »`); return; }
@@ -995,9 +1014,9 @@ function quietMove(){ if(B.asking){ idle(2); return; } const hm=homePoint(); if(
 function setQuiet(on){ QUIET=on; store.set('quiet',on); document.body.classList.toggle('quiet',on); closeRing(); bubbleEl.classList.remove('show'); B.asking=false; B.afterIdle=null; B.onArrive=null;
   if(on){ renderHeart(); goHome(); } else { B.perched=false; renderHome(); startFly({x:Math.min(60,innerWidth-BW-8), y:groundY()}); } }
 function sayHTML(html, ms){ bubbleEl.innerHTML=html; bubbleEl.classList.add('show'); placeBubble(); clearTimeout(say.t); say.t=setTimeout(()=>bubbleEl.classList.remove('show'), ms||6000); }
-function miniMenu(){ sayHTML(`${esc(randomLine())}<div class="mini"><button data-m="check">Faire le point</button><button data-m="breathe">Respirer</button><button data-m="uke">Ukulele</button><button data-m="heart">Mon cœur</button><button data-m="garden">Faʻaʻapu</button>${has('x:dance')?'<button data-m="dance">Danser</button>':''}${has('x:flip')?'<button data-m="flip">Salto</button>':''}${QUIET?'<button data-m="app">Tout Manu Ora</button>':'<button data-m="quiet">Mode veille</button>'}</div>`, 9000); }
+function miniMenu(){ sayHTML(`${esc(randomLine())}<div class="mini"><button data-m="check">Faire le point</button><button data-m="breathe">Respirer</button><button data-m="uke">Ukulele</button><button data-m="heart">Mon cœur</button><button data-m="garden">Faʻaʻapu</button><button data-m="chest">Coffre</button>${has('x:dance')?'<button data-m="dance">Danser</button>':''}${has('x:flip')?'<button data-m="flip">Salto</button>':''}${QUIET?'<button data-m="app">Tout Manu Ora</button>':'<button data-m="quiet">Mode veille</button>'}</div>`, 9000); }
 bubbleEl.addEventListener('click', e=>{ const b=e.target.closest('[data-m]'); if(!b) return; e.stopPropagation(); bubbleEl.classList.remove('show'); const m=b.dataset.m;
-  if(m==='garden') openGarden(); else if(m==='dance'||m==='flip') playAnim(m); else if(m==='breathe') openBreath(null); else if(m==='check') openCheckin(); else if(m==='uke') playUke(); else if(m==='heart') openHeart(); else if(m==='app') setQuiet(false); else if(m==='quiet') setQuiet(true); else if(m==='pet') say('Glisse ton doigt sur mes plumes, tout doucement.'); });
+  if(m==='garden') openGarden(); else if(m==='chest') openChest(); else if(m==='dance'||m==='flip') playAnim(m); else if(m==='breathe') openBreath(null); else if(m==='check') openCheckin(); else if(m==='uke') playUke(); else if(m==='heart') openHeart(); else if(m==='app') setQuiet(false); else if(m==='quiet') setQuiet(true); else if(m==='pet') say('Glisse ton doigt sur mes plumes, tout doucement.'); });
 
 /* colour ring */
 function ringCenter(){ return {x:innerWidth/2, y:innerHeight/2-10}; }
@@ -1024,6 +1043,7 @@ $('#menuBtn').onclick=()=>setQuiet(false);
 $('#heartBtn').onclick=openHeart;
 $('#qfeather').onclick=()=>{ setQuiet(false); showTab('bird'); };
 $('#qgarden').onclick=()=>openGarden();
+$('#qchest').onclick=()=>openChest();
 function quietFree(){ return QUIET && !RING.open && $('#sheet').hidden && $('#crisis').hidden && $('#breath').hidden && !UKE.on && !PET.active; }
 setInterval(()=>{ if(!quietFree()) return; const now=Date.now(); if(now-lastEntryTs()>ASK_EVERY && now-lastAsk>ASK_EVERY){ lastAsk=now; store.set('lastAsk',lastAsk); askRing(true); } }, 30000);
 setTimeout(()=>{ if(quietFree() && Date.now()-lastEntryTs()>ASK_EVERY && Date.now()-lastAsk>20*60e3){ lastAsk=Date.now(); store.set('lastAsk',lastAsk); askRing(true); } }, 12000);
@@ -1061,7 +1081,7 @@ function acceptReq(i){ const r=reqs[i]; if(!r) return; reqs.splice(i,1); store.s
   if(!friends.some(f=>f.code===r.code)) friends.push({code:r.code,name:r.name||''}); store.set('friends',friends); if(!share.on){ share.on=true; store.set('share',share); const cb=$('#shareOn'); if(cb) cb.checked=true; }
   pushHeart(); dbDel(`visits/${myCode}/${r.code}`); renderReqs(); renderFriends(); fetchFriends().then(renderFriends); toast('Cœur lié'); }
 function refuseReq(i){ const r=reqs[i]; if(!r) return; reqs.splice(i,1); store.set('reqs',reqs); if(!blocked.includes(r.code)) blocked.push(r.code); store.set('blocked',blocked); dbDel(`visits/${myCode}/${r.code}`); renderReqs(); toast('Demande refusée'); }
-function cutLink(i){ const f=friends[i]; if(!f) return; friends.splice(i,1); store.set('friends',friends); if(!blocked.includes(f.code)) blocked.push(f.code); store.set('blocked',blocked); delete seenV[f.code]; pushHeart(); dbDel(`visits/${myCode}/${f.code}`); renderFriends(); toast('Lien coupé'); }
+function cutLink(i){ const f=friends[i]; if(!f) return; if(f.ama) sendStar(f.code,false); delete stars[f.code]; store.set('stars',stars); renderStars(); friends.splice(i,1); store.set('friends',friends); if(!blocked.includes(f.code)) blocked.push(f.code); store.set('blocked',blocked); delete seenV[f.code]; pushHeart(); dbDel(`visits/${myCode}/${f.code}`); renderFriends(); toast('Lien coupé'); }
 function newCode(){ const old=myCode; const A='ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; let s=''; for(let i=0;i<8;i++) s+=A[Math.floor(Math.random()*A.length)]; myCode=s; store.set('code',s); dbDel(`hearts/${old}`); dbDel(`visits/${old}`); reqs=[]; store.set('reqs',reqs); pushHeart(); friends.forEach(f=>sendAsk(f.code)); }
 function friendsHTML(){ if(!friends.length) return '<p class="small muted">Aucun cœur lié pour lʼinstant.</p>';
   return friends.map((f,i)=>{ const d=FR[f.code]; let body;
@@ -1093,7 +1113,7 @@ function openHeart(){ const today=todayEntries();
   $('#shareOn').onchange=e=>{ share.on=e.target.checked; store.set('share',share); if(share.on) pushHeart(); };
   $('#shareName').oninput=e=>{ share.name=e.target.value.trim(); store.set('share',share); };
   $('#linkBtn').onclick=()=>{ const c=$('#friendCode').value.toUpperCase().replace(/[^A-Z0-9]/g,''); if(c.length!==8){ toast('Le code fait 8 lettres ou chiffres'); return; } if(c===myCode){ toast('Cʼest ton propre code'); return; } if(!friends.some(f=>f.code===c)) friends.push({code:c, name:$('#friendName').value.trim()}); store.set('friends',friends); blocked=blocked.filter(x=>x!==c); store.set('blocked',blocked); reqs=reqs.filter(q=>q.code!==c); store.set('reqs',reqs); renderReqs(); if(!share.on){ share.on=true; store.set('share',share); $('#shareOn').checked=true; } pushHeart(); sendAsk(c); if(!store.get('linkBonus',false)){ store.set('linkBonus',true); feathers+=10; store.set('feathers',feathers); renderFeathers(); setTimeout(()=>toast('Premier cœur lié : +10 plumes'),2500); } fetchFriends().then(renderFriends); renderFriends(); $('#friendCode').value=''; $('#friendName').value=''; toast('Demande envoyée. Le lien sera actif quand lʼautre aura accepté.'); };
-  $('#friendList').addEventListener('click', e=>{ const sg=e.target.closest('[data-sig]'); if(sg){ openGesture(+sg.dataset.sig); return; } const am=e.target.closest('[data-ama]'); if(am){ const f=friends[+am.dataset.ama]; if(f){ if(!f.ama && trusted().length>=2){ toast('Deux personnes de confiance au plus'); return; } f.ama=!f.ama; store.set('friends',friends); renderFriends(); toast(f.ama?'Personne de confiance choisie':'Retirée des personnes de confiance'); } return; } const b=e.target.closest('[data-unf]'); if(!b) return; cutLink(+b.dataset.unf); });
+  $('#friendList').addEventListener('click', e=>{ const sg=e.target.closest('[data-sig]'); if(sg){ openGesture(+sg.dataset.sig); return; } const am=e.target.closest('[data-ama]'); if(am){ const f=friends[+am.dataset.ama]; if(f){ if(!f.ama && trusted().length>=2){ toast('Deux personnes de confiance au plus'); return; } f.ama=!f.ama; store.set('friends',friends); renderFriends(); sendStar(f.code,f.ama); toast(f.ama?'Choisi·e. Ton manu lui porte une étoile pour le lui dire.':'Retirée des personnes de confiance'); } return; } const b=e.target.closest('[data-unf]'); if(!b) return; cutLink(+b.dataset.unf); });
   $('#reqList').addEventListener('click', e=>{ const a=e.target.closest('[data-acc]'); if(a){ acceptReq(+a.dataset.acc); return; } const r=e.target.closest('[data-ref]'); if(r) refuseReq(+r.dataset.ref); });
   const nc=$('#newCodeBtn'); if(nc) nc.onclick=()=>{ if(nc.dataset.sure!=='1'){ nc.dataset.sure='1'; nc.textContent='Confirmer : nouveau code (tes ami·e·s devront accepter à nouveau)'; return; } newCode(); openHeart(); toast('Nouveau code créé'); };
   const rb=$('#refreshBtn'); if(rb) rb.onclick=()=>{ rb.disabled=true; pollVisits(); fetchFriends().then(()=>{ renderFriends(); rb.disabled=false; }); };
@@ -1112,13 +1132,16 @@ function isMutual(code){ const d=FR[code]; return !!(d && d!=='err' && Array.isA
 function sendGesture(code,g,name){ if(!SYNC_URL) return; fetch(`${SYNC_URL}/visits/${code}/${myCode}.json`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({g, t:Date.now(), name:share.name||''})})
   .then(r=>{ toast(r.ok?'Signe envoyé':'Envoi impossible, réessaie plus tard'); if(r.ok) say('Je file voir '+(name||'ton ami·e')+' !'); }).catch(()=>toast('Pas de connexion, réessaie plus tard')); }
 function openGesture(i){ const f=friends[i]; if(!f) return; const nm=f.name||fmtCode(f.code);
-  openSheet(`<div class="head"><div><div class="eyebrow">Rencontre des manu</div><h2>Un signe pour ${esc(nm)}</h2></div><button class="x" id="sx" aria-label="Fermer">×</button></div><p class="small muted">Ton manu ira le porter. ${esc(nm)} le verra à sa prochaine ouverture de Manu Ora.</p><div class="row" id="gests">${Object.keys(GEST).filter(k=>k!=='aide'&&k!=='don').map(k=>`<button class="btn" data-g="${k}">${GEST[k].l}</button>`).join('')}</div><button class="btn ghost" id="gBack">Retour à mon cœur</button>`);
+  openSheet(`<div class="head"><div><div class="eyebrow">Rencontre des manu</div><h2>Un signe pour ${esc(nm)}</h2></div><button class="x" id="sx" aria-label="Fermer">×</button></div><p class="small muted">Ton manu ira le porter. ${esc(nm)} le verra à sa prochaine ouverture de Manu Ora.</p><div class="row" id="gests">${Object.keys(GEST).filter(k=>GEST[k].l).map(k=>`<button class="btn" data-g="${k}">${GEST[k].l}</button>`).join('')}</div><button class="btn ghost" id="gBack">Retour à mon cœur</button>`);
   $('#sx').onclick=closeSheet; $('#gBack').onclick=openHeart;
   $('#gests').addEventListener('click', e=>{ const b=e.target.closest('[data-g]'); if(!b) return; closeSheet(); sendGesture(f.code,b.dataset.g,nm); }); }
 async function pollVisits(){ if(!SYNC_URL||!share.on) return;
   try{ const r=await fetch(`${SYNC_URL}/visits/${myCode}.json`); if(!r.ok) return; const d=await r.json(); if(!d || typeof d!=='object') return;
     let fresh=false; Object.keys(d).forEach(from=>{ const v=d[from]; if(!okCode(from) || !v || v.g!=='ask' || typeof v.t!=='number') return; if(blocked.includes(from) || friends.some(f=>f.code===from) || reqs.some(q=>q.code===from)) return; reqs.push({code:from, name:String(v.name||'').slice(0,20), t:v.t}); fresh=true; });
     if(fresh){ store.set('reqs',reqs); renderReqs(); if(visitFree()) say('Quelquʼun veut lier son cœur au tien.','Touche ton cœur pour répondre'); }
+    friends.forEach(f=>{ const v=d[f.code]; if(!v || typeof v.t!=='number' || v.t<=(seenV[f.code]||0)) return;
+      if(v.g==='etoile0'){ delete stars[f.code]; store.set('stars',stars); renderStars(); seenV[f.code]=v.t; store.set('seenV',seenV); }
+      else if(v.g==='etoileNon'){ if(f.ama){ f.ama=false; store.set('friends',friends); renderFriends(); if(visitFree()) say((f.name||'Ton ami·e')+' ne peut pas être ta personne de confiance en ce moment. Choisis quelquʼun dʼautre.'); } seenV[f.code]=v.t; store.set('seenV',seenV); } });
     friends.forEach(f=>{ const v=d[f.code]; if(v && isMutualKnown(f.code) && typeof v.t==='number' && typeof v.g==='string' && Object.prototype.hasOwnProperty.call(GEST,v.g) && v.t>(seenV[f.code]||0) && !VIS.queue.some(q=>q.from===f.code&&q.t===v.t))
       VIS.queue.push({from:f.code, g:v.g, p:(typeof v.p==='string'?v.p:''), t:v.t, name:f.name||String(v.name||'').slice(0,20)||'ton ami·e'}); });
     runVisits(); }catch(e){} }
@@ -1135,13 +1158,14 @@ function playVisit(v, look, done){ clearTimeout(PET.endT); B.onArrive=null; B.af
   requestAnimationFrame(()=>requestAnimationFrame(()=>{ el.style.transition='transform 1.5s ease-in-out'; el.style.transform=`translate(${tx}px,${ty}px)`; }));
   const who=esc(v.name), old=Date.now()-v.t>3*60000, when=new Date(v.t).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}); let iv=null;
   setTimeout(()=>{ el.classList.remove('flying'); const d=FR[v.from]; const ents=(d&&d!=='err'&&d.day===dayKey(Date.now())&&Array.isArray(d.entries))?d.entries:[];
-    sayHTML(`<span style="display:flex;gap:8px;align-items:center">${heartSVG(ents,'vh',30)}<span>Le manu de <b>${who}</b> ${(v.g==='don'&&PLANTS[v.p])?`tʼoffre ${PLANTS[v.p].un} de son faʻaʻapu.`:GEST[v.g].t}${old?`<span class="cta">Il est passé à ${when}.</span>`:''}</span></span>`, 6000);
+    sayHTML(`<span style="display:flex;gap:8px;align-items:center">${heartSVG(ents,'vh',30)}<span>Le manu de <b>${who}</b> ${(v.g==='don'&&ITEMS[v.p])?`tʼoffre ${ITEMS[v.p].un}. Ton manu rayonne !`:(v.g==='don'&&PLANTS[v.p])?`tʼoffre ${PLANTS[v.p].un} de son faʻaʻapu.`:GEST[v.g].t}${old?`<span class="cta">Il est passé à ${when}.</span>`:''}</span></span>`, 6000);
     const mx=(B.x+tx)/2+BW/2, my=B.y+20;
     if(v.g==='salut'){ el.classList.add('pecking'); birdEl.classList.add('pecking'); setTimeout(()=>{ el.classList.remove('pecking'); birdEl.classList.remove('pecking'); },1100); }
     else if(v.g==='calin'){ el.style.transition='transform .5s ease'; el.style.transform=`translate(${tx+(left?-22:22)}px,${ty}px)`; for(let i=0;i<7;i++) setTimeout(()=>petal(mx,my),i*220); }
     else if(v.g==='tiare'){ for(let i=0;i<9;i++) setTimeout(()=>petal(mx+(Math.random()*60-30),my-10),i*180); }
     else if(v.g==='aide'){ setTimeout(()=>openAid(v),1800); }
-    else if(v.g==='don'){ for(let i=0;i<8;i++) setTimeout(()=>petal(mx+(Math.random()*50-25),my-10),i*180); const P=PLANTS[v.p]; if(P){ feathers+=P.worth; store.set('feathers',feathers); addSeed(v.p); renderFeathers(); setTimeout(()=>toast(`+${P.worth} plumes et 1 graine de ${P.name}`),1500); } }
+    else if(v.g==='etoile'){ for(let i=0;i<6;i++) setTimeout(()=>{ const s=document.createElement('div'); s.className='petal'; s.innerHTML=`<svg viewBox="0 0 20 20"><polygon points="${starPts(10,10,8)}" fill="#F2C94C"/></svg>`; s.style.transform=`translate(${mx-9+(Math.random()*50-25)}px,${my-20}px)`; $('#birdlayer').appendChild(s); setTimeout(()=>s.remove(),1500); },i*200); stars[v.from]=v.name; store.set('stars',stars); setTimeout(renderStars,1400); }
+    else if(v.g==='don'){ for(let i=0;i<8;i++) setTimeout(()=>petal(mx+(Math.random()*50-25),my-10),i*180); const P=PLANTS[v.p]; if(P){ feathers+=P.worth; store.set('feathers',feathers); addSeed(v.p); renderFeathers(); setTimeout(()=>toast(`+${P.worth} plumes et 1 graine de ${P.name}`),1500); } else if(ITEMS[v.p]){ setShine(ITEMS[v.p].aura); setTimeout(()=>toast('Aura jusquʼà demain : '+ITEMS[v.p].mood),1500); } }
     else { el.classList.add('playing'); iv=setInterval(noteFx,380); }
   },1600);
   setTimeout(()=>{ if(iv) clearInterval(iv); el.classList.remove('playing','pecking'); el.classList.add('flying'); el.style.transition='transform 1.5s ease-in'; el.style.transform=`translate(${sx}px,${sy}px)`; },6800);
@@ -1177,6 +1201,7 @@ function plantSVG(p,stage){
   else if(p==='aute') b='<ellipse cx="30" cy="42" rx="20" ry="17" fill="#2F7D4C"/><ellipse cx="36" cy="38" rx="10" ry="8" fill="#5FAE6E"/>'+fl(21,38,'#E0303A','#A81E28','#F2C94C')+fl(38,46,'#E0303A','#A81E28','#F2C94C')+fl(34,30,'#E0303A','#A81E28','#F2C94C');
   else if(p==='meia') b='<path d="M30 61 L30 26" stroke="#8DBB5A" stroke-width="6" stroke-linecap="round"/>'+leaf(17,22,-35,15,'#3B8C58')+leaf(43,22,35,15,'#5FAE6E')+leaf(14,34,-10,13,'#5FAE6E')+leaf(46,34,10,13,'#3B8C58')+leaf(30,12,90,12,'#3B8C58')+[[36,38],[39,41],[36,44],[40,46],[37,49]].map(q=>`<ellipse cx="${q[0]}" cy="${q[1]}" rx="4.5" ry="2.2" transform="rotate(60 ${q[0]} ${q[1]})" fill="#F2C94C" stroke="#C99A1C" stroke-width=".5"/>`).join('');
   else if(p==='vi') b='<rect x="27" y="36" width="6" height="26" rx="2" fill="#8A5A2B"/><circle cx="30" cy="26" r="20" fill="#3B8C58"/><circle cx="22" cy="20" r="10" fill="#5FAE6E"/>'+[[20,30],[33,22],[40,33],[28,38]].map(q=>`<ellipse cx="${q[0]}" cy="${q[1]}" rx="3.6" ry="4.6" transform="rotate(20 ${q[0]} ${q[1]})" fill="#F0A23A" stroke="#C8402F" stroke-width=".5"/>`).join('');
+  else if(p==='haari') b='<path d="M30 62 Q26 44 34 24" fill="none" stroke="#9A7748" stroke-width="5" stroke-linecap="round"/>'+leaf(22,20,-150,15,'#3B8C58')+leaf(46,20,-30,15,'#5FAE6E')+leaf(24,12,-120,13,'#5FAE6E')+leaf(43,11,-55,13,'#3B8C58')+leaf(34,8,90,11,'#3B8C58')+[[30,26],[37,27],[33,31]].map(q=>`<circle cx="${q[0]}" cy="${q[1]}" r="3.6" fill="#7A5230" stroke="#4E3219" stroke-width=".6"/>`).join('');
   else b='<rect x="27" y="36" width="6" height="26" rx="2" fill="#7A5230"/><circle cx="30" cy="26" r="20" fill="#2F7D4C"/><circle cx="17" cy="24" r="9" fill="#3B8C58"/><circle cx="43" cy="24" r="9" fill="#3B8C58"/><circle cx="30" cy="11" r="9" fill="#3B8C58"/>'+[[22,30],[38,31],[30,20]].map(q=>`<circle cx="${q[0]}" cy="${q[1]}" r="5" fill="#B9D86B" stroke="#6E8F2E" stroke-width=".6"/><path d="M${q[0]-3} ${q[1]} H${q[0]+3} M${q[0]} ${q[1]-3} V${q[1]+3}" stroke="#6E8F2E" stroke-width=".5"/>`).join('');
   return `<svg viewBox="0 0 60 70" aria-hidden="true">${soil}${b}</svg>`; }
 function giveFruit(i,code){ const pl=garden.plots[i]; if(!pl||!SYNC_URL) return;
@@ -1184,28 +1209,163 @@ function giveFruit(i,code){ const pl=garden.plots[i]; if(!pl||!SYNC_URL) return;
     .then(r=>{ if(!r.ok){ toast('Envoi impossible, réessaie plus tard'); return; } garden.plots[i]=null; addSeed(pl.p); GSEL=null; saveGarden(); openGarden(); toast('Offert ! Tu reçois une graine en retour.'); })
     .catch(()=>toast('Pas de connexion, réessaie plus tard')); }
 function openGarden(){
+  const keepY=(!$('#sheet').hidden && $('#plots')) ? sheetInner.scrollTop : 0;
   const seedsLine=Object.keys(PLANTS).map(k=>`<span class="feather">${PLANTS[k].name} ×${garden.seeds[k]||0}</span>`).join('');
   const mut=friends.filter(f=>isMutual(f.code));
   const plots=garden.plots.map((pl,i)=>{ if(pl && !PLANTS[pl.p]) pl=null; const st=pl?plotStage(pl):0; let body;
     if(!pl){ if(GSEL&&GSEL.i===i){ const av=Object.keys(PLANTS).filter(k=>(garden.seeds[k]||0)>0); body = av.length ? av.map(k=>`<button class="btn sm" data-seed="${k}">${PLANTS[k].name} · ${PLANTS[k].days} j</button>`).join('') : '<span class="small muted">Plus de graines. Une journée complète en donne une.</span>'; } else body=`<button class="btn sm ghost" data-plant="${i}">Planter</button>`; }
     else if(st<3) body=`<b>${PLANTS[pl.p].name}</b><span class="small muted">${plotLeft(pl)}</span>`;
     else if(GSEL&&GSEL.i===i&&GSEL.give) body = mut.length ? '<span class="small muted">Pour qui ?</span>'+mut.map(f=>`<button class="btn sm primary" data-to="${f.code}">${esc(f.name||fmtCode(f.code))}</button>`).join('') : '<span class="small muted">Lie dʼabord ton cœur à un·e ami·e.</span>';
-    else body=`<b>${PLANTS[pl.p].name}</b><span class="small" style="color:var(--fern);font-weight:700">Mûr !</span><button class="btn sm primary" data-give="${i}">Offrir</button><button class="btn sm" data-sell="${i}">Échanger · ${PLANTS[pl.p].worth} plumes</button>`;
+    else body=`<b>${PLANTS[pl.p].name}</b><span class="small" style="color:var(--fern);font-weight:700">Mûr !</span><button class="btn sm primary" data-give="${i}">Offrir</button><button class="btn sm" data-sell="${i}">Échanger · ${PLANTS[pl.p].worth} plumes</button><button class="btn sm ghost" data-keep="${i}">Mettre au coffre</button>`;
     return `<div class="plot">${plantSVG(pl?pl.p:null,st)}${body}</div>`; }).join('');
   openSheet(`<div class="head"><div><div class="eyebrow">Le jardin de ${esc(cfg.name)}</div><h2>Faʻaʻapu</h2></div><button class="x" id="sx" aria-label="Fermer">×</button></div>
     <div style="display:flex;gap:10px;align-items:center"><div style="width:58px;flex:none">${birdSVG(cfg,'gd')}</div><p class="small muted">Plante, laisse le temps faire, puis récolte. Rien ne meurt ici : si tu tʼabsentes, tes fruits tʼattendent.</p></div>
     <div class="card flat"><div class="eyebrow">Mes graines</div><div style="display:flex;flex-wrap:wrap;gap:6px">${seedsLine}</div></div>
     <div class="plots" id="plots">${plots}</div>
-    <p class="small muted">Offrir un fruit donne ses plumes et une graine à ton ami·e, et te rend une graine. Tu gagnes aussi une graine à chaque journée complète.</p>`);
-  $('#sx').onclick=()=>{ GSEL=null; closeSheet(); };
+    <div class="card"><div class="eyebrow">Coffre et atelier</div><p class="small muted">Mets tes récoltes au coffre, puis mélange-les : hei de fleurs, salade de fruits, monoï… Certaines recettes sont secrètes.</p><button class="btn" id="toChest">Ouvrir le coffre</button></div>
+    <p class="small muted">Offrir un fruit donne ses plumes et une graine à ton ami·e, et te rend une graine. Tu gagnes aussi une graine à chaque journée complète, et une graine de haʻari tous les 7 jours.</p>`);
+  sheetInner.scrollTop=keepY;
+  $('#sx').onclick=()=>{ GSEL=null; MSEL=false; closeSheet(); };
+  $('#toChest').onclick=()=>{ GSEL=null; openChest(); };
   $('#plots').addEventListener('click', e=>{ const t=e.target.closest('button'); if(!t) return; const d=t.dataset;
     if(d.plant!==undefined){ GSEL={i:+d.plant}; openGarden(); }
     else if(d.seed && GSEL){ const k=d.seed; if(PLANTS[k] && (garden.seeds[k]||0)>0 && !garden.plots[GSEL.i]){ garden.seeds[k]--; garden.plots[GSEL.i]={p:k,t:Date.now()}; GSEL=null; saveGarden(); openGarden(); toast('Planté : '+PLANTS[k].name+', mûr dans '+PLANTS[k].days+' j'); } }
     else if(d.sell!==undefined){ const i=+d.sell, pl=garden.plots[i]; if(pl && plotStage(pl)===3){ const w=PLANTS[pl.p].worth; feathers+=w; store.set('feathers',feathers); garden.plots[i]=null; GSEL=null; saveGarden(); renderFeathers(); openGarden(); toast('+'+w+' plumes'); } }
+    else if(d.keep!==undefined){ const i=+d.keep, pl=garden.plots[i]; if(pl && plotStage(pl)===3){ garden.store[pl.p]=(garden.store[pl.p]||0)+1; garden.plots[i]=null; GSEL=null; if(pl.p==='haari') addSeed('haari'); saveGarden(); openGarden(); toast(pl.p==='haari'?'1 coco au coffre, et une noix à replanter':'Au coffre : 1 '+PLANTS[pl.p].name); } }
     else if(d.give!==undefined){ GSEL={i:+d.give, give:true}; openGarden(); }
     else if(d.to && GSEL){ giveFruit(GSEL.i, d.to); } });
   if(SYNC_URL && friends.length && !openGarden.loaded){ openGarden.loaded=true; fetchFriends().then(()=>{ if(!$('#sheet').hidden && $('#plots')) openGarden(); }); } }
 setInterval(gardenBadge,60000);
+
+/* ---------- monoï : tiare + coco, 3 jours de macération ---------- */
+PLANTS.haari={name:'haʻari', un:'un coco', days:4, worth:12};
+ACT.monoi={t:'Monoï : un moment pour toi', p:'tino', d:'Prendre soin de son corps, cʼest aussi prendre soin de soi.'};
+if(!garden.store) garden.store={tiare:0,haari:0};
+if(typeof garden.bottles!=='number') garden.bottles=0;
+if(garden.monoi===undefined) garden.monoi=null;
+if(garden.seeds.haari===undefined){ garden.seeds.haari=1; }
+store.set('garden',garden);
+let MSEL=false; const MONOI_MS=3*864e5, MONOI_WORTH=40;
+function monoiState(){ const m=garden.monoi; if(!m) return 0; return (Date.now()-m.t)>=MONOI_MS ? 2 : 1; }
+function monoiLeft(){ const h=Math.max(1,Math.ceil((garden.monoi.t+MONOI_MS-Date.now())/36e5)); return h>=24 ? `${Math.floor(h/24)} j ${h%24} h` : `${h} h`; }
+function calabashSVG(st){ const fl=(x,y)=>[0,72,144,216,288].map(a=>`<circle cx="${(x+3*Math.cos(a*Math.PI/180)).toFixed(1)}" cy="${(y+3*Math.sin(a*Math.PI/180)).toFixed(1)}" r="2.4" fill="#FFF9EE" stroke="#E8D9B5" stroke-width=".4"/>`).join('')+`<circle cx="${x}" cy="${y}" r="1.4" fill="#F2C94C"/>`;
+  return `<svg viewBox="0 0 60 50" aria-hidden="true"><path d="M6 20 Q6 46 30 46 Q54 46 54 20 Z" fill="#8A5A2B"/><ellipse cx="30" cy="20" rx="24" ry="7" fill="${st?'#F2C94C':'#6B4420'}" stroke="#5A3A1E" stroke-width="1.5"/>${st?fl(20,20)+fl(32,18)+fl(41,21):''}${st===2?`<polygon points="${starPts(49,7,5)}" fill="#F2C94C"/><polygon points="${starPts(9,8,3.5)}" fill="#F2C94C"/>`:''}</svg>`; }
+function monoiHTML(mut){ const st=monoiState(), S=garden.store; let body;
+  if(st===0){ const ok=S.tiare>=3&&S.haari>=1; body=`<p class="small">Il faut <b>3 tiare</b> et <b>1 coco</b>. À la récolte, choisis « Garder pour le monoï ». Tu as <b>${S.tiare}</b> tiare et <b>${S.haari}</b> coco.</p><button class="btn ${ok?'primary':''}" data-mo="start" ${ok?'':'disabled'}>Lancer la macération (3 jours)</button>`; }
+  else if(st===1) body=`<p class="small">Les tiare macèrent dans lʼhuile de coco. Prêt dans <b>${monoiLeft()}</b>.</p>`;
+  else body='<p class="small"><b>Le monoï est prêt !</b> Il sent bon la tiare.</p><button class="btn primary" data-mo="bottle">Mettre en flacon</button>';
+  let bottles='';
+  if(garden.bottles>0){ bottles=`<div class="eyebrow">Flacons de monoï : ${garden.bottles}</div>`+(MSEL ? (mut.length ? '<span class="small muted">Pour qui ?</span><div class="row">'+mut.map(f=>`<button class="btn sm primary" data-mto="${f.code}">${esc(f.name||fmtCode(f.code))}</button>`).join('')+'</div>' : '<span class="small muted">Lie dʼabord ton cœur à un·e ami·e.</span>') : `<div class="row"><button class="btn sm primary" data-mo="use">Lʼutiliser</button><button class="btn sm" data-mo="give">Offrir</button><button class="btn sm" data-mo="sell">Échanger · ${MONOI_WORTH} plumes</button></div>`); }
+  return `<div class="card" id="monoiBox"><div style="display:flex;gap:10px;align-items:center"><div style="width:64px;flex:none">${calabashSVG(st)}</div><div><div class="eyebrow">Fare monoï</div><h3>Le monoï de ${esc(cfg.name)}</h3></div></div>${body}${bottles}</div>`; }
+function setShine(color){ store.set('shine',{until:Date.now()+864e5, color:color||'#FFD66E'}); applyShine(); }
+function applyShine(){ const sh=store.get('shine',null)||{until:store.get('shineUntil',0),color:'#FFD66E'}; const on=Date.now()<sh.until; birdEl.classList.toggle('shiny',on); birdEl.classList.toggle('rainbow',on&&sh.color==='rainbow'); birdEl.style.setProperty('--aura', sh.color==='rainbow'?'#FFD66E':sh.color); }
+setInterval(()=>{ applyShine(); if(!birdEl.classList.contains('shiny') || RM || RING.open || !$('#sheet').hidden) return; const d=document.createElement('div'); d.className='petal'; d.innerHTML=`<svg viewBox="0 0 20 20"><polygon points="${starPts(10,10,7)}" fill="#FFF6C8" stroke="#F2C94C" stroke-width="1"/></svg>`; d.style.transform=`translate(${B.x+8+Math.random()*(BW-24)}px,${B.y+10+Math.random()*30}px)`; $('#birdlayer').appendChild(d); setTimeout(()=>d.remove(),1500); },2600);
+function openSelfCare(){ openSheet(`<div class="head"><div><div class="eyebrow">Monoï</div><h2>Un moment pour toi</h2></div><button class="x" id="sx" aria-label="Fermer">×</button></div><p class="small muted">${esc(cfg.name)} sʼest mis du monoï : son plumage brille jusquʼà demain. À ton tour de prendre soin de toi, une minute suffit.</p><div class="stack"><div class="card flat"><p><b>Tes mains.</b> Masse lentement chaque main, paume puis doigts, comme si tu y mettais du monoï.</p></div><div class="card flat"><p><b>Tes épaules.</b> Monte-les vers les oreilles, garde trois secondes, relâche. Trois fois.</p></div><div class="card flat"><p><b>Ton souffle.</b> Trois respirations lentes, en sentant lʼair entrer et sortir.</p></div></div><button class="btn primary" id="careOk">Cʼest fait</button>`);
+  $('#sx').onclick=closeSheet; $('#careOk').onclick=()=>{ closeSheet(); award('monoi'); say('Māuruuru. Tu sens bon la tiare !'); }; }
+function giveBottle(code){ if(!SYNC_URL||garden.bottles<1) return;
+  fetch(`${SYNC_URL}/visits/${code}/${myCode}.json`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({g:'don', p:'monoi', t:Date.now(), name:share.name||''})})
+    .then(r=>{ if(!r.ok){ toast('Envoi impossible, réessaie plus tard'); return; } garden.bottles--; MSEL=false; addSeed('tiare'); saveGarden(); openGarden(); toast('Monoï offert ! Tu reçois une graine de tiare.'); })
+    .catch(()=>toast('Pas de connexion, réessaie plus tard')); }
+function monoiClick(e){ const t=e.target.closest('button'); if(!t) return; const d=t.dataset, S=garden.store;
+  if(d.mo==='start'){ if(S.tiare>=3&&S.haari>=1&&!garden.monoi){ S.tiare-=3; S.haari-=1; garden.monoi={t:Date.now()}; saveGarden(); openGarden(); toast('Macération lancée : prêt dans 3 jours'); } }
+  else if(d.mo==='bottle'){ if(monoiState()===2){ garden.monoi=null; garden.bottles++; saveGarden(); openGarden(); toast('Un flacon de monoï !'); } }
+  else if(d.mo==='sell'){ if(garden.bottles>0){ garden.bottles--; feathers+=MONOI_WORTH; store.set('feathers',feathers); saveGarden(); renderFeathers(); openGarden(); toast('+'+MONOI_WORTH+' plumes'); } }
+  else if(d.mo==='give'){ MSEL=true; openGarden(); }
+  else if(d.mo==='use'){ if(garden.bottles>0){ garden.bottles--; saveGarden(); setShine(); openSelfCare(); } }
+  else if(d.mto){ giveBottle(d.mto); } }
+applyShine();
+
+/* ---------- coffre, atelier et recettes ---------- */
+const ING=['tiare','aute','meia','vi','uru','haari'];
+const ITEMS={
+  hei:{name:'Hei tiare', un:'un hei de tiare', worth:30, aura:'#7FDDE6', mood:'la paix (hau)', need:{tiare:5}, days:0, hint:'Cinq fleurs blanches sur un fil.'},
+  heiarea:{name:'Hei ʻārearea', un:'un hei ʻārearea', worth:35, aura:'#F28CB1', mood:'la tendresse (here)', need:{tiare:3,aute:2}, days:0, hint:'Du blanc et du rouge sur le même fil.'},
+  salade:{name:'Salade de fruits', un:'une salade de fruits', worth:50, aura:'#F0A23A', mood:'la joie (ʻoaʻoa)', need:{meia:1,vi:1,haari:1}, days:0, hint:'Trois fruits différents, un de chaque.'},
+  poe:{name:'Poʻe meiʻa', un:'un poʻe meiʻa', worth:40, aura:'#F2C94C', mood:'la gratitude (māuruuru)', need:{meia:2,haari:1}, days:0, hint:'Beaucoup de banane, un peu de coco.'},
+  monoi:{name:'Monoï tiare', un:'un flacon de monoï tiare', worth:40, aura:'#FFD66E', mood:'le soin de soi', need:{tiare:3,haari:1}, days:3, hint:'Des tiare dans lʼhuile de coco.', care:true},
+  monoiaute:{name:'Monoï ʻaute', un:'un flacon de monoï ʻaute', worth:55, aura:'#E0303A', mood:'le courage (itoito)', need:{tiare:2,aute:1,haari:1}, days:3, hint:'Une fleur rouge parmi les blanches, dans lʼhuile.', care:true, secret:true},
+  monoianu:{name:'Monoï ānuanua', un:'un flacon de monoï ānuanua', worth:90, aura:'rainbow', mood:'lʼespoir (tiaʻi)', need:{tiare:3,aute:1,vi:1,haari:1}, days:4, hint:'Les deux fleurs et un fruit doré, dans lʼhuile.', care:true, secret:true}
+};
+ING.forEach(k=>{ if(typeof garden.store[k]!=='number') garden.store[k]=0; });
+if(!garden.items) garden.items={};
+if(!Array.isArray(garden.known)) garden.known=[];
+if(garden.bottles>0){ garden.items.monoi=(garden.items.monoi||0)+garden.bottles; garden.bottles=0; if(!garden.known.includes('monoi')) garden.known.push('monoi'); }
+if(garden.monoi){ garden.mac={id:'monoi',t:garden.monoi.t}; garden.monoi=null; }
+if(garden.mac===undefined) garden.mac=null;
+store.set('garden',garden);
+let MIX={}, CSEL=null;
+const ingName = k => k==='haari' ? 'coco' : PLANTS[k].name;
+const needTxt = n => ING.filter(k=>n[k]).map(k=>n[k]+' '+ingName(k)).join(' + ');
+function matchRecipe(){ return Object.keys(ITEMS).find(id=>ING.every(k=>(MIX[k]||0)===(ITEMS[id].need[k]||0))); }
+function macState(){ const m=garden.mac; if(!m||!ITEMS[m.id]) return 0; return (Date.now()-m.t)>=ITEMS[m.id].days*864e5 ? 2 : 1; }
+function macLeft(){ const m=garden.mac; const h=Math.max(1,Math.ceil((m.t+ITEMS[m.id].days*864e5-Date.now())/36e5)); return h>=24 ? `${Math.floor(h/24)} j ${h%24} h` : `${h} h`; }
+function chestBadge(){ const n=Object.keys(ITEMS).reduce((a,k)=>a+(garden.items[k]||0),0)+(macState()===2?1:0); const el=$('#qchestN'); if(el) el.textContent=n?String(n):''; }
+function learn(id){ if(!garden.known.includes(id)) garden.known.push(id); }
+function mixNow(){ const total=ING.reduce((a,k)=>a+(MIX[k]||0),0); if(!total){ toast('Mets dʼabord des ingrédients dans la calebasse'); return; }
+  const id=matchRecipe(); if(!id){ toast('Ce mélange ne donne rien de connu. Rien nʼest perdu : essaie un autre dosage.'); return; }
+  const it=ITEMS[id]; if(it.days>0 && garden.mac){ toast('La calebasse est déjà occupée par une macération.'); return; }
+  ING.forEach(k=>{ garden.store[k]-=(MIX[k]||0); }); MIX={};
+  if(it.days>0){ garden.mac={id,t:Date.now()}; saveGarden(); chestBadge(); openChest(); toast(`Ça sent bon… prêt dans ${it.days} jours.`); }
+  else { garden.items[id]=(garden.items[id]||0)+1; const first=!garden.known.includes(id); learn(id); saveGarden(); chestBadge(); openChest(); toast((first&&it.secret?'Recette secrète découverte : ':'Tu as fait : ')+it.name+' !'); } }
+function giveItem(id,code){ if(!SYNC_URL||!(garden.items[id]>0)) return;
+  fetch(`${SYNC_URL}/visits/${code}/${myCode}.json`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({g:'don', p:id, t:Date.now(), name:share.name||''})})
+    .then(r=>{ if(!r.ok){ toast('Envoi impossible, réessaie plus tard'); return; } garden.items[id]--; CSEL=null; saveGarden(); chestBadge(); openChest(); toast('Offert ! Son manu va rayonner.'); })
+    .catch(()=>toast('Pas de connexion, réessaie plus tard')); }
+function openChest(){
+  const keepY=(!$('#sheet').hidden && $('#chestBox')) ? sheetInner.scrollTop : 0;
+  const mut=friends.filter(f=>isMutual(f.code)); const st=macState();
+  const stock=ING.map(k=>`<span class="feather">${ingName(k)} ×${garden.store[k]||0}</span>`).join('');
+  const have=ING.filter(k=>(garden.store[k]||0)>0);
+  const mixRows = have.length ? have.map(k=>`<div class="mixrow"><span>${ingName(k)} <span class="muted small">(${garden.store[k]})</span></span><span class="stepper"><button data-dec="${k}" aria-label="Moins de ${ingName(k)}">−</button><b>${MIX[k]||0}</b><button data-inc="${k}" aria-label="Plus de ${ingName(k)}">+</button></span></div>`).join('') : '<p class="small muted">Le coffre est vide. Dans le faʻaʻapu, choisis « Mettre au coffre » à la récolte.</p>';
+  let mac='';
+  if(st===1) mac=`<div class="note">Dans la calebasse : <b>${ITEMS[garden.mac.id].secret&&!garden.known.includes(garden.mac.id)?'un mélange mystérieux':ITEMS[garden.mac.id].name}</b>, prêt dans <b>${macLeft()}</b>.</div>`;
+  else if(st===2) mac=`<div class="note"><b>La macération est finie !</b></div><button class="btn primary" data-ch="bottle">Mettre en flacon</button>`;
+  const made=Object.keys(ITEMS).filter(id=>(garden.items[id]||0)>0).map(id=>{ const it=ITEMS[id];
+    const btns = CSEL===id ? (mut.length ? '<span class="small muted">Pour qui ?</span><div class="row">'+mut.map(f=>`<button class="btn sm primary" data-ito="${f.code}">${esc(f.name||fmtCode(f.code))}</button>`).join('')+'</div>' : '<span class="small muted">Lie dʼabord ton cœur à un·e ami·e.</span>')
+      : `<div class="row"><button class="btn sm primary" data-use="${id}">Utiliser</button><button class="btn sm" data-igive="${id}">Offrir</button><button class="btn sm" data-isell="${id}">Échanger · ${it.worth}</button></div>`;
+    return `<div class="card flat"><div style="display:flex;gap:10px;align-items:center"><span class="auradot" style="background:${it.aura==='rainbow'?'conic-gradient(#E4583F,#F2C94C,#3B8C58,#5B6FB8,#E4583F)':it.aura}"></span><div><b>${it.name} ×${garden.items[id]}</b><div class="small muted">Aura : ${it.mood}</div></div></div>${btns}</div>`; }).join('') || '<p class="small muted">Rien pour lʼinstant. Essaie un mélange dans lʼatelier.</p>';
+  const book=Object.keys(ITEMS).map(id=>{ const it=ITEMS[id], known=garden.known.includes(id);
+    return (it.secret&&!known) ? `<div class="hrow" style="grid-template-columns:1fr"><span><b>???</b> <span class="small muted">· recette secrète · indice : ${it.hint}</span></span></div>`
+      : `<div class="hrow" style="grid-template-columns:1fr"><span><b>${it.name}</b> <span class="small muted">· ${needTxt(it.need)}${it.days?` · macère ${it.days} j`:''}${known?' · déjà fait':''}</span></span></div>`; }).join('');
+  openSheet(`<div class="head"><div><div class="eyebrow">Le coffre de ${esc(cfg.name)}</div><h2>Coffre et atelier</h2></div><button class="x" id="sx" aria-label="Fermer">×</button></div>
+    <div id="chestBox" class="stack" style="gap:12px">
+    <div class="card flat"><div class="eyebrow">Mes récoltes</div><div style="display:flex;flex-wrap:wrap;gap:6px">${stock}</div></div>
+    <div class="card"><div style="display:flex;gap:10px;align-items:center"><div style="width:60px;flex:none">${calabashSVG(st||(ING.some(k=>MIX[k])?1:0))}</div><div><div class="eyebrow">Atelier</div><h3>La calebasse</h3></div></div>
+      <p class="small muted">Choisis les quantités, puis mélange. Le dosage compte : un autre mélange donne autre chose.</p>${mixRows}${have.length?'<button class="btn primary" data-ch="mix">Mélanger</button>':''}${mac}</div>
+    <div class="card"><div class="eyebrow">Mes créations</div><p class="small muted">Utilisée ou offerte, chaque création donne au manu une aura de couleur pendant un jour.</p><div class="stack">${made}</div></div>
+    <div class="card flat"><div class="eyebrow">Carnet de recettes</div>${book}</div>
+    <button class="btn ghost" data-ch="garden">Aller au faʻaʻapu</button></div>`);
+  sheetInner.scrollTop=keepY;
+  $('#sx').onclick=()=>{ CSEL=null; closeSheet(); };
+  $('#chestBox').addEventListener('click', e=>{ const t=e.target.closest('button'); if(!t) return; const d=t.dataset;
+    if(d.inc){ if((MIX[d.inc]||0)<(garden.store[d.inc]||0)){ MIX[d.inc]=(MIX[d.inc]||0)+1; openChest(); } }
+    else if(d.dec){ if((MIX[d.dec]||0)>0){ MIX[d.dec]--; openChest(); } }
+    else if(d.ch==='mix') mixNow();
+    else if(d.ch==='bottle'){ if(macState()===2){ const id=garden.mac.id; const first=!garden.known.includes(id); garden.mac=null; garden.items[id]=(garden.items[id]||0)+1; learn(id); saveGarden(); chestBadge(); openChest(); toast((first&&ITEMS[id].secret?'Recette secrète découverte : ':'En flacon : ')+ITEMS[id].name+' !'); } }
+    else if(d.ch==='garden'){ CSEL=null; openGarden(); }
+    else if(d.use){ const id=d.use, it=ITEMS[id]; if(garden.items[id]>0){ garden.items[id]--; saveGarden(); chestBadge(); setShine(it.aura); if(it.care) openSelfCare(); else { closeSheet(); say(`${it.name} ! Je rayonne : ${it.mood}.`); } } }
+    else if(d.igive){ CSEL=d.igive; openChest(); }
+    else if(d.isell){ const id=d.isell; if(garden.items[id]>0){ garden.items[id]--; feathers+=ITEMS[id].worth; store.set('feathers',feathers); saveGarden(); chestBadge(); renderFeathers(); openChest(); toast('+'+ITEMS[id].worth+' plumes'); } }
+    else if(d.ito && CSEL){ giveItem(CSEL,d.ito); } });
+  if(SYNC_URL && friends.length && !openChest.loaded){ openChest.loaded=true; fetchFriends().then(()=>{ if(!$('#sheet').hidden && $('#chestBox')) openChest(); }); } }
+setInterval(chestBadge,60000);
+
+/* ---------- étoile de confiance ---------- */
+GEST.etoile={l:'', t:'tʼapporte une étoile : tu es sa personne de confiance.'};
+let stars=store.get('stars',{});
+function sendStar(code,on){ if(!SYNC_URL) return; fetch(`${SYNC_URL}/visits/${code}/${myCode}.json`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({g:on?'etoile':'etoile0', t:Date.now(), name:share.name||''})}).catch(()=>{}); }
+function renderStars(){ const el=$('#stars'); if(!el) return; const codes=Object.keys(stars).filter(c=>okCode(c) && friends.some(f=>f.code===c) && isMutualKnown(c));
+  el.innerHTML=codes.map(c=>`<button class="starbtn" data-star="${c}" aria-label="Étoile de confiance"><svg viewBox="0 0 30 30" aria-hidden="true"><polygon points="${starPts(15,15,13)}" fill="#F2C94C" stroke="#C99A1C" stroke-width="1.2" stroke-linejoin="round"/></svg></button>`).join(''); }
+function openStar(code){ const f=friends.find(x=>x.code===code); const who=esc((f&&f.name)||stars[code]||'Ton ami·e');
+  openSheet(`<div class="head"><div><div class="eyebrow">Étoile de confiance</div><h2>${who} te fait confiance</h2></div><button class="x" id="sx" aria-label="Fermer">×</button></div>
+    <p>${who} tʼa choisi·e comme <b>personne de confiance</b>. Cette étoile brille en haut de ton écran tant que cʼest le cas.</p>
+    <div class="card flat"><p class="small">Cela veut dire que si ${who} va très mal un jour et le demande, son manu viendra te chercher. Tu nʼauras pas à tout résoudre : seulement être là, écouter, et prévenir un adulte si cʼest trop lourd.</p></div>
+    <p class="small muted">Si tu ne te sens pas capable en ce moment, tu peux rendre lʼétoile. Cʼest normal, et ${who} sera prévenu·e gentiment.</p>
+    <div class="row"><button class="btn ghost" id="starNo">Rendre lʼétoile</button><button class="btn primary" id="starOk">Je garde lʼétoile</button></div>`);
+  $('#sx').onclick=closeSheet; $('#starOk').onclick=closeSheet;
+  $('#starNo').onclick=()=>{ delete stars[code]; store.set('stars',stars); renderStars(); if(SYNC_URL) fetch(`${SYNC_URL}/visits/${code}/${myCode}.json`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({g:'etoileNon', t:Date.now(), name:share.name||''})}).catch(()=>{}); closeSheet(); toast('Étoile rendue'); }; }
+$('#stars').addEventListener('click', e=>{ const b=e.target.closest('[data-star]'); if(b) openStar(b.dataset.star); });
+renderStars(); chestBadge();
 
 /* ---------- prévenir mon ama : seulement si la personne le demande ---------- */
 function trusted(){ return friends.filter(f=>f.ama); }
