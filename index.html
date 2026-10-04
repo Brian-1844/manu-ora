@@ -248,6 +248,24 @@ body.quiet .app{display:none}
 .code{font-family:var(--display);font-size:1.3rem;letter-spacing:.08em;font-variant-numeric:tabular-nums}
 .bigheart{display:grid;place-items:center}
 .bigheart svg{width:120px;height:108px}
+
+/* sleep, drag, shop, animations */
+.bird{-webkit-touch-callout:none}
+.bird.sleeping .eye{animation:none;transform:scaleY(.12)}
+.bird.sleeping .bob{animation:doze 2.6s ease-in-out infinite alternate}
+.bird.sleeping .head{transform:rotate(9deg)}
+@keyframes doze{from{transform:scale(1)}to{transform:scale(1.04,.96) translateY(2px)}}
+.petal.zz{font-family:var(--display);font-weight:600;font-size:16px;color:var(--muted);width:auto;height:auto}
+.bird.dancing .bob{animation:ori .26s ease-in-out infinite alternate}
+.bird.dancing .wing{animation:flap .26s ease-in-out infinite alternate}
+@keyframes ori{from{transform:translateX(-5px) rotate(-8deg)}to{transform:translateX(5px) rotate(8deg)}}
+.bird.flipping .bob{animation:salto 1.1s ease-in-out 1}
+@keyframes salto{0%{transform:translateY(0) rotate(0)}50%{transform:translateY(-46px) rotate(180deg)}100%{transform:translateY(0) rotate(360deg)}}
+.swatch{display:grid;place-items:center;font-family:var(--display);font-weight:700;font-size:.72rem;padding:0}
+.swatch.lock{opacity:.6;border:2px dashed var(--muted)}
+.opt button.lock{border-style:dashed;opacity:.85}
+.opt button .price{display:block;font-size:.72rem;color:var(--muted);font-weight:700}
+.opt button.on .price{color:#fff}
 @media (prefers-reduced-motion: reduce){
   .bird .wing,.bird .leg,.bird .bob,.bird .head{animation:none !important}
   .breath .sea{transition:none}
@@ -318,10 +336,15 @@ body.quiet .app{display:none}
     <section id="tab-bird" hidden>
       <div class="stack" style="gap:14px">
         <div class="card">
-          <h2 data-i18n="mybird">Mon manu</h2>
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><h2 data-i18n="mybird">Mon manu</h2><span class="feather" id="feathers2">0 plumes</span></div>
+          <p class="small muted">Une journée complète (une couleur dans ton cœur + une activité) rapporte 10 plumes. Chaque activité : 1 plume, 3 par jour au plus. Tous les 7 jours : 20 de plus.</p>
           <div class="preview" id="preview"></div>
           <label class="small muted" for="birdName">Son nom</label>
           <input type="text" id="birdName" maxlength="16" placeholder="Vini">
+        </div>
+        <div class="card">
+          <div class="eyebrow">Animal</div>
+          <div class="opt" id="optAnimal"></div>
         </div>
         <div class="card">
           <div class="eyebrow">Plumage</div>
@@ -339,9 +362,14 @@ body.quiet .app{display:none}
           <div class="opt" id="optAcc"></div>
         </div>
         <div class="card">
+          <div class="eyebrow">Animations</div>
+          <div class="opt" id="optAnim"></div>
+          <p class="small muted">Une fois débloquée, touche-la ici ou touche ton manu une fois pour la lancer.</p>
+        </div>
+        <div class="card">
           <div class="eyebrow">Où se pose ton manu ?</div>
           <div class="opt" id="optCorner"></div>
-          <p class="small muted">En mode veille, ton manu se repose dans ce coin de lʼécran et vient te voir de temps en temps.</p>
+          <p class="small muted">En mode veille, ton manu se repose dans ce coin de lʼécran où il dort, et vient te voir de temps en temps. Tu peux aussi appuyer longtemps sur lui et le poser où tu veux.</p>
         </div>
       </div>
     </section>
@@ -473,37 +501,61 @@ const ACT = {
 const COLORS = ['#2F7FD8','#1AA3B1','#3B8C58','#F0A23A','#E4583F','#E05D8A','#8A5BC4','#2B2F3A','#F4EFE4'];
 const BELLY = ['#F6F1E7','#FFD9A8','#CDEFF1','#F9C9D6','#DDEBC8','#FFFFFF'];
 const TATTOO = {none:'Aucun', niho:'Niho mano', orama:'ʻŌrama', honu:'Honu', tiare:'Tiare'};
-const ACC = {hei:'Hei (couronne)', tiare:'Tiare à lʼoreille', pareu:'Pāreu', pupu:'Collier de pūpū'};
+const ACC = {tiare:'Tiare à lʼoreille', aute:'ʻAute (hibiscus)', hei:'Hei (couronne de fleurs)', papale:'Pāpale (chapeau tressé)', titia:'Titiʻa mata (lunettes de soleil)', pupu:'Collier de pūpū (coquillages)', poe:'Collier de poe (perles noires)', pareu:'Pāreu'};
 let cfg = Object.assign({name:'Vini', body:'#2F7FD8', belly:'#F6F1E7', tattoo:'none', hei:false, tiare:true, pareu:false, pupu:false, corner:'br'}, store.get('cfg',{}));
 
 function shade(hex, f){ const n=parseInt(hex.slice(1),16); let r=n>>16,g=(n>>8)&255,b=n&255; r=Math.round(r*f);g=Math.round(g*f);b=Math.round(b*f); return '#'+[r,g,b].map(v=>Math.max(0,Math.min(255,v)).toString(16).padStart(2,'0')).join(''); }
 function lum(hex){ const n=parseInt(hex.slice(1),16); return (0.299*(n>>16)+0.587*((n>>8)&255)+0.114*(n&255))/255; }
 
+function accParts(c){
+  const hei = c.hei ? ['#FFF4C2','#F28CB1','#F0A23A','#FFF4C2','#F28CB1','#F0A23A','#FFF4C2'].map((col,i)=>{ const a=(200+i*24)*Math.PI/180; return `<circle cx="${(82+18*Math.cos(a)).toFixed(1)}" cy="${(46+18*Math.sin(a)).toFixed(1)}" r="3.4" fill="${col}" stroke="#3B8C58" stroke-width=".8"/>`; }).join('') : '';
+  const pet = (r,fill,stroke)=>[0,72,144,216,288].map(a=>`<circle cx="${(4.6*Math.cos(a*Math.PI/180)).toFixed(1)}" cy="${(4.6*Math.sin(a*Math.PI/180)).toFixed(1)}" r="${r}" fill="${fill}" stroke="${stroke}" stroke-width=".6"/>`).join('');
+  const flower = c.aute ? `<g transform="translate(66 36)">${pet(4.3,'#E0303A','#A81E28')}<circle r="1.8" fill="#8E1420"/><line x1="0" y1="0" x2="5" y2="-7" stroke="#F2C94C" stroke-width="1.6" stroke-linecap="round"/><circle cx="5" cy="-7" r="1.5" fill="#F2C94C"/></g>`
+    : c.tiare ? `<g transform="translate(66 36)">${pet(3.6,'#FFF9EE','#E8D9B5')}<circle r="2.2" fill="#F2C94C"/></g>` : '';
+  const papale = c.papale ? `<g><ellipse cx="82" cy="31" rx="24" ry="5.5" fill="#E2C27A" stroke="#B8934A" stroke-width="1"/><path d="M68 31 Q70 13 82 13 Q94 13 96 31 Z" fill="#EBD08E" stroke="#B8934A" stroke-width="1"/><path d="M69 27 Q82 31.5 95 27" fill="none" stroke="#C8402F" stroke-width="3"/><path d="M73 17 L91 17 M71 22 L93 22" stroke="#B8934A" stroke-width=".7" fill="none"/></g>` : '';
+  const titia = c.titia ? `<g><line x1="83" y1="40" x2="66" y2="38" stroke="#10202A" stroke-width="2" stroke-linecap="round"/><rect x="82" y="37" width="15" height="9.5" rx="3.6" fill="#10202A"/><line x1="85" y1="39.6" x2="90" y2="39.6" stroke="#fff" stroke-width="1" opacity=".55" stroke-linecap="round"/></g>` : '';
+  const beads = (fill,stroke,shine)=>[0,1,2,3,4,5].map(i=>{ const x=64+i*5.2, y=56+Math.sin(i/5*Math.PI)*5; return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="2.4" fill="${fill}" stroke="${stroke}" stroke-width=".7"/>${shine?`<circle cx="${(x-.7).toFixed(1)}" cy="${(y-.8).toFixed(1)}" r=".7" fill="#fff" opacity=".7"/>`:''}`; }).join('');
+  const neck = c.poe ? beads('#38414F','#8FB3B8',true) : c.pupu ? beads('#FFF6E3','#C9B890',false) : '';
+  return {top: hei+papale+flower, eyes: titia, neck};
+}
 function birdSVG(c, id){
   const wing = shade(c.body, .78), ink = lum(c.body) > .55 ? '#10303B' : '#F4EFE4';
+  const honu = c.animal==='honu';
+  const clip = honu ? '<ellipse cx="52" cy="70" rx="32" ry="20"/>' : '<ellipse cx="55" cy="68" rx="30" ry="24"/>';
   const pats = `
     <pattern id="${id}-niho" width="10" height="10" patternUnits="userSpaceOnUse"><polygon points="0,10 5,0 10,10" fill="${ink}"/></pattern>
     <pattern id="${id}-orama" width="16" height="8" patternUnits="userSpaceOnUse"><path d="M0 5 Q4 0 8 5 T16 5" fill="none" stroke="${ink}" stroke-width="2"/></pattern>
     <pattern id="${id}-honu" width="14" height="12" patternUnits="userSpaceOnUse"><polygon points="7,1 12,4 12,9 7,12 2,9 2,4" fill="none" stroke="${ink}" stroke-width="1.6"/></pattern>
     <pattern id="${id}-tiare" width="14" height="14" patternUnits="userSpaceOnUse"><g fill="${ink}"><circle cx="7" cy="3.2" r="1.7"/><circle cx="10.6" cy="5.4" r="1.7"/><circle cx="10.6" cy="9.6" r="1.7"/><circle cx="7" cy="11.8" r="1.7"/><circle cx="3.4" cy="9.6" r="1.7"/><circle cx="3.4" cy="5.4" r="1.7"/></g></pattern>
     <pattern id="${id}-pareu" width="8" height="8" patternUnits="userSpaceOnUse"><rect width="8" height="8" fill="#E4583F"/><circle cx="4" cy="4" r="1.6" fill="#FFF6E3"/></pattern>`;
-  const tattoo = c.tattoo!=='none' ? `<rect x="20" y="40" width="70" height="60" fill="url(#${id}-${c.tattoo})" opacity=".6" clip-path="url(#${id}-clip)"/>` : '';
-  const pareu = c.pareu ? `<rect x="20" y="74" width="70" height="30" fill="url(#${id}-pareu)" clip-path="url(#${id}-clip)"/><path d="M26 74 L84 74" stroke="#FFF6E3" stroke-width="2"/>` : '';
-  const hei = c.hei ? ['#FFF4C2','#F28CB1','#F0A23A','#FFF4C2','#F28CB1','#F0A23A','#FFF4C2'].map((col,i)=>{ const a=(200+i*24)*Math.PI/180; return `<circle cx="${(82+18*Math.cos(a)).toFixed(1)}" cy="${(46+18*Math.sin(a)).toFixed(1)}" r="3.4" fill="${col}" stroke="#3B8C58" stroke-width=".8"/>`; }).join('') : '';
-  const tiare = c.tiare ? `<g transform="translate(66 36)">${[0,72,144,216,288].map(a=>`<circle cx="${(4.6*Math.cos(a*Math.PI/180)).toFixed(1)}" cy="${(4.6*Math.sin(a*Math.PI/180)).toFixed(1)}" r="3.6" fill="#FFF9EE" stroke="#E8D9B5" stroke-width=".6"/>`).join('')}<circle r="2.2" fill="#F2C94C"/></g>` : '';
-  const pupu = c.pupu ? [0,1,2,3,4,5].map(i=>`<circle cx="${64+i*5.2}" cy="${56+Math.sin(i/5*Math.PI)*5}" r="2.3" fill="#FFF6E3" stroke="#C9B890" stroke-width=".7"/>`).join('') : '';
-  return `<svg viewBox="0 0 120 110" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-    <defs>${pats}<clipPath id="${id}-clip"><ellipse cx="55" cy="68" rx="30" ry="24"/></clipPath></defs>
+  const tattoo = c.tattoo && c.tattoo!=='none' ? `<rect x="18" y="40" width="72" height="60" fill="url(#${id}-${c.tattoo})" opacity=".6" clip-path="url(#${id}-clip)"/>` : '';
+  const pareu = c.pareu ? `<rect x="18" y="74" width="72" height="30" fill="url(#${id}-pareu)" clip-path="url(#${id}-clip)"/><path d="M${honu?22:26} 74 L${honu?82:84} 74" stroke="#FFF6E3" stroke-width="2"/>` : '';
+  const A = accParts(c);
+  const uke = `<g class="uke"><line x1="60" y1="74" x2="30" y2="54" stroke="#8A5A2B" stroke-width="4.5" stroke-linecap="round"/><rect x="24" y="48" width="9" height="8" rx="2" transform="rotate(34 28 52)" fill="#5A3A1E"/><ellipse cx="66" cy="78" rx="12" ry="9" transform="rotate(34 66 78)" fill="#C98A4B" stroke="#8A5A2B" stroke-width="1.2"/><circle cx="64" cy="77" r="3" fill="#5A3A1E"/><line x1="72" y1="82" x2="30" y2="54" stroke="#FFF6E3" stroke-width=".7"/></g>`;
+  const head = `<svg viewBox="0 0 120 110" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs>${pats}<clipPath id="${id}-clip">${clip}</clipPath></defs>`;
+  if(honu){
+    const skin = shade(c.body,.7), line = shade(c.body,.55);
+    return head + `
+    <g class="tail"><polygon points="22,72 6,78 22,82" fill="${skin}"/></g>
+    <g class="legs"><g class="leg l1"><ellipse cx="32" cy="90" rx="11" ry="5" transform="rotate(28 32 90)" fill="${skin}"/></g><g class="leg l2"><ellipse cx="64" cy="93" rx="11" ry="5" transform="rotate(-18 64 93)" fill="${skin}"/></g></g>
+    <g class="body"><ellipse cx="52" cy="85" rx="28" ry="7" fill="${c.belly}"/><ellipse cx="52" cy="70" rx="32" ry="20" fill="${c.body}"/><path d="M38 52 L44 70 L38 90 M66 52 L60 70 L66 90 M44 70 L60 70 M20 70 L44 70 M60 70 L84 70" fill="none" stroke="${line}" stroke-width="1.6" clip-path="url(#${id}-clip)"/>${tattoo}${pareu}</g>
+    ${uke}
+    <g class="wing"><ellipse cx="70" cy="85" rx="15" ry="6" transform="rotate(32 70 85)" fill="${skin}"/></g>
+    <g transform="translate(31 25) scale(.72)">${A.neck}</g>
+    <g class="head"><circle cx="90" cy="58" r="13" fill="${skin}"/><path d="M96 64 Q100 66 102 62.5" stroke="#10303B" stroke-width="1.4" fill="none" stroke-linecap="round"/><circle cx="97" cy="60.5" r="2.6" fill="#F28CB1" opacity=".6"/><g class="eye" style="transform-origin:95px 55px"><circle cx="95" cy="55" r="3.4" fill="#10303B"/><circle cx="96.2" cy="53.8" r="1.1" fill="#fff"/></g><g transform="translate(31 25) scale(.72)">${A.top}${A.eyes}</g></g>
+  </svg>`;
+  }
+  return head + `
     <g class="tail"><polygon points="30,66 4,56 10,74 4,86 30,76" fill="${wing}"/><polygon points="30,70 12,66 14,80 30,76" fill="${c.body}"/></g>
     <g class="legs">
       <g class="leg l1"><line x1="48" y1="88" x2="46" y2="103" stroke="#F0A23A" stroke-width="3" stroke-linecap="round"/><polyline points="38,104 46,103 54,105" fill="none" stroke="#F0A23A" stroke-width="3" stroke-linecap="round"/></g>
       <g class="leg l2"><line x1="58" y1="88" x2="60" y2="103" stroke="#D98B2B" stroke-width="3" stroke-linecap="round"/><polyline points="52,104 60,103 68,105" fill="none" stroke="#D98B2B" stroke-width="3" stroke-linecap="round"/></g>
     </g>
     <g class="body"><ellipse cx="55" cy="68" rx="30" ry="24" fill="${c.body}"/><ellipse cx="60" cy="74" rx="18" ry="14" fill="${c.belly}"/>${tattoo}${pareu}</g>
-    <g class="uke"><line x1="60" y1="74" x2="30" y2="54" stroke="#8A5A2B" stroke-width="4.5" stroke-linecap="round"/><rect x="24" y="48" width="9" height="8" rx="2" transform="rotate(34 28 52)" fill="#5A3A1E"/><ellipse cx="66" cy="78" rx="12" ry="9" transform="rotate(34 66 78)" fill="#C98A4B" stroke="#8A5A2B" stroke-width="1.2"/><circle cx="64" cy="77" r="3" fill="#5A3A1E"/><line x1="72" y1="82" x2="30" y2="54" stroke="#FFF6E3" stroke-width=".7"/></g>
+    ${uke}
     <g class="wing"><ellipse cx="44" cy="66" rx="19" ry="11" transform="rotate(-18 44 66)" fill="${wing}"/><ellipse cx="40" cy="64" rx="12" ry="6" transform="rotate(-18 40 64)" fill="${shade(c.body,.9)}"/></g>
-    ${pupu}
-    <g class="head"><circle cx="82" cy="46" r="18" fill="${c.body}"/><circle cx="84" cy="52" r="9" fill="${c.belly}" opacity=".9"/><polygon points="98,45 114,50 98,55" fill="#F0A23A"/><circle cx="92" cy="50" r="3.6" fill="#F28CB1" opacity=".6"/><g class="eye"><circle cx="89" cy="42" r="4.2" fill="#10303B"/><circle cx="90.5" cy="40.5" r="1.4" fill="#fff"/></g>${hei}${tiare}</g>
+    ${A.neck}
+    <g class="head"><circle cx="82" cy="46" r="18" fill="${c.body}"/><circle cx="84" cy="52" r="9" fill="${c.belly}" opacity=".9"/><polygon points="98,45 114,50 98,55" fill="#F0A23A"/><circle cx="92" cy="50" r="3.6" fill="#F28CB1" opacity=".6"/><g class="eye"><circle cx="89" cy="42" r="4.2" fill="#10303B"/><circle cx="90.5" cy="40.5" r="1.4" fill="#fff"/></g>${A.top}${A.eyes}</g>
   </svg>`;
 }
 function renderBird(){ $('#birdFlip').innerHTML = birdSVG(cfg,'live'); $('#preview').innerHTML = birdSVG(cfg,'pv'); }
@@ -516,7 +568,7 @@ const BW=96, BH=88;
 function groundY(){ const tabs=document.querySelector('.tabs').getBoundingClientRect(); return tabs.top - BH + 16; }
 function perchPoints(){ const w=innerWidth, hdr=document.querySelector('.top').getBoundingClientRect(); return [{x:Math.max(8,w-BW-14), y:hdr.bottom-8}, {x:8, y:hdr.bottom-8}]; }
 function place(){ birdEl.style.transform=`translate(${B.x}px,${B.y}px)`; flipEl.style.transform=`scaleX(${B.dir})`; placeBubble(); }
-function setState(s){ B.state=s; birdEl.classList.toggle('walking', s==='walk'); birdEl.classList.toggle('flying', s==='fly'); birdEl.classList.toggle('petted', s==='pet'); birdEl.classList.toggle('playing', s==='play'); }
+function setState(s){ B.state=s; birdEl.classList.remove('sleeping'); birdEl.classList.toggle('walking', s==='walk'); birdEl.classList.toggle('flying', s==='fly'||s==='drag'); birdEl.classList.toggle('petted', s==='pet'); birdEl.classList.toggle('playing', s==='play'); }
 function idle(sec){ setState('idle'); B.t = sec || (2+Math.random()*4); }
 function startWalk(){ const w=innerWidth; B.to={x: 10+Math.random()*(w-BW-20), y:groundY()}; B.dir = B.to.x>B.x?1:-1; setState('walk'); }
 function startFly(target){ B.from={x:B.x,y:B.y}; B.to=target; B.dir = target.x>B.x?1:-1; B.p=0; const d=Math.hypot(target.x-B.x,target.y-B.y); B.dur=Math.max(.9, d/260); setState('fly'); }
@@ -545,8 +597,8 @@ const LINES = ['Un petit air de ukulele ?','Caresse-moi doucement, ça apaise.',
 function randomLine(){ return LINES[Math.floor(Math.random()*LINES.length)]; }
 function say(txt, cta){ bubbleEl.innerHTML = esc(txt) + (cta?`<span class="cta">${esc(cta)}</span>`:''); bubbleEl.classList.add('show'); placeBubble(); clearTimeout(say.t); say.t=setTimeout(()=>bubbleEl.classList.remove('show'), 4200); }
 function placeBubble(){ if(!bubbleEl.classList.contains('show')) return; const bw=bubbleEl.offsetWidth, bh=bubbleEl.offsetHeight; let x=B.x+10, right=false; if(x+bw>innerWidth-8){ x=B.x+BW-bw-10; right=true; } x=Math.max(8,x); let y=B.y-bh-14; if(y<4){ y=B.y+BH+10; } bubbleEl.style.transform=`translate(${x}px,${y}px)`; bubbleEl.classList.toggle('right',right); }
-setInterval(()=>{ if(B.state==='idle' && !RING.open && !B.asking && Math.random()<(QUIET?.12:.45) && $('#sheet').hidden && $('#crisis').hidden && $('#breath').hidden) say(randomLine(), QUIET?'Touche-moi deux fois pour dire comment tu vas':'Touche-moi pour faire le point'); }, 14000);
-birdEl.addEventListener('click', ()=>{ if(PET.just) return; const now=Date.now(); if(now-TAP.bird<380){ clearTimeout(TAP.t); TAP.bird=0; askRing(false); return; } TAP.bird=now; TAP.t=setTimeout(()=>{ TAP.bird=0; if(!RING.open) miniMenu(); },380); });
+setInterval(()=>{ if(B.state==='idle' && !RING.open && !B.asking && !birdEl.classList.contains('sleeping') && Math.random()<(QUIET?.12:.45) && $('#sheet').hidden && $('#crisis').hidden && $('#breath').hidden) say(randomLine(), QUIET?'Touche-moi deux fois pour dire comment tu vas':'Touche-moi pour faire le point'); }, 14000);
+birdEl.addEventListener('click', ()=>{ if(PET.just) return; const now=Date.now(); if(now-TAP.bird<380){ clearTimeout(TAP.t); TAP.bird=0; askRing(false); return; } TAP.bird=now; TAP.t=setTimeout(()=>{ TAP.bird=0; if(!RING.open){ birdEl.classList.remove('sleeping'); miniMenu(); } },380); });
 birdEl.addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); openCheckin(); } });
 /* petting: stroke the bird with a finger or the mouse */
 const PET={down:false,active:false,dist:0,total:0,lx:0,ly:0,lastP:0,just:false,endT:null,lastAward:0};
@@ -555,11 +607,20 @@ function petal(x,y){ const d=document.createElement('div'); d.className='petal';
   d.style.transform=`translate(${x-9+(Math.random()*24-12)}px,${y-24}px)`; $('#birdlayer').appendChild(d); d.addEventListener('animationend',()=>d.remove()); setTimeout(()=>d.remove(),1500); }
 function petReward(){ say('Tu sens comme ça ralentit ? Respire doucement avec moi.'); try{ navigator.vibrate && navigator.vibrate(30); }catch(e){}
   if(Date.now()-PET.lastAward>600000){ PET.lastAward=Date.now(); award('pet'); } }
-birdEl.addEventListener('pointerdown', e=>{ PET.down=true; PET.dist=0; PET.lx=e.clientX; PET.ly=e.clientY; try{ birdEl.setPointerCapture(e.pointerId); }catch(_){} });
-birdEl.addEventListener('pointermove', e=>{ if(!PET.down) return; const d=Math.hypot(e.clientX-PET.lx, e.clientY-PET.ly); PET.lx=e.clientX; PET.ly=e.clientY; PET.dist+=d;
-  if(!PET.active && PET.dist>22){ PET.active=true; clearTimeout(PET.endT); setState('pet'); say('Mmm… māuruuru.'); }
+const DRAG={on:false,t:null,ox:0,oy:0};
+function dropBird(){ DRAG.on=false; PET.just=true; setTimeout(()=>{ PET.just=false; },350);
+  if(QUIET){ cfg.spot={fx:B.x/Math.max(1,innerWidth-BW), fy:B.y/Math.max(1,innerHeight-BH)}; store.set('cfg',cfg); B.perched=true; faceIn(); idle(5); birdEl.classList.add('pecking'); setTimeout(()=>birdEl.classList.remove('pecking'),1100); say('Māuruuru, je suis bien ici.'); renderCustom(); }
+  else { say('Wouh ! Encore !'); settle(); } }
+birdEl.addEventListener('contextmenu', e=>e.preventDefault());
+birdEl.addEventListener('pointerdown', e=>{ PET.down=true; PET.dist=0; PET.lx=e.clientX; PET.ly=e.clientY; try{ birdEl.setPointerCapture(e.pointerId); }catch(_){}
+  DRAG.ox=e.clientX-B.x; DRAG.oy=e.clientY-B.y; clearTimeout(DRAG.t);
+  DRAG.t=setTimeout(()=>{ if(PET.down && !PET.active && PET.dist<12 && !RING.open && !UKE.on){ DRAG.on=true; B.onArrive=null; B.afterIdle=null; B.asking=false; clearTimeout(TAP.t); TAP.bird=0; setState('drag'); try{ navigator.vibrate && navigator.vibrate(25); }catch(_){}
+    say(['Hé ! Où tu mʼemmènes ?','Oooh, je vole !','Doucement, doucement…'][Math.floor(Math.random()*3)]); } },450); });
+birdEl.addEventListener('pointermove', e=>{ if(!PET.down) return;
+  if(DRAG.on){ const nx=Math.max(0,Math.min(innerWidth-BW,e.clientX-DRAG.ox)), ny=Math.max(0,Math.min(innerHeight-BH,e.clientY-DRAG.oy)); if(Math.abs(nx-B.x)>2) B.dir=nx>B.x?1:-1; B.x=nx; B.y=ny; return; } const d=Math.hypot(e.clientX-PET.lx, e.clientY-PET.ly); PET.lx=e.clientX; PET.ly=e.clientY; PET.dist+=d;
+  if(!PET.active && PET.dist>22){ clearTimeout(DRAG.t); PET.active=true; clearTimeout(PET.endT); setState('pet'); say('Mmm… māuruuru.'); }
   if(PET.active){ PET.total+=d; const now=performance.now(); if(now-PET.lastP>110){ petal(e.clientX,e.clientY); PET.lastP=now; } if(PET.total>900){ PET.total=0; petReward(); } } });
-function petEnd(){ PET.down=false; if(!PET.active) return; PET.active=false; PET.just=true; setTimeout(()=>{ PET.just=false; },350);
+function petEnd(){ PET.down=false; clearTimeout(DRAG.t); if(DRAG.on){ dropBird(); return; } if(!PET.active) return; PET.active=false; PET.just=true; setTimeout(()=>{ PET.just=false; },350);
   PET.endT=setTimeout(()=>{ if(B.state!=='pet') return; settle(); },1600); }
 birdEl.addEventListener('pointerup', petEnd); birdEl.addEventListener('pointercancel', petEnd);
 /* ukulele: a short original tune, synthesised in the browser */
@@ -596,7 +657,7 @@ document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>showTab(b.dat
 let log = store.get('log', []), feathers = store.get('feathers', 0);
 const dayKey = d => { const x=new Date(d); return x.getFullYear()+'-'+(x.getMonth()+1)+'-'+x.getDate(); };
 function renderHome(){
-  $('#feathers').textContent = feathers + (feathers===1?' plume':' plumes');
+  renderFeathers();
   const week=$('#week'); week.innerHTML=''; const names=['D','L','M','M','J','V','S']; const today=new Date(); let any=false;
   const example = !log.some(l=>!l.quick); const exColors=['#1AA3B1','#8C7B6B','#F0A23A',null,'#5B6FB8','#3B8C58','#F0A23A'];
   for(let i=6;i>=0;i--){ const d=new Date(today); d.setDate(today.getDate()-i); const k=dayKey(d); const e=[...log].reverse().find(l=>!l.quick && dayKey(l.ts)===k); const emo=e?EMO.find(x=>x.id===e.emo):null; const col = example ? exColors[6-i] : (emo?emo.color:null); if(col) any=true;
@@ -622,21 +683,49 @@ function renderWords(){
 }
 
 /* ---------- customize ---------- */
+/* ---------- feathers, shop ---------- */
+const PRICE={c:10,t:30,a:50,x:100,an:150};
+const FREE=new Set(['c:#2F7FD8','c:#1AA3B1','c:#3B8C58','t:none','a:tiare','an:manu']);
+const OWN=new Set(store.get('owned',[]));
+const ANIM={dance:'ʻOri (danse)', flip:'Salto'};
+const ANIMAL={manu:'Manu (oiseau)', honu:'Honu (tortue)'};
+const RIVAL={tiare:'aute',aute:'tiare',hei:'papale',papale:'hei',pupu:'poe',poe:'pupu'};
+if(!store.get('shopInit',false)){ ['c:'+cfg.body,'t:'+cfg.tattoo,...Object.keys(ACC).filter(k=>cfg[k]).map(k=>'a:'+k)].forEach(id=>OWN.add(id)); store.set('owned',[...OWN]); store.set('shopInit',true); }
+const has = id => FREE.has(id)||OWN.has(id);
+let days = store.get('days',[]);
+function renderFeathers(){ const t=feathers+(feathers===1?' plume':' plumes'); ['#feathers','#feathers2'].forEach(s=>{ const el=$(s); if(el) el.textContent=t; }); }
+function checkDay(){ const k=dayKey(Date.now()); if(days.includes(k)) return; const ents=log.filter(l=>dayKey(l.ts)===k);
+  if(ents.some(l=>!l.quick) && ents.some(l=>(l.acts||[]).length)){ days.push(k); store.set('days',days); let gain=10, msg='Journée complète : +10 plumes';
+    if(days.length%7===0){ gain=30; msg=days.length+' jours avec ton manu : +30 plumes'; }
+    feathers+=gain; store.set('feathers',feathers); renderFeathers(); setTimeout(()=>toast(msg),2500); } }
+function tryUse(id,price,label,apply){ if(has(id)){ apply(); return; }
+  if(feathers<price){ const m=price-feathers; toast(`Il te manque ${m} plume${m>1?'s':''} pour « ${label} »`); return; }
+  openSheet(`<div class="head"><h2>Débloquer ?</h2><button class="x" id="sx" aria-label="Fermer">×</button></div><p><b>${esc(label)}</b> coûte ${price} plumes. Tu en as ${feathers}.</p><div class="row"><button class="btn ghost" id="buyNo">Pas maintenant</button><button class="btn primary" id="buyYes">Débloquer</button></div>`);
+  $('#sx').onclick=closeSheet; $('#buyNo').onclick=closeSheet;
+  $('#buyYes').onclick=()=>{ feathers-=price; store.set('feathers',feathers); OWN.add(id); store.set('owned',[...OWN]); closeSheet(); apply(); renderFeathers(); toast('Débloqué : '+label); }; }
+function playAnim(k){ if(RING.open||UKE.on||B.state==='drag') return; clearTimeout(PET.endT); bubbleEl.classList.remove('show'); setState('show'); const cls=k==='dance'?'dancing':'flipping'; birdEl.classList.add(cls);
+  let iv=null; if(k==='dance') iv=setInterval(noteFx,380);
+  setTimeout(()=>{ birdEl.classList.remove(cls); if(iv) clearInterval(iv); if(B.state==='show') settle(2); }, k==='dance'?3400:1200); }
+function optBtn(id,price,key,label,on){ const ok=has(id); return `<button class="${on?'on':''} ${ok?'':'lock'}" data-k="${key}">${label}${ok?'':`<span class="price">${price} plumes</span>`}</button>`; }
 function renderCustom(){
   $('#birdName').value = cfg.name;
-  $('#swBody').innerHTML = COLORS.map(c=>`<button class="swatch ${cfg.body===c?'on':''}" style="background:${c}" data-c="${c}" aria-label="Plumage ${c}"></button>`).join('');
+  $('#swBody').innerHTML = COLORS.map(c=>{ const ok=has('c:'+c); return `<button class="swatch ${cfg.body===c?'on':''} ${ok?'':'lock'}" style="background:${c};color:${lum(c)>.55?'#10303B':'#fff'}" data-c="${c}" aria-label="Plumage ${c}${ok?'':', 10 plumes'}">${ok?'':PRICE.c}</button>`; }).join('');
   $('#swBelly').innerHTML = BELLY.map(c=>`<button class="swatch ${cfg.belly===c?'on':''}" style="background:${c};border-color:${cfg.belly===c?'var(--fg)':'var(--line)'}" data-c="${c}" aria-label="Ventre ${c}"></button>`).join('');
-  $('#optTattoo').innerHTML = Object.keys(TATTOO).map(k=>`<button class="${cfg.tattoo===k?'on':''}" data-k="${k}">${TATTOO[k]}</button>`).join('');
-  $('#optAcc').innerHTML = Object.keys(ACC).map(k=>`<button class="${cfg[k]?'on':''}" data-k="${k}">${ACC[k]}</button>`).join('');
-  $('#optCorner').innerHTML = [['tl','Haut gauche'],['tr','Haut droite'],['bl','Bas gauche'],['br','Bas droite']].map(([k,l])=>`<button class="${(cfg.corner||'br')===k?'on':''}" data-k="${k}">${l}</button>`).join('');
-  renderBird();
+  $('#optAnimal').innerHTML = Object.keys(ANIMAL).map(k=>optBtn('an:'+k,PRICE.an,k,ANIMAL[k],(cfg.animal||'manu')===k)).join('');
+  $('#optTattoo').innerHTML = Object.keys(TATTOO).map(k=>optBtn('t:'+k,PRICE.t,k,TATTOO[k],cfg.tattoo===k)).join('');
+  $('#optAcc').innerHTML = Object.keys(ACC).map(k=>optBtn('a:'+k,PRICE.a,k,ACC[k],!!cfg[k])).join('');
+  $('#optAnim').innerHTML = Object.keys(ANIM).map(k=>optBtn('x:'+k,PRICE.x,k,ANIM[k]+(has('x:'+k)?' ▶':''),false)).join('');
+  $('#optCorner').innerHTML = [['tl','Haut gauche'],['tr','Haut droite'],['bl','Bas gauche'],['br','Bas droite']].map(([k,l])=>`<button class="${!cfg.spot&&(cfg.corner||'br')===k?'on':''}" data-k="${k}">${l}</button>`).join('');
+  renderFeathers(); renderBird();
 }
 function saveCfg(){ store.set('cfg',cfg); renderCustom(); }
-$('#swBody').addEventListener('click', e=>{ const b=e.target.closest('[data-c]'); if(b){ cfg.body=b.dataset.c; saveCfg(); } });
+$('#swBody').addEventListener('click', e=>{ const b=e.target.closest('[data-c]'); if(b){ const c=b.dataset.c; tryUse('c:'+c,PRICE.c,'cette couleur',()=>{ cfg.body=c; saveCfg(); }); } });
 $('#swBelly').addEventListener('click', e=>{ const b=e.target.closest('[data-c]'); if(b){ cfg.belly=b.dataset.c; saveCfg(); } });
-$('#optTattoo').addEventListener('click', e=>{ const b=e.target.closest('[data-k]'); if(b){ cfg.tattoo=b.dataset.k; saveCfg(); } });
-$('#optCorner').addEventListener('click', e=>{ const b=e.target.closest('[data-k]'); if(b){ cfg.corner=b.dataset.k; saveCfg(); } });
-$('#optAcc').addEventListener('click', e=>{ const b=e.target.closest('[data-k]'); if(b){ cfg[b.dataset.k]=!cfg[b.dataset.k]; saveCfg(); } });
+$('#optTattoo').addEventListener('click', e=>{ const b=e.target.closest('[data-k]'); if(b){ const k=b.dataset.k; tryUse('t:'+k,PRICE.t,TATTOO[k],()=>{ cfg.tattoo=k; saveCfg(); }); } });
+$('#optCorner').addEventListener('click', e=>{ const b=e.target.closest('[data-k]'); if(b){ cfg.corner=b.dataset.k; cfg.spot=null; saveCfg(); if(QUIET) goHome(); } });
+$('#optAcc').addEventListener('click', e=>{ const b=e.target.closest('[data-k]'); if(b){ const k=b.dataset.k; tryUse('a:'+k,PRICE.a,ACC[k],()=>{ cfg[k]=!cfg[k]; if(cfg[k]&&RIVAL[k]) cfg[RIVAL[k]]=false; saveCfg(); }); } });
+$('#optAnimal').addEventListener('click', e=>{ const b=e.target.closest('[data-k]'); if(b){ const k=b.dataset.k; tryUse('an:'+k,PRICE.an,ANIMAL[k],()=>{ cfg.animal=k; saveCfg(); }); } });
+$('#optAnim').addEventListener('click', e=>{ const b=e.target.closest('[data-k]'); if(b){ const k=b.dataset.k; tryUse('x:'+k,PRICE.x,ANIM[k],()=>{ renderCustom(); playAnim(k); }); } });
 $('#birdName').addEventListener('input', e=>{ cfg.name=e.target.value.trim()||'Vini'; store.set('cfg',cfg); });
 
 /* ---------- help ---------- */
@@ -720,8 +809,9 @@ function step3(){
   sheetInner.querySelectorAll('[data-run]').forEach(b=>b.onclick=()=>runAct(b.dataset.run));
   $('#done').onclick=()=>{ finish(); toast('Point enregistré. Māuruuru.'); say('Māuruuru. Je suis là demain aussi.'); };
 }
-function finish(){ if(!cur) return; log.push(cur); store.set('log',log); cur=null; closeSheet(); renderHome(); renderHeart(); pushHeart(); }
-function award(a){ feathers++; store.set('feathers',feathers); if(cur){ if(!cur.acts.includes(a)) cur.acts.push(a); } else { log.push({ts:Date.now(), emo:'hau', intensity:0, body:[], text:'', acts:[a], quick:true}); store.set('log',log); } renderHome(); toast('Une plume gagnée'); }
+function finish(){ if(!cur) return; log.push(cur); store.set('log',log); cur=null; closeSheet(); renderHome(); renderHeart(); pushHeart(); checkDay(); }
+function award(a){ const k=dayKey(Date.now()); let ad=store.get('actDay',{k:'',n:0}); if(ad.k!==k) ad={k,n:0}; let got=false; if(ad.n<3){ ad.n++; feathers++; got=true; store.set('feathers',feathers); } store.set('actDay',ad);
+  if(cur){ if(!cur.acts.includes(a)) cur.acts.push(a); } else { log.push({ts:Date.now(), emo:'hau', intensity:0, body:[], text:'', acts:[a], quick:true}); store.set('log',log); } renderHome(); if(got) toast('Une plume gagnée'); checkDay(); }
 
 /* ---------- activities ---------- */
 function runAct(a){
@@ -783,7 +873,7 @@ function openCrisis(){
 
 
 /* ---------- quiet mode, colour ring, heart, friends ---------- */
-const SYNC_URL = ''; // Lien entre cœurs : coller ici lʼURL de la Realtime Database Firebase (voir README), ex. https://manu-ora-default-rtdb.europe-west1.firebasedatabase.app
+const SYNC_URL = 'https://manu-ora-e40ba-default-rtdb.firebaseio.com'; // Lien entre cœurs : coller ici lʼURL de la Realtime Database Firebase (voir README), ex. https://manu-ora-default-rtdb.europe-west1.firebasedatabase.app
 let QUIET = store.get('quiet', true);
 const RING = {open:false};
 const RING_ORDER = ['oaoa','here','hau','mauruuru','anaanatae','rohirohi','fiu','__dark','oto','moemoe','peapea','matau','riri','haama'];
@@ -792,20 +882,23 @@ const ASK_EVERY = 2*3600e3; let lastAsk = store.get('lastAsk', 0);
 
 function todayEntries(){ const k=dayKey(Date.now()); return log.filter(l=>!l.quick && dayKey(l.ts)===k); }
 function lastEntryTs(){ const e=[...log].reverse().find(l=>!l.quick); return e?e.ts:0; }
-function homePoint(){ const w=innerWidth, h=innerHeight; const hb=$('#heartBtn').getBoundingClientRect(); const top=(hb.bottom||56)+6; const c=cfg.corner||'br'; return {x: c.endsWith('l')?8:w-BW-8, y: c.startsWith('t')?top:h-BH-28}; }
-function faceIn(){ B.dir=(cfg.corner||'br').endsWith('l')?1:-1; }
-function goHome(){ B.asking=false; B.afterIdle=null; const hm=homePoint(); if(Math.hypot(hm.x-B.x,hm.y-B.y)<4){ B.perched=true; faceIn(); idle(3); return; } B.perched=false; startFly(hm); B.onArrive=()=>{ B.perched=true; faceIn(); idle(4+Math.random()*4); }; }
+function homePoint(){ const w=innerWidth, h=innerHeight; if(cfg.spot) return {x:Math.max(0,Math.min(w-BW,cfg.spot.fx*(w-BW))), y:Math.max(0,Math.min(h-BH,cfg.spot.fy*(h-BH)))}; const hb=$('#heartBtn').getBoundingClientRect(); const top=(hb.bottom||56)+6; const c=cfg.corner||'br'; return {x: c.endsWith('l')?8:w-BW-8, y: c.startsWith('t')?top:h-BH-28}; }
+function sleepNow(){ if(QUIET && !B.asking && !RING.open && B.state==='idle') birdEl.classList.add('sleeping'); }
+function zFx(){ const d=document.createElement('div'); d.className='petal zz'; d.textContent='z'; d.style.transform=`translate(${B.x+(B.dir===1?74:10)}px,${B.y+4}px)`; $('#birdlayer').appendChild(d); setTimeout(()=>d.remove(),1500); }
+setInterval(()=>{ if(birdEl.classList.contains('sleeping') && B.state==='idle') zFx(); },2400);
+function faceIn(){ B.dir = (B.x+BW/2 < innerWidth/2) ? 1 : -1; }
+function goHome(){ B.asking=false; B.afterIdle=null; const hm=homePoint(); if(Math.hypot(hm.x-B.x,hm.y-B.y)<4){ B.perched=true; faceIn(); idle(3); return; } B.perched=false; startFly(hm); B.onArrive=()=>{ B.perched=true; faceIn(); idle(4+Math.random()*4); B.afterIdle=()=>{ idle(10+Math.random()*12); sleepNow(); }; }; }
 function release(){ if(QUIET) goHome(); else { B.asking=false; settle(); } }
 function quietMove(){ if(B.asking){ idle(2); return; } const hm=homePoint(); if(Math.hypot(hm.x-B.x,hm.y-B.y)>4){ goHome(); return; } const r=Math.random();
-  if(r<.6) idle(4+Math.random()*6);
-  else if(r<.85){ birdEl.classList.add('pecking'); setTimeout(()=>birdEl.classList.remove('pecking'),1100); idle(3); }
-  else { B.perched=false; const left=(cfg.corner||'br').endsWith('l'); startFly({x: hm.x+(left?90:-90), y: Math.max(40, hm.y-30)}); B.onArrive=()=>{ idle(1.5+Math.random()*2); B.afterIdle=goHome; }; } }
+  if(r<.8){ idle(10+Math.random()*14); sleepNow(); }
+  else if(r<.92){ birdEl.classList.add('pecking'); setTimeout(()=>birdEl.classList.remove('pecking'),1100); idle(3); }
+  else { B.perched=false; const left=hm.x+BW/2<innerWidth/2; startFly({x: Math.max(0,Math.min(innerWidth-BW,hm.x+(left?90:-90))), y: Math.max(40, hm.y-30)}); B.onArrive=()=>{ idle(1.5+Math.random()*2); B.afterIdle=goHome; }; } }
 function setQuiet(on){ QUIET=on; store.set('quiet',on); document.body.classList.toggle('quiet',on); closeRing(); bubbleEl.classList.remove('show'); B.asking=false; B.afterIdle=null; B.onArrive=null;
   if(on){ renderHeart(); goHome(); } else { B.perched=false; renderHome(); startFly({x:Math.min(60,innerWidth-BW-8), y:groundY()}); } }
 function sayHTML(html, ms){ bubbleEl.innerHTML=html; bubbleEl.classList.add('show'); placeBubble(); clearTimeout(say.t); say.t=setTimeout(()=>bubbleEl.classList.remove('show'), ms||6000); }
-function miniMenu(){ sayHTML(`${esc(randomLine())}<div class="mini"><button data-m="check">Faire le point</button><button data-m="breathe">Respirer</button><button data-m="uke">Ukulele</button><button data-m="heart">Mon cœur</button>${QUIET?'<button data-m="app">Tout Manu Ora</button>':'<button data-m="quiet">Mode veille</button>'}</div>`, 9000); }
+function miniMenu(){ sayHTML(`${esc(randomLine())}<div class="mini"><button data-m="check">Faire le point</button><button data-m="breathe">Respirer</button><button data-m="uke">Ukulele</button><button data-m="heart">Mon cœur</button>${has('x:dance')?'<button data-m="dance">Danser</button>':''}${has('x:flip')?'<button data-m="flip">Salto</button>':''}${QUIET?'<button data-m="app">Tout Manu Ora</button>':'<button data-m="quiet">Mode veille</button>'}</div>`, 9000); }
 bubbleEl.addEventListener('click', e=>{ const b=e.target.closest('[data-m]'); if(!b) return; e.stopPropagation(); bubbleEl.classList.remove('show'); const m=b.dataset.m;
-  if(m==='breathe') openBreath(null); else if(m==='check') openCheckin(); else if(m==='uke') playUke(); else if(m==='heart') openHeart(); else if(m==='app') setQuiet(false); else if(m==='quiet') setQuiet(true); else if(m==='pet') say('Glisse ton doigt sur mes plumes, tout doucement.'); });
+  if(m==='dance'||m==='flip') playAnim(m); else if(m==='breathe') openBreath(null); else if(m==='check') openCheckin(); else if(m==='uke') playUke(); else if(m==='heart') openHeart(); else if(m==='app') setQuiet(false); else if(m==='quiet') setQuiet(true); else if(m==='pet') say('Glisse ton doigt sur mes plumes, tout doucement.'); });
 
 /* colour ring */
 function ringCenter(){ return {x:innerWidth/2, y:innerHeight/2-10}; }
@@ -821,7 +914,7 @@ function showRing(auto){ const svg=$('#ringsvg'); const W=innerWidth, H=innerHei
 function closeRing(){ RING.open=false; $('#ringbg').hidden=true; $('#ringsvg').setAttribute('hidden',''); }
 $('#ringbg').addEventListener('click', ()=>{ closeRing(); release(); });
 $('#ringsvg').addEventListener('click', e=>{ const g=e.target.closest('.dot'); if(g) pickRing(g.dataset.id); });
-function addEntry(id){ log.push({ts:Date.now(), emo:id, intensity:0, body:[], text:'', acts:[], ring:true}); store.set('log',log); renderHeart(); renderHome(); pushHeart(); }
+function addEntry(id){ log.push({ts:Date.now(), emo:id, intensity:0, body:[], text:'', acts:[], ring:true}); store.set('log',log); renderHeart(); renderHome(); pushHeart(); checkDay(); }
 function pickRing(id){ closeRing(); if(id==='__dark'){ B.asking=false; openCrisis(); setTimeout(release,300); return; }
   const e=EMO.find(m=>m.id===id); addEntry(id); try{ navigator.vibrate && navigator.vibrate(20); }catch(_){}
   if(e.cat==='ok') sayHTML(`<b>${esc(e.ty)}</b> · ${esc(e.fr)}. Noté dans ton cœur. ${['Faʻaitoito !','ʻOaʻoa !','Māuruuru.'][Math.floor(Math.random()*3)]}`, 5000);
@@ -876,7 +969,7 @@ function openHeart(){ const today=todayEntries();
   $('#copyCode').onclick=copyNum;
   $('#shareOn').onchange=e=>{ share.on=e.target.checked; store.set('share',share); if(share.on) pushHeart(); };
   $('#shareName').oninput=e=>{ share.name=e.target.value.trim(); store.set('share',share); };
-  $('#linkBtn').onclick=()=>{ const c=$('#friendCode').value.toUpperCase().replace(/[^A-Z0-9]/g,''); if(c.length!==8){ toast('Le code fait 8 lettres ou chiffres'); return; } if(c===myCode){ toast('Cʼest ton propre code'); return; } if(!friends.some(f=>f.code===c)) friends.push({code:c, name:$('#friendName').value.trim()}); store.set('friends',friends); fetchFriends().then(renderFriends); renderFriends(); $('#friendCode').value=''; $('#friendName').value=''; toast('Cœur lié'); };
+  $('#linkBtn').onclick=()=>{ const c=$('#friendCode').value.toUpperCase().replace(/[^A-Z0-9]/g,''); if(c.length!==8){ toast('Le code fait 8 lettres ou chiffres'); return; } if(c===myCode){ toast('Cʼest ton propre code'); return; } if(!friends.some(f=>f.code===c)) friends.push({code:c, name:$('#friendName').value.trim()}); store.set('friends',friends); if(!store.get('linkBonus',false)){ store.set('linkBonus',true); feathers+=10; store.set('feathers',feathers); renderFeathers(); setTimeout(()=>toast('Premier cœur lié : +10 plumes'),2500); } fetchFriends().then(renderFriends); renderFriends(); $('#friendCode').value=''; $('#friendName').value=''; toast('Cœur lié'); };
   $('#friendList').addEventListener('click', e=>{ const b=e.target.closest('[data-unf]'); if(!b) return; friends.splice(+b.dataset.unf,1); store.set('friends',friends); renderFriends(); });
   const rb=$('#refreshBtn'); if(rb) rb.onclick=()=>{ rb.disabled=true; fetchFriends().then(()=>{ renderFriends(); rb.disabled=false; }); };
   fetchFriends().then(renderFriends); }

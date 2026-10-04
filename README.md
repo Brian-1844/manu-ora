@@ -16,6 +16,29 @@ Ton manu, tes émotions. Un compagnon-oiseau polynésien qui se promène sur l'�
 
 **Limite importante.** Une application web ne peut pas s'afficher *par-dessus* les autres applis du téléphone. Le manu vit donc dans Manu Ora, pas sur l'écran d'accueil ni sur WhatsApp. Pour cela, il faudrait une vraie application Android (permission « Afficher par-dessus d'autres applis ») ; iPhone ne le permet pas du tout.
 
+## Plumes et boutique
+
+Tout est enregistré sur le téléphone (pas de compte, pas d'e-mail, pas de mot de passe). Si la personne efface les données du navigateur ou change de téléphone, les plumes repartent de zéro.
+
+| Pour gagner | Plumes |
+|---|---|
+| Journée complète : une couleur dans le cœur + une activité | 10 |
+| Chaque activité (respirer, caresser, ukulele, point complet), 3 par jour au plus | 1 |
+| Tous les 7 jours d'utilisation (au total, pas forcément d'affilée) | 20 de plus |
+| Premier cœur lié avec un ami | 10 |
+
+| Pour débloquer | Prix |
+|---|---|
+| Couleur de plumage (3 gratuites) | 10 |
+| Tātau | 30 |
+| Parure : hei, pāpale, 'aute, lunettes, pūpū, poe, pāreu (tiare gratuite) | 50 |
+| Animation : 'ori, salto | 100 |
+| Animal : honu | 150 |
+
+Respirer, faire le point et l'aide ne sont jamais verrouillés.
+
+**Veille.** Le manu dort dans son coin (yeux fermés, « z »). Un appui long permet de le prendre et de le poser n'importe où ; il réagit et garde cette place.
+
 ## Lier son cœur à un ami (optionnel)
 
 Le partage des couleurs demande un tout petit serveur. Version gratuite avec Firebase :
