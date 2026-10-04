@@ -7,7 +7,7 @@
 <meta name="description" content="Manu Ora : un compagnon-oiseau polynésien pour nommer ses émotions en reo tahiti et en français, et trouver de l'aide.">
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" href="./icon.svg" type="image/svg+xml">
-<link rel="apple-touch-icon" href="./icon.svg">
+<link rel="apple-touch-icon" href="./icon-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <title>Manu Ora</title>
@@ -266,6 +266,15 @@ body.quiet .app{display:none}
 .opt button.lock{border-style:dashed;opacity:.85}
 .opt button .price{display:block;font-size:.72rem;color:var(--muted);font-weight:700}
 .opt button.on .price{color:#fff}
+.heartbtn.pop svg{animation:hpop .65s ease-out}
+@keyframes hpop{0%{transform:scale(1)}35%{transform:scale(1.5)}60%{transform:scale(.9)}100%{transform:scale(1)}}
+.star{position:absolute;left:0;top:0;width:16px;height:16px;pointer-events:none}
+.star svg{width:100%;height:100%;display:block}
+.petal.fall{animation:fallDown 1.3s ease-in forwards}
+@keyframes fallDown{from{opacity:.95;margin-top:0}to{opacity:0;margin-top:70px}}
+.mrow{display:grid;grid-template-columns:repeat(12,1fr);gap:4px}
+.mrow button{border:1.5px solid var(--line);background:var(--surface);border-radius:8px;padding:6px 0;font-weight:700;font-size:.75rem}
+.mrow button.on{background:var(--lagoon);border-color:var(--lagoon);color:#fff}
 @media (prefers-reduced-motion: reduce){
   .bird .wing,.bird .leg,.bird .bob,.bird .head{animation:none !important}
   .breath .sea{transition:none}
@@ -316,6 +325,8 @@ body.quiet .app{display:none}
           <div class="bars" id="bars"></div>
         </div>
 
+        <div class="card" id="installCard" hidden><h3>Installer Manu Ora</h3><p class="small muted">Ajoute lʼicône du manu sur ton écran dʼaccueil pour lʼouvrir comme une appli.</p><button class="btn primary" id="installBtn2">Installer</button></div>
+
         <div class="note">Manu Ora nʼest pas un soin médical. Si tu vas mal, parle à quelquʼun : le bouton <b>Aide</b> est toujours en haut à droite.</div>
       </div>
     </section>
@@ -341,6 +352,14 @@ body.quiet .app{display:none}
           <div class="preview" id="preview"></div>
           <label class="small muted" for="birdName">Son nom</label>
           <input type="text" id="birdName" maxlength="16" placeholder="Vini">
+        </div>
+        <div class="card">
+          <div class="eyebrow">Tenue du mois</div>
+          <h3 id="seasonName"></h3>
+          <p class="small muted">Chaque mois, ton manu change de tenue et dʼambiance, gratuitement. Si tu portes déjà un chapeau ou un collier, cʼest ton choix qui reste.</p>
+          <div class="opt" id="optSeason"></div>
+          <div class="eyebrow" style="margin-top:6px">Aperçu des autres mois</div>
+          <div class="mrow" id="mrow"></div>
         </div>
         <div class="card">
           <div class="eyebrow">Animal</div>
@@ -418,7 +437,7 @@ body.quiet .app{display:none}
 <div class="quiet" id="quiet">
   <div class="qtop">
     <button class="heartbtn" id="heartBtn" aria-label="Mon cœur aujourdʼhui"></button>
-    <button class="menubtn" id="menuBtn" aria-label="Ouvrir tout Manu Ora">≡</button>
+    <div style="display:flex;gap:8px;align-items:center"><button class="tbtn" id="installBtn" hidden>Installer</button><button class="menubtn" id="menuBtn" aria-label="Ouvrir tout Manu Ora">≡</button></div>
   </div>
   <p class="qhint" id="qhint">Touche deux fois ton manu pour dire comment tu te sens.</p>
 </div>
@@ -507,7 +526,39 @@ let cfg = Object.assign({name:'Vini', body:'#2F7FD8', belly:'#F6F1E7', tattoo:'n
 function shade(hex, f){ const n=parseInt(hex.slice(1),16); let r=n>>16,g=(n>>8)&255,b=n&255; r=Math.round(r*f);g=Math.round(g*f);b=Math.round(b*f); return '#'+[r,g,b].map(v=>Math.max(0,Math.min(255,v)).toString(16).padStart(2,'0')).join(''); }
 function lum(hex){ const n=parseInt(hex.slice(1),16); return (0.299*(n>>16)+0.587*((n>>8)&255)+0.114*(n&255))/255; }
 
+/* ---------- tenue et ambiance du mois ---------- */
+let FORCE_MONTH=null;
+const starPts=(cx,cy,r)=>{ let p=[]; for(let i=0;i<10;i++){ const a=(-90+i*36)*Math.PI/180, rr=i%2?r*.45:r; p.push((cx+rr*Math.cos(a)).toFixed(1)+','+(cy+rr*Math.sin(a)).toFixed(1)); } return p.join(' '); };
+const scarf=(c,dot)=>`<path d="M64 56 Q78 67 93 58 L93 63 Q78 72 64 61 Z" fill="${c}"/><path d="M68 62 L61 77 L70 74 Z" fill="${c}"/><circle cx="74" cy="64" r="1.5" fill="${dot}"/><circle cx="82" cy="65" r="1.5" fill="${dot}"/>`;
+const SEASONS=[
+  {name:'Tau ʻauhune · la verdure', line:'Tout est vert : cʼest le tau ʻauhune, la saison de lʼabondance.', fx:'fern',
+   top:[0,1,2,3,4,5,6,7,8].map(i=>{ const d=196+i*19, a=d*Math.PI/180, x=(82+19*Math.cos(a)).toFixed(1), y=(46+19*Math.sin(a)).toFixed(1); return `<ellipse cx="${x}" cy="${y}" rx="6.5" ry="2.6" transform="rotate(${d+60} ${x} ${y})" fill="${i%2?'#3B8C58':'#5FAE6E'}" stroke="#2A6B41" stroke-width=".5"/>`; }).join('')},
+  {name:'Nouvel an chinois', line:'Kung hei fat choy ! Bonne année.', fx:'confetti', neck:scarf('#D7263D','#F2C94C')},
+  {name:'Abondance · le ʻuru', line:'Les ʻuru sont mûrs. On partage ?', fx:'leaf',
+   top:'<path d="M66 38 Q54 24 60 10 Q65 17 69 12 Q72 20 77 17 Q76 31 66 38 Z" fill="#3B8C58" stroke="#2A6B41" stroke-width=".8"/><path d="M66 38 Q66 24 66 14" stroke="#2A6B41" stroke-width=".8" fill="none"/>'},
+  {name:'Ānuanua (arc-en-ciel)', line:'Après la pluie, lʼānuanua.', fx:'dots',
+   top:['#E4583F','#F0A23A','#F2C94C','#3B8C58','#1AA3B1','#5B6FB8','#8A5BC4'].map((col,i)=>{ const a=(200+i*24)*Math.PI/180; return `<circle cx="${(82+18*Math.cos(a)).toFixed(1)}" cy="${(46+18*Math.sin(a)).toFixed(1)}" r="3.6" fill="${col}"/>`; }).join('')},
+  {name:'Matariʻi i raro · 20 mai', line:'Matariʻi se couche : cʼest le tau oʻe, la terre se repose.', fx:'starfall',
+   top:`<polygon points="${starPts(82,20,8)}" fill="#F2C94C" stroke="#C99A1C" stroke-width=".8"/>`},
+  {name:'Préparatifs du Heiva', line:'On répète pour le Heiva ! Tu danses ?', fx:'note',
+   body:'<g stroke="#E2C27A" stroke-width="3.2" stroke-linecap="round">'+[30,36,42,48,54,60,66,72,78].map(x=>`<line x1="${x}" y1="80" x2="${x-2}" y2="97"/>`).join('')+'</g><path d="M27 80 Q54 86 81 80" stroke="#C8402F" stroke-width="3.5" fill="none" stroke-linecap="round"/>'},
+  {name:'Heiva i Tahiti', line:'Cʼest le Heiva ! ʻOri, hīmene, tūʻaro māʻohi…', fx:'note',
+   top:'<path d="M67 30 L62 5 L73 19 L82 1 L91 19 L102 5 L97 30 Z" fill="#EBD08E" stroke="#B8934A" stroke-width="1"/><rect x="66" y="26" width="32" height="6" rx="2.5" fill="#C8402F"/><circle cx="74" cy="29" r="1.5" fill="#FFF6E3"/><circle cx="82" cy="29" r="1.5" fill="#FFF6E3"/><circle cx="90" cy="29" r="1.5" fill="#FFF6E3"/>'},
+  {name:'Saison des baleines', line:'Les tohorā sont là. Écoute-les chanter.', fx:'bubble', neck:scarf('#2F7FD8','#FFFFFF')},
+  {name:'Vent du maraʻamu', line:'Le maraʻamu souffle, il fait frais !', fx:'wind',
+   neck:'<path d="M90 58 Q76 66 64 58" stroke="#F0A23A" stroke-width="4.5" fill="none" stroke-linecap="round"/><path d="M66 59 Q52 52 42 60 Q33 67 24 58" stroke="#F0A23A" stroke-width="4" fill="none" stroke-linecap="round"/>'},
+  {name:'Hawaiki Nui Vaʻa', line:'Hoe ! Hoe ! Cʼest la grande course de vaʻa.', fx:'wave',
+   body:'<line x1="50" y1="97" x2="76" y2="50" stroke="#8A5A2B" stroke-width="3.2" stroke-linecap="round"/><ellipse cx="47" cy="101" rx="5.5" ry="10" transform="rotate(29 47 101)" fill="#C98A4B" stroke="#8A5A2B" stroke-width="1"/>'},
+  {name:'Matariʻi i niʻa · 20 novembre', line:'Matariʻi se lève : cʼest la fête, le tau ʻauhune revient !', fx:'star',
+   top:`<polygon points="${starPts(70,24,5)}" fill="#F2C94C"/><polygon points="${starPts(82,16,7)}" fill="#F2C94C" stroke="#C99A1C" stroke-width=".8"/><polygon points="${starPts(95,24,5)}" fill="#F2C94C"/>`},
+  {name:'Noël et fête du Tiare', line:'ʻIa ʻoaʻoa i te Noera !', fx:'petal',
+   top:'<path d="M67 31 Q78 4 102 19 Q93 21 97 31 Z" fill="#D7263D"/><rect x="65" y="27" width="34" height="7" rx="3.5" fill="#FFFFFF" stroke="#E8D9B5" stroke-width=".6"/><circle cx="103" cy="19" r="4.5" fill="#FFFFFF" stroke="#E8D9B5" stroke-width=".6"/>'}
+];
+const MONTHS=['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+function monthNow(){ return typeof FORCE_MONTH==='number' ? FORCE_MONTH : new Date().getMonth(); }
+function seasonNow(){ return SEASONS[monthNow()]; }
 function accParts(c){
+  const S = c.season===false ? {} : seasonNow();
   const hei = c.hei ? ['#FFF4C2','#F28CB1','#F0A23A','#FFF4C2','#F28CB1','#F0A23A','#FFF4C2'].map((col,i)=>{ const a=(200+i*24)*Math.PI/180; return `<circle cx="${(82+18*Math.cos(a)).toFixed(1)}" cy="${(46+18*Math.sin(a)).toFixed(1)}" r="3.4" fill="${col}" stroke="#3B8C58" stroke-width=".8"/>`; }).join('') : '';
   const pet = (r,fill,stroke)=>[0,72,144,216,288].map(a=>`<circle cx="${(4.6*Math.cos(a*Math.PI/180)).toFixed(1)}" cy="${(4.6*Math.sin(a*Math.PI/180)).toFixed(1)}" r="${r}" fill="${fill}" stroke="${stroke}" stroke-width=".6"/>`).join('');
   const flower = c.aute ? `<g transform="translate(66 36)">${pet(4.3,'#E0303A','#A81E28')}<circle r="1.8" fill="#8E1420"/><line x1="0" y1="0" x2="5" y2="-7" stroke="#F2C94C" stroke-width="1.6" stroke-linecap="round"/><circle cx="5" cy="-7" r="1.5" fill="#F2C94C"/></g>`
@@ -516,7 +567,8 @@ function accParts(c){
   const titia = c.titia ? `<g><line x1="83" y1="40" x2="66" y2="38" stroke="#10202A" stroke-width="2" stroke-linecap="round"/><rect x="82" y="37" width="15" height="9.5" rx="3.6" fill="#10202A"/><line x1="85" y1="39.6" x2="90" y2="39.6" stroke="#fff" stroke-width="1" opacity=".55" stroke-linecap="round"/></g>` : '';
   const beads = (fill,stroke,shine)=>[0,1,2,3,4,5].map(i=>{ const x=64+i*5.2, y=56+Math.sin(i/5*Math.PI)*5; return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="2.4" fill="${fill}" stroke="${stroke}" stroke-width=".7"/>${shine?`<circle cx="${(x-.7).toFixed(1)}" cy="${(y-.8).toFixed(1)}" r=".7" fill="#fff" opacity=".7"/>`:''}`; }).join('');
   const neck = c.poe ? beads('#38414F','#8FB3B8',true) : c.pupu ? beads('#FFF6E3','#C9B890',false) : '';
-  return {top: hei+papale+flower, eyes: titia, neck};
+  const userHat = c.hei||c.papale;
+  return {top: hei+papale+flower+(userHat?'':(S.top||'')), eyes: titia, neck: neck||S.neck||'', body: S.body||''};
 }
 function birdSVG(c, id){
   const wing = shade(c.body, .78), ink = lum(c.body) > .55 ? '#10303B' : '#F4EFE4';
@@ -538,7 +590,7 @@ function birdSVG(c, id){
     return head + `
     <g class="tail"><polygon points="22,72 6,78 22,82" fill="${skin}"/></g>
     <g class="legs"><g class="leg l1"><ellipse cx="32" cy="90" rx="11" ry="5" transform="rotate(28 32 90)" fill="${skin}"/></g><g class="leg l2"><ellipse cx="64" cy="93" rx="11" ry="5" transform="rotate(-18 64 93)" fill="${skin}"/></g></g>
-    <g class="body"><ellipse cx="52" cy="85" rx="28" ry="7" fill="${c.belly}"/><ellipse cx="52" cy="70" rx="32" ry="20" fill="${c.body}"/><path d="M38 52 L44 70 L38 90 M66 52 L60 70 L66 90 M44 70 L60 70 M20 70 L44 70 M60 70 L84 70" fill="none" stroke="${line}" stroke-width="1.6" clip-path="url(#${id}-clip)"/>${tattoo}${pareu}</g>
+    <g class="body"><ellipse cx="52" cy="85" rx="28" ry="7" fill="${c.belly}"/><ellipse cx="52" cy="70" rx="32" ry="20" fill="${c.body}"/><path d="M38 52 L44 70 L38 90 M66 52 L60 70 L66 90 M44 70 L60 70 M20 70 L44 70 M60 70 L84 70" fill="none" stroke="${line}" stroke-width="1.6" clip-path="url(#${id}-clip)"/>${tattoo}${pareu}${A.body}</g>
     ${uke}
     <g class="wing"><ellipse cx="70" cy="85" rx="15" ry="6" transform="rotate(32 70 85)" fill="${skin}"/></g>
     <g transform="translate(31 25) scale(.72)">${A.neck}</g>
@@ -551,14 +603,14 @@ function birdSVG(c, id){
       <g class="leg l1"><line x1="48" y1="88" x2="46" y2="103" stroke="#F0A23A" stroke-width="3" stroke-linecap="round"/><polyline points="38,104 46,103 54,105" fill="none" stroke="#F0A23A" stroke-width="3" stroke-linecap="round"/></g>
       <g class="leg l2"><line x1="58" y1="88" x2="60" y2="103" stroke="#D98B2B" stroke-width="3" stroke-linecap="round"/><polyline points="52,104 60,103 68,105" fill="none" stroke="#D98B2B" stroke-width="3" stroke-linecap="round"/></g>
     </g>
-    <g class="body"><ellipse cx="55" cy="68" rx="30" ry="24" fill="${c.body}"/><ellipse cx="60" cy="74" rx="18" ry="14" fill="${c.belly}"/>${tattoo}${pareu}</g>
+    <g class="body"><ellipse cx="55" cy="68" rx="30" ry="24" fill="${c.body}"/><ellipse cx="60" cy="74" rx="18" ry="14" fill="${c.belly}"/>${tattoo}${pareu}${A.body}</g>
     ${uke}
     <g class="wing"><ellipse cx="44" cy="66" rx="19" ry="11" transform="rotate(-18 44 66)" fill="${wing}"/><ellipse cx="40" cy="64" rx="12" ry="6" transform="rotate(-18 40 64)" fill="${shade(c.body,.9)}"/></g>
     ${A.neck}
     <g class="head"><circle cx="82" cy="46" r="18" fill="${c.body}"/><circle cx="84" cy="52" r="9" fill="${c.belly}" opacity=".9"/><polygon points="98,45 114,50 98,55" fill="#F0A23A"/><circle cx="92" cy="50" r="3.6" fill="#F28CB1" opacity=".6"/><g class="eye"><circle cx="89" cy="42" r="4.2" fill="#10303B"/><circle cx="90.5" cy="40.5" r="1.4" fill="#fff"/></g>${A.top}${A.eyes}</g>
   </svg>`;
 }
-function renderBird(){ $('#birdFlip').innerHTML = birdSVG(cfg,'live'); $('#preview').innerHTML = birdSVG(cfg,'pv'); }
+function renderBird(){ $('#birdFlip').innerHTML = birdSVG(cfg,'live'); $('#preview').innerHTML = birdSVG(cfg,'pv'); try{ if(window.ManuNative) window.ManuNative.setBird(birdSVG(cfg,'nat')); }catch(e){} }
 
 /* ---------- bird motion ---------- */
 const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -594,7 +646,7 @@ function loop(ts){
 }
 /* bubble */
 const LINES = ['Un petit air de ukulele ?','Caresse-moi doucement, ça apaise.','ʻIa ora na !','E aha tō ʻoe huru ?','Je suis là.','Un petit point ensemble ?','Regarde la mer deux secondes.','Faʻaitoito !','Tu as bu de lʼeau aujourdʼhui ?','ʻAita peʻapeʻa, on y va doucement.'];
-function randomLine(){ return LINES[Math.floor(Math.random()*LINES.length)]; }
+function randomLine(){ if(cfg.season!==false && Math.random()<.3) return seasonNow().line; return LINES[Math.floor(Math.random()*LINES.length)]; }
 function say(txt, cta){ bubbleEl.innerHTML = esc(txt) + (cta?`<span class="cta">${esc(cta)}</span>`:''); bubbleEl.classList.add('show'); placeBubble(); clearTimeout(say.t); say.t=setTimeout(()=>bubbleEl.classList.remove('show'), 4200); }
 function placeBubble(){ if(!bubbleEl.classList.contains('show')) return; const bw=bubbleEl.offsetWidth, bh=bubbleEl.offsetHeight; let x=B.x+10, right=false; if(x+bw>innerWidth-8){ x=B.x+BW-bw-10; right=true; } x=Math.max(8,x); let y=B.y-bh-14; if(y<4){ y=B.y+BH+10; } bubbleEl.style.transform=`translate(${x}px,${y}px)`; bubbleEl.classList.toggle('right',right); }
 setInterval(()=>{ if(B.state==='idle' && !RING.open && !B.asking && !birdEl.classList.contains('sleeping') && Math.random()<(QUIET?.12:.45) && $('#sheet').hidden && $('#crisis').hidden && $('#breath').hidden) say(randomLine(), QUIET?'Touche-moi deux fois pour dire comment tu vas':'Touche-moi pour faire le point'); }, 14000);
@@ -683,6 +735,26 @@ function renderWords(){
 }
 
 /* ---------- customize ---------- */
+/* ambiance du mois : une petite particule de temps en temps */
+function seasonFx(){ if(cfg.season===false || RM) return; const k=seasonNow().fx; const d=document.createElement('div'); d.className='petal'+(k==='starfall'?' fall':'');
+  const col={rain:'#5B9BE0',drop:'#5B9BE0',bubble:'#9FD8E6',leaf:'#3B8C58',wind:'#9FBBC1'}[k]||'#F2C94C';
+  const dots=['#E4583F','#F0A23A','#F2C94C','#3B8C58','#1AA3B1','#8A5BC4']; const rc=dots[Math.floor(Math.random()*dots.length)];
+  const shapes={
+    rain:`<path d="M10 2 Q16 11 10 17 Q4 11 10 2 Z" fill="${col}"/>`, drop:`<path d="M10 2 Q16 11 10 17 Q4 11 10 2 Z" fill="${col}"/>`,
+    fern:`<path d="M3 18 Q8 10 17 2" fill="none" stroke="#2A6B41" stroke-width="1.6" stroke-linecap="round"/><g stroke="${Math.random()<.5?'#3B8C58':'#5FAE6E'}" stroke-width="2.2" stroke-linecap="round"><path d="M6 14 L2 11 M6 14 L10 16 M9 10.5 L5 7 M9 10.5 L13.5 12.5 M12 7 L8.5 3.5 M12 7 L16 8.5"/></g>`,
+    wave:`<path d="M2 8 Q6 3 10 8 T18 8 M2 14 Q6 9 10 14 T18 14" fill="none" stroke="#1AA3B1" stroke-width="2" stroke-linecap="round"/>`,
+    starfall:`<polygon points="${starPts(10,10,8)}" fill="#F2C94C"/>`,
+    bubble:`<circle cx="10" cy="10" r="6" fill="none" stroke="${col}" stroke-width="2"/><circle cx="8" cy="8" r="1.5" fill="${col}"/>`,
+    leaf:`<path d="M3 15 Q4 4 16 3 Q16 14 3 15 Z" fill="${col}"/>`,
+    wind:`<path d="M2 8 Q8 3 13 8 T18 8 M3 14 Q8 10 12 14" fill="none" stroke="${col}" stroke-width="2" stroke-linecap="round"/>`,
+    star:`<polygon points="${starPts(10,10,8)}" fill="#F2C94C"/>`,
+    confetti:`<rect x="5" y="6" width="9" height="6" rx="1" transform="rotate(${Math.random()*90} 10 10)" fill="${Math.random()<.5?'#D7263D':'#F2C94C'}"/>`,
+    dots:`<circle cx="10" cy="10" r="5" fill="${rc}"/>`,
+    note:`<path d="M8 3v10.2a3 3 0 1 1-1.6-2.6V5.6l8-2v7.6a3 3 0 1 1-1.6-2.6V2Z" fill="#1AA3B1"/>`,
+    petal:`<g transform="translate(10 10)"><circle cx="4" r="3" fill="#fff" stroke="#E8D9B5" stroke-width=".5"/><circle cx="1.2" cy="3.8" r="3" fill="#fff" stroke="#E8D9B5" stroke-width=".5"/><circle cx="-3.2" cy="2.4" r="3" fill="#fff" stroke="#E8D9B5" stroke-width=".5"/><circle cx="-3.2" cy="-2.4" r="3" fill="#fff" stroke="#E8D9B5" stroke-width=".5"/><circle cx="1.2" cy="-3.8" r="3" fill="#fff" stroke="#E8D9B5" stroke-width=".5"/><circle r="1.8" fill="#F2C94C"/></g>`};
+  d.innerHTML=`<svg viewBox="0 0 20 20">${shapes[k]||shapes.star}</svg>`;
+  d.style.transform=`translate(${B.x+10+Math.random()*(BW-30)}px,${B.y-(d.className.includes('fall')?34:4)}px)`; $('#birdlayer').appendChild(d); setTimeout(()=>d.remove(),1600); }
+setInterval(()=>{ if(B.state==='idle' && !RING.open && $('#sheet').hidden && $('#crisis').hidden && $('#breath').hidden && Math.random()<.7) seasonFx(); }, 3200);
 /* ---------- feathers, shop ---------- */
 const PRICE={c:10,t:30,a:50,x:100,an:150};
 const FREE=new Set(['c:#2F7FD8','c:#1AA3B1','c:#3B8C58','t:none','a:tiare','an:manu']);
@@ -716,6 +788,9 @@ function renderCustom(){
   $('#optAcc').innerHTML = Object.keys(ACC).map(k=>optBtn('a:'+k,PRICE.a,k,ACC[k],!!cfg[k])).join('');
   $('#optAnim').innerHTML = Object.keys(ANIM).map(k=>optBtn('x:'+k,PRICE.x,k,ANIM[k]+(has('x:'+k)?' ▶':''),false)).join('');
   $('#optCorner').innerHTML = [['tl','Haut gauche'],['tr','Haut droite'],['bl','Bas gauche'],['br','Bas droite']].map(([k,l])=>`<button class="${!cfg.spot&&(cfg.corner||'br')===k?'on':''}" data-k="${k}">${l}</button>`).join('');
+  $('#seasonName').textContent = MONTHS[monthNow()]+' · '+seasonNow().name;
+  $('#optSeason').innerHTML = `<button class="${cfg.season!==false?'on':''}" data-k="on">Porter la tenue du mois</button><button class="${cfg.season===false?'on':''}" data-k="off">Sans tenue</button>`;
+  $('#mrow').innerHTML = MONTHS.map((m,i)=>`<button class="${monthNow()===i?'on':''}" data-m="${i}" aria-label="${m}">${m[0]}</button>`).join('');
   renderFeathers(); renderBird();
 }
 function saveCfg(){ store.set('cfg',cfg); renderCustom(); }
@@ -724,6 +799,8 @@ $('#swBelly').addEventListener('click', e=>{ const b=e.target.closest('[data-c]'
 $('#optTattoo').addEventListener('click', e=>{ const b=e.target.closest('[data-k]'); if(b){ const k=b.dataset.k; tryUse('t:'+k,PRICE.t,TATTOO[k],()=>{ cfg.tattoo=k; saveCfg(); }); } });
 $('#optCorner').addEventListener('click', e=>{ const b=e.target.closest('[data-k]'); if(b){ cfg.corner=b.dataset.k; cfg.spot=null; saveCfg(); if(QUIET) goHome(); } });
 $('#optAcc').addEventListener('click', e=>{ const b=e.target.closest('[data-k]'); if(b){ const k=b.dataset.k; tryUse('a:'+k,PRICE.a,ACC[k],()=>{ cfg[k]=!cfg[k]; if(cfg[k]&&RIVAL[k]) cfg[RIVAL[k]]=false; saveCfg(); }); } });
+$('#optSeason').addEventListener('click', e=>{ const b=e.target.closest('[data-k]'); if(b){ cfg.season = b.dataset.k==='on'; saveCfg(); } });
+$('#mrow').addEventListener('click', e=>{ const b=e.target.closest('[data-m]'); if(b){ const i=+b.dataset.m; FORCE_MONTH = (i===new Date().getMonth()) ? null : i; renderCustom(); say(seasonNow().line); } });
 $('#optAnimal').addEventListener('click', e=>{ const b=e.target.closest('[data-k]'); if(b){ const k=b.dataset.k; tryUse('an:'+k,PRICE.an,ANIMAL[k],()=>{ cfg.animal=k; saveCfg(); }); } });
 $('#optAnim').addEventListener('click', e=>{ const b=e.target.closest('[data-k]'); if(b){ const k=b.dataset.k; tryUse('x:'+k,PRICE.x,ANIM[k],()=>{ renderCustom(); playAnim(k); }); } });
 $('#birdName').addEventListener('input', e=>{ cfg.name=e.target.value.trim()||'Vini'; store.set('cfg',cfg); });
@@ -809,7 +886,7 @@ function step3(){
   sheetInner.querySelectorAll('[data-run]').forEach(b=>b.onclick=()=>runAct(b.dataset.run));
   $('#done').onclick=()=>{ finish(); toast('Point enregistré. Māuruuru.'); say('Māuruuru. Je suis là demain aussi.'); };
 }
-function finish(){ if(!cur) return; log.push(cur); store.set('log',log); cur=null; closeSheet(); renderHome(); renderHeart(); pushHeart(); checkDay(); }
+function finish(){ if(!cur) return; log.push(cur); store.set('log',log); cur=null; closeSheet(); renderHome(); renderHeart(); pushHeart(); checkDay(); heartFx(); }
 function award(a){ const k=dayKey(Date.now()); let ad=store.get('actDay',{k:'',n:0}); if(ad.k!==k) ad={k,n:0}; let got=false; if(ad.n<3){ ad.n++; feathers++; got=true; store.set('feathers',feathers); } store.set('actDay',ad);
   if(cur){ if(!cur.acts.includes(a)) cur.acts.push(a); } else { log.push({ts:Date.now(), emo:'hau', intensity:0, body:[], text:'', acts:[a], quick:true}); store.set('log',log); } renderHome(); if(got) toast('Une plume gagnée'); checkDay(); }
 
@@ -914,7 +991,7 @@ function showRing(auto){ const svg=$('#ringsvg'); const W=innerWidth, H=innerHei
 function closeRing(){ RING.open=false; $('#ringbg').hidden=true; $('#ringsvg').setAttribute('hidden',''); }
 $('#ringbg').addEventListener('click', ()=>{ closeRing(); release(); });
 $('#ringsvg').addEventListener('click', e=>{ const g=e.target.closest('.dot'); if(g) pickRing(g.dataset.id); });
-function addEntry(id){ log.push({ts:Date.now(), emo:id, intensity:0, body:[], text:'', acts:[], ring:true}); store.set('log',log); renderHeart(); renderHome(); pushHeart(); checkDay(); }
+function addEntry(id){ log.push({ts:Date.now(), emo:id, intensity:0, body:[], text:'', acts:[], ring:true}); store.set('log',log); renderHeart(); renderHome(); pushHeart(); checkDay(); heartFx(); }
 function pickRing(id){ closeRing(); if(id==='__dark'){ B.asking=false; openCrisis(); setTimeout(release,300); return; }
   const e=EMO.find(m=>m.id===id); addEntry(id); try{ navigator.vibrate && navigator.vibrate(20); }catch(_){}
   if(e.cat==='ok') sayHTML(`<b>${esc(e.ty)}</b> · ${esc(e.fr)}. Noté dans ton cœur. ${['Faʻaitoito !','ʻOaʻoa !','Māuruuru.'][Math.floor(Math.random()*3)]}`, 5000);
@@ -927,6 +1004,14 @@ function quietFree(){ return QUIET && !RING.open && $('#sheet').hidden && $('#cr
 setInterval(()=>{ if(!quietFree()) return; const now=Date.now(); if(now-lastEntryTs()>ASK_EVERY && now-lastAsk>ASK_EVERY){ lastAsk=now; store.set('lastAsk',lastAsk); askRing(true); } }, 30000);
 setTimeout(()=>{ if(quietFree() && Date.now()-lastEntryTs()>ASK_EVERY && Date.now()-lastAsk>20*60e3){ lastAsk=Date.now(); store.set('lastAsk',lastAsk); askRing(true); } }, 12000);
 
+function heartFx(){ const hb=$('#heartBtn'); if(!hb) return; const r=hb.getBoundingClientRect(); if(!r.width) return; const last=todayEntries().slice(-1)[0]; const m=last&&EMO.find(x=>x.id===last.emo); const col=m?m.color:'#F2C94C';
+  hb.classList.remove('pop'); void hb.offsetWidth; hb.classList.add('pop'); setTimeout(()=>hb.classList.remove('pop'),700);
+  if(RM) return; const cx=r.left+r.width/2-8, cy=r.top+r.height/2-8, n=9;
+  for(let i=0;i<n;i++){ const s=document.createElement('div'); s.className='star'; const c=i%3===0?'#F2C94C':i%3===1?col:'#FFFFFF';
+    s.innerHTML=`<svg viewBox="0 0 20 20"><path d="M10 1 L12.4 7.2 L19 7.6 L13.9 11.8 L15.6 18.3 L10 14.7 L4.4 18.3 L6.1 11.8 L1 7.6 L7.6 7.2 Z" fill="${c}" stroke="${col}" stroke-width=".8"/></svg>`;
+    $('#birdlayer').appendChild(s); const a=(-20+i*(200/(n-1)))*Math.PI/180+ (Math.random()*.3-.15), d=42+Math.random()*34, sc=.6+Math.random()*.7;
+    const an=s.animate([{transform:`translate(${cx}px,${cy}px) scale(.2) rotate(0deg)`,opacity:1},{transform:`translate(${cx+Math.cos(a)*d*.7}px,${cy+Math.sin(a)*d*.7}px) scale(${sc}) rotate(90deg)`,opacity:1,offset:.6},{transform:`translate(${cx+Math.cos(a)*d}px,${cy+Math.sin(a)*d+10}px) scale(${sc*.6}) rotate(160deg)`,opacity:0}],{duration:900+Math.random()*300,delay:i*25,easing:'ease-out',fill:'both'});
+    an.onfinish=()=>s.remove(); setTimeout(()=>s.remove(),1800); } }
 /* heart */
 const HP='M20 33 C6 24 1 15 5 8 C8 2 16 2 20 9 C24 2 32 2 35 8 C39 15 34 24 20 33 Z';
 function heartSVG(entries,id,size){ const n=entries.length, w=40; const rects=entries.map((e,i)=>{ const m=EMO.find(x=>x.id===(e.emo||e.e)); return `<rect x="${(i*w/n).toFixed(2)}" y="0" width="${(w/n+0.6).toFixed(2)}" height="36" fill="${m?m.color:'#999'}"/>`; }).join('');
@@ -973,6 +1058,24 @@ function openHeart(){ const today=todayEntries();
   $('#friendList').addEventListener('click', e=>{ const b=e.target.closest('[data-unf]'); if(!b) return; friends.splice(+b.dataset.unf,1); store.set('friends',friends); renderFriends(); });
   const rb=$('#refreshBtn'); if(rb) rb.onclick=()=>{ rb.disabled=true; fetchFriends().then(()=>{ renderFriends(); rb.disabled=false; }); };
   fetchFriends().then(renderFriends); }
+
+/* ---------- install button ---------- */
+const CAN_INSTALL = !!document.querySelector('link[rel="manifest"]');
+const STANDALONE = matchMedia('(display-mode: standalone)').matches || navigator.standalone===true;
+let deferredInstall=null;
+function setInstall(on){ const a=$('#installBtn'), c=$('#installCard'); if(a) a.hidden=!on; if(c) c.hidden=!on; }
+window.addEventListener('beforeinstallprompt', e=>{ e.preventDefault(); deferredInstall=e; if(!STANDALONE) setInstall(true); });
+window.addEventListener('appinstalled', ()=>{ deferredInstall=null; setInstall(false); toast('Manu Ora est installé sur ton écran dʼaccueil'); });
+function doInstall(){
+  if(deferredInstall){ const p=deferredInstall; p.prompt(); p.userChoice.then(r=>{ if(r && r.outcome==='accepted') setInstall(false); deferredInstall=null; }).catch(()=>{}); return; }
+  const ua=navigator.userAgent||''; const ios=/iPhone|iPad|iPod/.test(ua); const android=/Android/.test(ua);
+  const steps = ios ? ['Ouvre cette page dans <b>Safari</b>.','Touche le bouton <b>Partager</b> (le carré avec une flèche vers le haut).','Choisis <b>« Sur lʼécran dʼaccueil »</b>, puis <b>Ajouter</b>.']
+    : android ? ['Touche le menu <b>⋮</b> en haut à droite du navigateur.','Choisis <b>« Ajouter à lʼécran dʼaccueil »</b> ou <b>« Installer lʼapplication »</b>.','Confirme avec <b>Installer</b>.']
+    : ['Dans la barre dʼadresse, clique sur lʼicône <b>Installer</b> (un écran avec une flèche).','Sinon : menu du navigateur → <b>« Installer Manu Ora »</b>.'];
+  openSheet(`<div class="head"><h2>Installer Manu Ora</h2><button class="x" id="sx" aria-label="Fermer">×</button></div><p class="small muted">Lʼicône du manu apparaîtra sur ton écran dʼaccueil, et Manu Ora sʼouvrira comme une appli.</p><div class="stack">${steps.map((t,i)=>`<div class="card flat"><p><b>${i+1}.</b> ${t}</p></div>`).join('')}</div><button class="btn" id="instOk">Compris</button>`);
+  $('#sx').onclick=closeSheet; $('#instOk').onclick=closeSheet; }
+$('#installBtn').onclick=doInstall; $('#installBtn2').onclick=doInstall;
+if(CAN_INSTALL && !STANDALONE) setInstall(true);
 
 /* ---------- boot ---------- */
 function start(){
