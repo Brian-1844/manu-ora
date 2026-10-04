@@ -50,8 +50,10 @@ Le partage des couleurs demande un tout petit serveur. Version gratuite avec Fir
 5. Onglet « Règles » de la base, remplacer par :
 
 ```json
-{ "rules": { "hearts": { "$code": { ".read": true, ".write": true, ".validate": "newData.hasChildren(['day','entries','updated'])" } } } }
+{ "rules": { "hearts": { "$code": { ".read": true, ".write": true, ".validate": "newData.hasChildren(['day','updated'])" } }, "visits": { "$to": { ".read": true, "$from": { ".write": true, ".validate": "newData.hasChildren(['g','t'])" } } } } }
 ```
+
+**Rencontre des manu.** Quand deux personnes ont chacune entré le code de l'autre et coché « Partager », un bouton « Envoyer un signe » apparaît (salut, câlin, fleur de tiare, air de ukulele). Le manu de l'ami vient alors en visite sur l'écran de l'autre, avec son apparence et la couleur de son cœur du jour. Pas de messages écrits : uniquement ces gestes.
 
 Ensuite, dans l'appli : cœur → « Cœurs liés » → cocher « Partager », donner son code à l'ami, et entrer le sien. Seules les couleurs du jour sont partagées (jamais les notes), sous un code aléatoire sans nom ni téléphone. C'est un prototype : pour une vraie mise en service, prévoir des règles d'accès plus strictes.
 
