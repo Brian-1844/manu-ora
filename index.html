@@ -282,6 +282,11 @@ body.quiet .app{display:none}
 .qfeather svg{width:18px;height:18px}
 .gauge{height:12px;border-radius:99px;background:var(--surface-2);overflow:hidden}
 .gaugeFill{height:100%;width:0;border-radius:99px;background:var(--sun);transition:width .5s}
+.plots{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.plot{background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:8px 6px;display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;min-width:0}
+.plot svg{width:100%;max-width:86px;height:auto}
+.plot .btn{width:100%;padding:6px 4px;font-size:.78rem;border-radius:10px}
+.plot b{font-family:var(--display);font-weight:600}
 @media (prefers-reduced-motion: reduce){
   .bird .wing,.bird .leg,.bird .bob,.bird .head{animation:none !important}
   .breath .sea{transition:none}
@@ -331,6 +336,8 @@ body.quiet .app{display:none}
           <p class="small muted">Un vaʻa tient grâce à ses quatre parties. Chaque activité faite nourrit lʼune dʼelles.</p>
           <div class="bars" id="bars"></div>
         </div>
+
+        <div class="card"><h3>Ton faʻaʻapu</h3><p class="small muted" id="gardenHome">Plante une graine et reviens la voir pousser.</p><button class="btn" id="gardenBtn">Entrer dans le jardin</button></div>
 
         <div class="card" id="installCard" hidden><h3>Installer Manu Ora</h3><p class="small muted">Ajoute lʼicône du manu sur ton écran dʼaccueil pour lʼouvrir comme une appli.</p><button class="btn primary" id="installBtn2">Installer</button></div>
 
@@ -445,7 +452,7 @@ body.quiet .app{display:none}
 
 <div class="quiet" id="quiet">
   <div class="qtop">
-    <div style="display:flex;gap:6px;align-items:center"><button class="heartbtn" id="heartBtn" aria-label="Mon cœur aujourdʼhui"></button><button class="qfeather" id="qfeather" aria-label="Mes plumes"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 3C12 3 6 8 5 16l-2 5 2-.5C9 20 13 19 16 15c2-3 4-7 4-12Z" fill="currentColor" opacity=".25"/><path d="M20 3C12 3 6 8 5 16l-2 5M5 16c4-1 8-4 11-9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span id="qfeatherN">0</span></button></div>
+    <div style="display:flex;gap:6px;align-items:center"><button class="heartbtn" id="heartBtn" aria-label="Mon cœur aujourdʼhui"></button><button class="qfeather" id="qfeather" aria-label="Mes plumes"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 3C12 3 6 8 5 16l-2 5 2-.5C9 20 13 19 16 15c2-3 4-7 4-12Z" fill="currentColor" opacity=".25"/><path d="M20 3C12 3 6 8 5 16l-2 5M5 16c4-1 8-4 11-9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span id="qfeatherN">0</span></button><button class="qfeather" id="qgarden" aria-label="Mon faʻaʻapu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21V11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M12 12C12 7 8 5 4 5c0 5 3 8 8 7Z" fill="currentColor" opacity=".3" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M12 15c0-4 3-6 8-6 0 5-3 7-8 6Z" fill="currentColor" opacity=".3" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg><span id="qgardenN"></span></button></div>
     <div style="display:flex;gap:8px;align-items:center"><button class="tbtn" id="installBtn" hidden>Installer</button><button class="menubtn" id="menuBtn" aria-label="Ouvrir tout Manu Ora">≡</button></div>
   </div>
   <p class="qhint" id="qhint">Touche deux fois ton manu pour dire comment tu te sens.</p>
@@ -782,7 +789,7 @@ function renderFeathers(){ const t=feathers+(feathers===1?' plume':' plumes'); [
 function checkDay(){ const k=dayKey(Date.now()); if(days.includes(k)) return; const ents=log.filter(l=>dayKey(l.ts)===k);
   if(ents.some(l=>!l.quick) && ents.some(l=>(l.acts||[]).length)){ days.push(k); store.set('days',days); let gain=10, msg='Journée complète : +10 plumes';
     if(days.length%7===0){ gain=30; msg=days.length+' jours avec ton manu : +30 plumes'; }
-    feathers+=gain; store.set('feathers',feathers); renderFeathers(); setTimeout(()=>toast(msg),2500); } }
+    feathers+=gain; store.set('feathers',feathers); const sd=addSeed(); msg+=' · 1 graine de '+PLANTS[sd].name; renderFeathers(); setTimeout(()=>toast(msg),2500); } }
 function tryUse(id,price,label,apply){ if(has(id)){ apply(); return; }
   if(feathers<price){ const m=price-feathers; toast(`Il te manque ${m} plume${m>1?'s':''} pour « ${label} »`); return; }
   openSheet(`<div class="head"><h2>Débloquer ?</h2><button class="x" id="sx" aria-label="Fermer">×</button></div><p><b>${esc(label)}</b> coûte ${price} plumes. Tu en as ${feathers}.</p><div class="row"><button class="btn ghost" id="buyNo">Pas maintenant</button><button class="btn primary" id="buyYes">Débloquer</button></div>`);
@@ -988,9 +995,9 @@ function quietMove(){ if(B.asking){ idle(2); return; } const hm=homePoint(); if(
 function setQuiet(on){ QUIET=on; store.set('quiet',on); document.body.classList.toggle('quiet',on); closeRing(); bubbleEl.classList.remove('show'); B.asking=false; B.afterIdle=null; B.onArrive=null;
   if(on){ renderHeart(); goHome(); } else { B.perched=false; renderHome(); startFly({x:Math.min(60,innerWidth-BW-8), y:groundY()}); } }
 function sayHTML(html, ms){ bubbleEl.innerHTML=html; bubbleEl.classList.add('show'); placeBubble(); clearTimeout(say.t); say.t=setTimeout(()=>bubbleEl.classList.remove('show'), ms||6000); }
-function miniMenu(){ sayHTML(`${esc(randomLine())}<div class="mini"><button data-m="check">Faire le point</button><button data-m="breathe">Respirer</button><button data-m="uke">Ukulele</button><button data-m="heart">Mon cœur</button>${has('x:dance')?'<button data-m="dance">Danser</button>':''}${has('x:flip')?'<button data-m="flip">Salto</button>':''}${QUIET?'<button data-m="app">Tout Manu Ora</button>':'<button data-m="quiet">Mode veille</button>'}</div>`, 9000); }
+function miniMenu(){ sayHTML(`${esc(randomLine())}<div class="mini"><button data-m="check">Faire le point</button><button data-m="breathe">Respirer</button><button data-m="uke">Ukulele</button><button data-m="heart">Mon cœur</button><button data-m="garden">Faʻaʻapu</button>${has('x:dance')?'<button data-m="dance">Danser</button>':''}${has('x:flip')?'<button data-m="flip">Salto</button>':''}${QUIET?'<button data-m="app">Tout Manu Ora</button>':'<button data-m="quiet">Mode veille</button>'}</div>`, 9000); }
 bubbleEl.addEventListener('click', e=>{ const b=e.target.closest('[data-m]'); if(!b) return; e.stopPropagation(); bubbleEl.classList.remove('show'); const m=b.dataset.m;
-  if(m==='dance'||m==='flip') playAnim(m); else if(m==='breathe') openBreath(null); else if(m==='check') openCheckin(); else if(m==='uke') playUke(); else if(m==='heart') openHeart(); else if(m==='app') setQuiet(false); else if(m==='quiet') setQuiet(true); else if(m==='pet') say('Glisse ton doigt sur mes plumes, tout doucement.'); });
+  if(m==='garden') openGarden(); else if(m==='dance'||m==='flip') playAnim(m); else if(m==='breathe') openBreath(null); else if(m==='check') openCheckin(); else if(m==='uke') playUke(); else if(m==='heart') openHeart(); else if(m==='app') setQuiet(false); else if(m==='quiet') setQuiet(true); else if(m==='pet') say('Glisse ton doigt sur mes plumes, tout doucement.'); });
 
 /* colour ring */
 function ringCenter(){ return {x:innerWidth/2, y:innerHeight/2-10}; }
@@ -1016,6 +1023,7 @@ $('#quiet').addEventListener('pointerup', e=>{ if(e.target.closest('button')) re
 $('#menuBtn').onclick=()=>setQuiet(false);
 $('#heartBtn').onclick=openHeart;
 $('#qfeather').onclick=()=>{ setQuiet(false); showTab('bird'); };
+$('#qgarden').onclick=()=>openGarden();
 function quietFree(){ return QUIET && !RING.open && $('#sheet').hidden && $('#crisis').hidden && $('#breath').hidden && !UKE.on && !PET.active; }
 setInterval(()=>{ if(!quietFree()) return; const now=Date.now(); if(now-lastEntryTs()>ASK_EVERY && now-lastAsk>ASK_EVERY){ lastAsk=now; store.set('lastAsk',lastAsk); askRing(true); } }, 30000);
 setTimeout(()=>{ if(quietFree() && Date.now()-lastEntryTs()>ASK_EVERY && Date.now()-lastAsk>20*60e3){ lastAsk=Date.now(); store.set('lastAsk',lastAsk); askRing(true); } }, 12000);
@@ -1092,7 +1100,7 @@ function openHeart(){ const today=todayEntries();
   fetchFriends().then(renderFriends); }
 
 /* ---------- rencontres entre manu (accord des deux requis) ---------- */
-const GEST={salut:{l:'Salut', t:'te dit ʻIa ora na !'}, calin:{l:'Câlin', t:'te fait un câlin.'}, tiare:{l:'Fleur de tiare', t:'tʼoffre une tiare.'}, uke:{l:'Air de ukulele', t:'te joue un air de ukulele.'}, aide:{l:'', t:'est venu te chercher : ton ami·e a besoin de toi.'}};
+const GEST={salut:{l:'Salut', t:'te dit ʻIa ora na !'}, calin:{l:'Câlin', t:'te fait un câlin.'}, tiare:{l:'Fleur de tiare', t:'tʼoffre une tiare.'}, uke:{l:'Air de ukulele', t:'te joue un air de ukulele.'}, aide:{l:'', t:'est venu te chercher : ton ami·e a besoin de toi.'}, don:{l:'', t:'tʼapporte un cadeau du faʻaʻapu.'}};
 const VIS={queue:[],busy:false};
 let seenV=store.get('seenV',{});
 function cleanCfg(c){ c=c||{}; const hex=v=>typeof v==='string' && /^#[0-9a-fA-F]{6}$/.test(v);
@@ -1104,7 +1112,7 @@ function isMutual(code){ const d=FR[code]; return !!(d && d!=='err' && Array.isA
 function sendGesture(code,g,name){ if(!SYNC_URL) return; fetch(`${SYNC_URL}/visits/${code}/${myCode}.json`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({g, t:Date.now(), name:share.name||''})})
   .then(r=>{ toast(r.ok?'Signe envoyé':'Envoi impossible, réessaie plus tard'); if(r.ok) say('Je file voir '+(name||'ton ami·e')+' !'); }).catch(()=>toast('Pas de connexion, réessaie plus tard')); }
 function openGesture(i){ const f=friends[i]; if(!f) return; const nm=f.name||fmtCode(f.code);
-  openSheet(`<div class="head"><div><div class="eyebrow">Rencontre des manu</div><h2>Un signe pour ${esc(nm)}</h2></div><button class="x" id="sx" aria-label="Fermer">×</button></div><p class="small muted">Ton manu ira le porter. ${esc(nm)} le verra à sa prochaine ouverture de Manu Ora.</p><div class="row" id="gests">${Object.keys(GEST).filter(k=>k!=='aide').map(k=>`<button class="btn" data-g="${k}">${GEST[k].l}</button>`).join('')}</div><button class="btn ghost" id="gBack">Retour à mon cœur</button>`);
+  openSheet(`<div class="head"><div><div class="eyebrow">Rencontre des manu</div><h2>Un signe pour ${esc(nm)}</h2></div><button class="x" id="sx" aria-label="Fermer">×</button></div><p class="small muted">Ton manu ira le porter. ${esc(nm)} le verra à sa prochaine ouverture de Manu Ora.</p><div class="row" id="gests">${Object.keys(GEST).filter(k=>k!=='aide'&&k!=='don').map(k=>`<button class="btn" data-g="${k}">${GEST[k].l}</button>`).join('')}</div><button class="btn ghost" id="gBack">Retour à mon cœur</button>`);
   $('#sx').onclick=closeSheet; $('#gBack').onclick=openHeart;
   $('#gests').addEventListener('click', e=>{ const b=e.target.closest('[data-g]'); if(!b) return; closeSheet(); sendGesture(f.code,b.dataset.g,nm); }); }
 async function pollVisits(){ if(!SYNC_URL||!share.on) return;
@@ -1112,7 +1120,7 @@ async function pollVisits(){ if(!SYNC_URL||!share.on) return;
     let fresh=false; Object.keys(d).forEach(from=>{ const v=d[from]; if(!okCode(from) || !v || v.g!=='ask' || typeof v.t!=='number') return; if(blocked.includes(from) || friends.some(f=>f.code===from) || reqs.some(q=>q.code===from)) return; reqs.push({code:from, name:String(v.name||'').slice(0,20), t:v.t}); fresh=true; });
     if(fresh){ store.set('reqs',reqs); renderReqs(); if(visitFree()) say('Quelquʼun veut lier son cœur au tien.','Touche ton cœur pour répondre'); }
     friends.forEach(f=>{ const v=d[f.code]; if(v && isMutualKnown(f.code) && typeof v.t==='number' && typeof v.g==='string' && Object.prototype.hasOwnProperty.call(GEST,v.g) && v.t>(seenV[f.code]||0) && !VIS.queue.some(q=>q.from===f.code&&q.t===v.t))
-      VIS.queue.push({from:f.code, g:v.g, t:v.t, name:f.name||String(v.name||'').slice(0,20)||'ton ami·e'}); });
+      VIS.queue.push({from:f.code, g:v.g, p:(typeof v.p==='string'?v.p:''), t:v.t, name:f.name||String(v.name||'').slice(0,20)||'ton ami·e'}); });
     runVisits(); }catch(e){} }
 function visitFree(){ return !VIS.busy && !RING.open && !UKE.on && !PET.active && B.state!=='drag' && B.state!=='fly' && $('#sheet').hidden && $('#crisis').hidden && $('#breath').hidden; }
 async function runVisits(){ if(!VIS.queue.length) return; if(!visitFree()){ setTimeout(runVisits,4000); return; }
@@ -1127,18 +1135,77 @@ function playVisit(v, look, done){ clearTimeout(PET.endT); B.onArrive=null; B.af
   requestAnimationFrame(()=>requestAnimationFrame(()=>{ el.style.transition='transform 1.5s ease-in-out'; el.style.transform=`translate(${tx}px,${ty}px)`; }));
   const who=esc(v.name), old=Date.now()-v.t>3*60000, when=new Date(v.t).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}); let iv=null;
   setTimeout(()=>{ el.classList.remove('flying'); const d=FR[v.from]; const ents=(d&&d!=='err'&&d.day===dayKey(Date.now())&&Array.isArray(d.entries))?d.entries:[];
-    sayHTML(`<span style="display:flex;gap:8px;align-items:center">${heartSVG(ents,'vh',30)}<span>Le manu de <b>${who}</b> ${GEST[v.g].t}${old?`<span class="cta">Il est passé à ${when}.</span>`:''}</span></span>`, 6000);
+    sayHTML(`<span style="display:flex;gap:8px;align-items:center">${heartSVG(ents,'vh',30)}<span>Le manu de <b>${who}</b> ${(v.g==='don'&&PLANTS[v.p])?`tʼoffre ${PLANTS[v.p].un} de son faʻaʻapu.`:GEST[v.g].t}${old?`<span class="cta">Il est passé à ${when}.</span>`:''}</span></span>`, 6000);
     const mx=(B.x+tx)/2+BW/2, my=B.y+20;
     if(v.g==='salut'){ el.classList.add('pecking'); birdEl.classList.add('pecking'); setTimeout(()=>{ el.classList.remove('pecking'); birdEl.classList.remove('pecking'); },1100); }
     else if(v.g==='calin'){ el.style.transition='transform .5s ease'; el.style.transform=`translate(${tx+(left?-22:22)}px,${ty}px)`; for(let i=0;i<7;i++) setTimeout(()=>petal(mx,my),i*220); }
     else if(v.g==='tiare'){ for(let i=0;i<9;i++) setTimeout(()=>petal(mx+(Math.random()*60-30),my-10),i*180); }
     else if(v.g==='aide'){ setTimeout(()=>openAid(v),1800); }
+    else if(v.g==='don'){ for(let i=0;i<8;i++) setTimeout(()=>petal(mx+(Math.random()*50-25),my-10),i*180); const P=PLANTS[v.p]; if(P){ feathers+=P.worth; store.set('feathers',feathers); addSeed(v.p); renderFeathers(); setTimeout(()=>toast(`+${P.worth} plumes et 1 graine de ${P.name}`),1500); } }
     else { el.classList.add('playing'); iv=setInterval(noteFx,380); }
   },1600);
   setTimeout(()=>{ if(iv) clearInterval(iv); el.classList.remove('playing','pecking'); el.classList.add('flying'); el.style.transition='transform 1.5s ease-in'; el.style.transform=`translate(${sx}px,${sy}px)`; },6800);
   setTimeout(()=>{ el.remove(); if(B.state==='show') settle(2); done(); },8400); }
 setInterval(pollVisits,45000); setTimeout(pollVisits,8000);
 document.addEventListener('visibilitychange', ()=>{ if(!document.hidden) pollVisits(); });
+
+/* ---------- faʻaʻapu : le jardin ---------- */
+const PLANTS={
+  tiare:{name:'tiare', un:'une tiare', days:1, worth:5},
+  aute:{name:'ʻaute', un:'un ʻaute', days:2, worth:8},
+  meia:{name:'meiʻa', un:'un régime de meiʻa', days:3, worth:12},
+  vi:{name:'vī', un:'des vī', days:5, worth:20},
+  uru:{name:'ʻuru', un:'un ʻuru', days:7, worth:30}};
+let garden=store.get('garden',null);
+if(!garden || !Array.isArray(garden.plots) || !garden.seeds){ garden={plots:[null,null,null,null,null,null], seeds:{tiare:2,aute:1,meia:0,vi:0,uru:0}}; store.set('garden',garden); }
+let GSEL=null;
+function saveGarden(){ store.set('garden',garden); gardenBadge(); }
+function addSeed(kind){ const pool=['tiare','tiare','tiare','tiare','aute','aute','aute','meia','meia','vi','uru']; const k=(kind&&PLANTS[kind])?kind:pool[Math.floor(Math.random()*pool.length)]; garden.seeds[k]=(garden.seeds[k]||0)+1; saveGarden(); return k; }
+function plotStage(pl){ const f=(Date.now()-pl.t)/(PLANTS[pl.p].days*864e5); return f>=1?3:f>=.6?2:f>=.2?1:0; }
+function plotLeft(pl){ const ms=pl.t+PLANTS[pl.p].days*864e5-Date.now(); if(ms<=0) return 'Mûr !'; const h=Math.ceil(ms/36e5); return h>=24 ? `Mûr dans ${Math.floor(h/24)} j ${h%24} h` : `Mûr dans ${h} h`; }
+function gardenBadge(){ const n=garden.plots.filter(pl=>pl&&PLANTS[pl.p]&&plotStage(pl)===3).length; const el=$('#qgardenN'); if(el) el.textContent=n?String(n):''; const hc=$('#gardenHome'); if(hc) hc.textContent = n ? `${n} récolte${n>1?'s':''} prête${n>1?'s':''} !` : 'Plante une graine et reviens la voir pousser.'; }
+function plantSVG(p,stage){
+  const soil='<ellipse cx="30" cy="63" rx="25" ry="6" fill="#8A5A2B"/><ellipse cx="30" cy="61.5" rx="21" ry="4" fill="#A9743C"/>';
+  const fl=(x,y,c,s,m)=>[0,72,144,216,288].map(a=>`<circle cx="${(x+3.6*Math.cos(a*Math.PI/180)).toFixed(1)}" cy="${(y+3.6*Math.sin(a*Math.PI/180)).toFixed(1)}" r="2.9" fill="${c}" stroke="${s}" stroke-width=".5"/>`).join('')+`<circle cx="${x}" cy="${y}" r="1.7" fill="${m}"/>`;
+  const leaf=(x,y,r,rx,c)=>`<ellipse cx="${x}" cy="${y}" rx="${rx}" ry="${(rx*.45).toFixed(1)}" transform="rotate(${r} ${x} ${y})" fill="${c}"/>`;
+  let b='';
+  if(!p) b='';
+  else if(stage===0) b='<ellipse cx="30" cy="59" rx="4.5" ry="2.8" fill="#5A3A1E"/>';
+  else if(stage===1) b='<path d="M30 61 L30 49" stroke="#3B8C58" stroke-width="2.4" stroke-linecap="round"/>'+leaf(25,49,-25,6,'#5FAE6E')+leaf(35,48,25,6,'#3B8C58');
+  else if(stage===2) b='<path d="M30 61 L30 37" stroke="#3B8C58" stroke-width="3" stroke-linecap="round"/>'+leaf(23,50,-20,8,'#5FAE6E')+leaf(37,48,20,8,'#3B8C58')+leaf(24,40,-35,7,'#3B8C58')+leaf(36,38,35,7,'#5FAE6E');
+  else if(p==='tiare') b='<ellipse cx="30" cy="42" rx="20" ry="17" fill="#3B8C58"/><ellipse cx="24" cy="38" rx="10" ry="8" fill="#5FAE6E"/>'+fl(20,36,'#FFF9EE','#E8D9B5','#F2C94C')+fl(37,32,'#FFF9EE','#E8D9B5','#F2C94C')+fl(32,48,'#FFF9EE','#E8D9B5','#F2C94C');
+  else if(p==='aute') b='<ellipse cx="30" cy="42" rx="20" ry="17" fill="#2F7D4C"/><ellipse cx="36" cy="38" rx="10" ry="8" fill="#5FAE6E"/>'+fl(21,38,'#E0303A','#A81E28','#F2C94C')+fl(38,46,'#E0303A','#A81E28','#F2C94C')+fl(34,30,'#E0303A','#A81E28','#F2C94C');
+  else if(p==='meia') b='<path d="M30 61 L30 26" stroke="#8DBB5A" stroke-width="6" stroke-linecap="round"/>'+leaf(17,22,-35,15,'#3B8C58')+leaf(43,22,35,15,'#5FAE6E')+leaf(14,34,-10,13,'#5FAE6E')+leaf(46,34,10,13,'#3B8C58')+leaf(30,12,90,12,'#3B8C58')+[[36,38],[39,41],[36,44],[40,46],[37,49]].map(q=>`<ellipse cx="${q[0]}" cy="${q[1]}" rx="4.5" ry="2.2" transform="rotate(60 ${q[0]} ${q[1]})" fill="#F2C94C" stroke="#C99A1C" stroke-width=".5"/>`).join('');
+  else if(p==='vi') b='<rect x="27" y="36" width="6" height="26" rx="2" fill="#8A5A2B"/><circle cx="30" cy="26" r="20" fill="#3B8C58"/><circle cx="22" cy="20" r="10" fill="#5FAE6E"/>'+[[20,30],[33,22],[40,33],[28,38]].map(q=>`<ellipse cx="${q[0]}" cy="${q[1]}" rx="3.6" ry="4.6" transform="rotate(20 ${q[0]} ${q[1]})" fill="#F0A23A" stroke="#C8402F" stroke-width=".5"/>`).join('');
+  else b='<rect x="27" y="36" width="6" height="26" rx="2" fill="#7A5230"/><circle cx="30" cy="26" r="20" fill="#2F7D4C"/><circle cx="17" cy="24" r="9" fill="#3B8C58"/><circle cx="43" cy="24" r="9" fill="#3B8C58"/><circle cx="30" cy="11" r="9" fill="#3B8C58"/>'+[[22,30],[38,31],[30,20]].map(q=>`<circle cx="${q[0]}" cy="${q[1]}" r="5" fill="#B9D86B" stroke="#6E8F2E" stroke-width=".6"/><path d="M${q[0]-3} ${q[1]} H${q[0]+3} M${q[0]} ${q[1]-3} V${q[1]+3}" stroke="#6E8F2E" stroke-width=".5"/>`).join('');
+  return `<svg viewBox="0 0 60 70" aria-hidden="true">${soil}${b}</svg>`; }
+function giveFruit(i,code){ const pl=garden.plots[i]; if(!pl||!SYNC_URL) return;
+  fetch(`${SYNC_URL}/visits/${code}/${myCode}.json`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({g:'don', p:pl.p, t:Date.now(), name:share.name||''})})
+    .then(r=>{ if(!r.ok){ toast('Envoi impossible, réessaie plus tard'); return; } garden.plots[i]=null; addSeed(pl.p); GSEL=null; saveGarden(); openGarden(); toast('Offert ! Tu reçois une graine en retour.'); })
+    .catch(()=>toast('Pas de connexion, réessaie plus tard')); }
+function openGarden(){
+  const seedsLine=Object.keys(PLANTS).map(k=>`<span class="feather">${PLANTS[k].name} ×${garden.seeds[k]||0}</span>`).join('');
+  const mut=friends.filter(f=>isMutual(f.code));
+  const plots=garden.plots.map((pl,i)=>{ if(pl && !PLANTS[pl.p]) pl=null; const st=pl?plotStage(pl):0; let body;
+    if(!pl){ if(GSEL&&GSEL.i===i){ const av=Object.keys(PLANTS).filter(k=>(garden.seeds[k]||0)>0); body = av.length ? av.map(k=>`<button class="btn sm" data-seed="${k}">${PLANTS[k].name} · ${PLANTS[k].days} j</button>`).join('') : '<span class="small muted">Plus de graines. Une journée complète en donne une.</span>'; } else body=`<button class="btn sm ghost" data-plant="${i}">Planter</button>`; }
+    else if(st<3) body=`<b>${PLANTS[pl.p].name}</b><span class="small muted">${plotLeft(pl)}</span>`;
+    else if(GSEL&&GSEL.i===i&&GSEL.give) body = mut.length ? '<span class="small muted">Pour qui ?</span>'+mut.map(f=>`<button class="btn sm primary" data-to="${f.code}">${esc(f.name||fmtCode(f.code))}</button>`).join('') : '<span class="small muted">Lie dʼabord ton cœur à un·e ami·e.</span>';
+    else body=`<b>${PLANTS[pl.p].name}</b><span class="small" style="color:var(--fern);font-weight:700">Mûr !</span><button class="btn sm primary" data-give="${i}">Offrir</button><button class="btn sm" data-sell="${i}">Échanger · ${PLANTS[pl.p].worth} plumes</button>`;
+    return `<div class="plot">${plantSVG(pl?pl.p:null,st)}${body}</div>`; }).join('');
+  openSheet(`<div class="head"><div><div class="eyebrow">Le jardin de ${esc(cfg.name)}</div><h2>Faʻaʻapu</h2></div><button class="x" id="sx" aria-label="Fermer">×</button></div>
+    <div style="display:flex;gap:10px;align-items:center"><div style="width:58px;flex:none">${birdSVG(cfg,'gd')}</div><p class="small muted">Plante, laisse le temps faire, puis récolte. Rien ne meurt ici : si tu tʼabsentes, tes fruits tʼattendent.</p></div>
+    <div class="card flat"><div class="eyebrow">Mes graines</div><div style="display:flex;flex-wrap:wrap;gap:6px">${seedsLine}</div></div>
+    <div class="plots" id="plots">${plots}</div>
+    <p class="small muted">Offrir un fruit donne ses plumes et une graine à ton ami·e, et te rend une graine. Tu gagnes aussi une graine à chaque journée complète.</p>`);
+  $('#sx').onclick=()=>{ GSEL=null; closeSheet(); };
+  $('#plots').addEventListener('click', e=>{ const t=e.target.closest('button'); if(!t) return; const d=t.dataset;
+    if(d.plant!==undefined){ GSEL={i:+d.plant}; openGarden(); }
+    else if(d.seed && GSEL){ const k=d.seed; if(PLANTS[k] && (garden.seeds[k]||0)>0 && !garden.plots[GSEL.i]){ garden.seeds[k]--; garden.plots[GSEL.i]={p:k,t:Date.now()}; GSEL=null; saveGarden(); openGarden(); toast('Planté : '+PLANTS[k].name+', mûr dans '+PLANTS[k].days+' j'); } }
+    else if(d.sell!==undefined){ const i=+d.sell, pl=garden.plots[i]; if(pl && plotStage(pl)===3){ const w=PLANTS[pl.p].worth; feathers+=w; store.set('feathers',feathers); garden.plots[i]=null; GSEL=null; saveGarden(); renderFeathers(); openGarden(); toast('+'+w+' plumes'); } }
+    else if(d.give!==undefined){ GSEL={i:+d.give, give:true}; openGarden(); }
+    else if(d.to && GSEL){ giveFruit(GSEL.i, d.to); } });
+  if(SYNC_URL && friends.length && !openGarden.loaded){ openGarden.loaded=true; fetchFriends().then(()=>{ if(!$('#sheet').hidden && $('#plots')) openGarden(); }); } }
+setInterval(gardenBadge,60000);
 
 /* ---------- prévenir mon ama : seulement si la personne le demande ---------- */
 function trusted(){ return friends.filter(f=>f.ama); }
@@ -1170,6 +1237,7 @@ function doInstall(){
     : ['Dans la barre dʼadresse, clique sur lʼicône <b>Installer</b> (un écran avec une flèche).','Sinon : menu du navigateur → <b>« Installer Manu Ora »</b>.'];
   openSheet(`<div class="head"><h2>Installer Manu Ora</h2><button class="x" id="sx" aria-label="Fermer">×</button></div><p class="small muted">Lʼicône du manu apparaîtra sur ton écran dʼaccueil, et Manu Ora sʼouvrira comme une appli.</p><div class="stack">${steps.map((t,i)=>`<div class="card flat"><p><b>${i+1}.</b> ${t}</p></div>`).join('')}</div><button class="btn" id="instOk">Compris</button>`);
   $('#sx').onclick=closeSheet; $('#instOk').onclick=closeSheet; }
+$('#gardenBtn').onclick=()=>openGarden(); gardenBadge();
 $('#installBtn').onclick=doInstall; $('#installBtn2').onclick=doInstall;
 if(CAN_INSTALL && !STANDALONE) setInstall(true);
 

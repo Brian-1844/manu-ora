@@ -39,6 +39,22 @@ Respirer, faire le point et l'aide ne sont jamais verrouillés.
 
 **Veille.** Le manu dort dans son coin (yeux fermés, « z »). Un appui long permet de le prendre et de le poser n'importe où ; il réagit et garde cette place.
 
+## Faʻaʻapu (le jardin)
+
+Six emplacements. On plante une graine, elle pousse avec le temps réel (appli ouverte ou non), puis on récolte. Rien ne meurt : un fruit mûr attend.
+
+| Plante | Mûre en | Vaut |
+|---|---|---|
+| tiare | 1 jour | 5 plumes |
+| ʻaute | 2 jours | 8 plumes |
+| meiʻa (banane) | 3 jours | 12 plumes |
+| vī (mangue) | 5 jours | 20 plumes |
+| ʻuru | 7 jours | 30 plumes |
+
+- **Graines :** 2 tiare et 1 ʻaute au départ ; une graine à chaque journée complète ; une graine reçue avec chaque fruit offert par un ami.
+- **Récolte :** « Échanger » contre des plumes, ou « Offrir » à un ami lié. L'ami reçoit les plumes et une graine ; celui qui offre récupère une graine.
+- Le jardin est enregistré sur le téléphone ; seuls les cadeaux passent par Firebase.
+
 ## Lier son cœur à un ami (optionnel)
 
 Le partage des couleurs demande un tout petit serveur. Version gratuite avec Firebase :
