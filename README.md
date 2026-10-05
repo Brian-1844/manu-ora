@@ -75,6 +75,31 @@ Les recettes secrètes apparaissent comme « ??? » avec un indice dans le carne
 
 Quand quelqu'un choisit un ami comme personne de confiance, son manu lui porte une étoile qui brille en haut de l'écran de veille. En la touchant, l'ami lit ce que cela veut dire et peut la garder ou la rendre. S'il la rend, la personne est prévenue et peut choisir quelqu'un d'autre.
 
+## Te tere (le voyage)
+
+Le fil conducteur de l'appli : une lune, quatre étapes d'environ une semaine, calées sur la phase de la lune.
+
+| Étape | Lune | Thème | Compétence |
+|---|---|---|---|
+| 1 | nouvelle lune → premier quartier | ʻIte · se connaître | repérer et nommer ce que je ressens |
+| 2 | premier quartier → pleine lune | Mau · tenir bon | laisser passer la vague avant d'agir |
+| 3 | pleine lune → dernier quartier | Aroha · voir l'autre | deviner ce que l'autre ressent, puis vérifier |
+| 4 | dernier quartier → lune noire | Tāhōʻē · se relier | dire les choses qui rapprochent |
+
+- **Défi du jour :** trois propositions, on en choisit une (ou aucune), on la fait dans la vraie vie, puis « C'est fait ».
+- **Question de l'étape :** ouverte après trois défis ; la réponse va dans le carnet de bord, sur le téléphone.
+- **Îles :** une île atteinte quand deux étapes sont franchies dans la même lune (+20 plumes).
+- **Ni note ni niveau.** Une absence ne fait rien perdre.
+
+**Ce que dit la recherche, et comment c'est appliqué**
+
+- Les programmes efficaces sont *séquencés, actifs, focalisés, explicites* (critères SAFE ; méta-analyse Durlak et al. : effet moyen 0,31 avec les quatre critères, 0,07 sans). D'où : étapes dans un ordre, défis à faire et non à lire, une compétence par semaine, nommée clairement.
+- Santé publique France retient les mêmes critères, plus une pédagogie positive et expérientielle et un environnement qui soutient.
+- Les cinq compétences RULER (Yale) : reconnaître, comprendre, nommer, exprimer, réguler. Elles sont réparties sur les quatre étapes.
+- Chez les adolescents, les programmes qui « font la leçon » perdent leur effet ; ce qui marche respecte leur autonomie et les traite en personnes compétentes (Yeager, Dahl et Dweck, 2018). D'où : le choix du défi, le droit de passer, le ton sans morale, et la question d'étape qui demande leur conseil pour quelqu'un de plus jeune.
+
+**Limite :** ces résultats viennent de programmes menés en groupe avec des adultes formés. Une appli seule fera moins. Te tere donnera le meilleur s'il sert de support à un groupe (classe, groupe de jeunes) avec un adulte. Le contenu des défis est un premier jet à faire relire par un·e psychologue ou un·e éducateur·rice ; les noms d'étapes en reo sont à valider.
+
 ## Te raʻi (le ciel)
 
 Une carte du ciel simplifiée avec onze repères nommés en reo tahiti : Matariʻi (Pléiades), Tauhā (Croix du Sud), Nāmatarua (Alpha et Bêta du Centaure), Te Matau a Māui (Scorpion), ʻAna-mua (Antarès), Tautoru (Baudrier d'Orion), ʻAna-varu (Bételgeuse), Taʻurua-faupapa (Sirius), Pīpiri mā (Castor et Pollux), Te Vaiora (Voie lactée), Marama (Lune).

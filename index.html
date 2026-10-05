@@ -293,6 +293,15 @@ body.quiet .app{display:none}
 .linkbtn{border:0;background:none;padding:0;color:var(--lagoon-ink);text-decoration:underline;font:inherit;font-weight:700;cursor:pointer}
 .qtop{flex-wrap:wrap;gap:4px;padding-left:10px;padding-right:10px}
 #qgarden,#qchest,#qsky{padding:5px 7px;gap:3px}
+.terefloat{position:absolute;left:14px;bottom:calc(36px + env(safe-area-inset-bottom,0px));background:var(--lagoon);border-color:var(--lagoon);color:#fff}
+.tsteps{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.tstep{border:1.5px solid var(--line);border-radius:12px;padding:8px 4px;text-align:center;display:flex;flex-direction:column;gap:2px;min-width:0;background:var(--surface)}
+.tstep b{font-family:var(--display);font-weight:600;font-size:.95rem}
+.tstep span{font-size:.7rem;color:var(--muted)}
+.tstep i{font-style:normal;font-size:.68rem;font-weight:700;color:var(--muted)}
+.tstep.cur{border-color:var(--lagoon);box-shadow:inset 0 0 0 1.5px var(--lagoon)}
+.tstep.ok i{color:var(--fern)}
+.tchoice{text-align:left;justify-content:flex-start;font-family:var(--body);font-weight:700;font-size:.95rem;line-height:1.35}
 .installfloat{position:absolute;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));white-space:nowrap}
 .qfeather span:empty{display:none}
 .bird.shiny svg{filter:drop-shadow(0 0 7px var(--aura,#FFD66E)) drop-shadow(0 0 3px var(--aura,#FFD66E)) drop-shadow(0 6px 6px rgba(0,0,0,.18))}
@@ -361,6 +370,8 @@ body.quiet .app{display:none}
         </div>
 
         <div class="card"><h3>Ton faʻaʻapu</h3><p class="small muted" id="gardenHome">Plante une graine et reviens la voir pousser.</p><button class="btn" id="gardenBtn">Entrer dans le jardin</button></div>
+
+        <div class="card"><h3>Te tere · le voyage</h3><p class="small muted">Une lune, quatre étapes : se connaître, tenir bon, voir lʼautre, se relier. Un petit défi par jour, et un carnet de bord pour voir ton chemin.</p><button class="btn primary" id="tereHomeBtn">Voir lʼétape de la semaine</button></div>
 
         <div class="card"><h3>Te raʻi · le ciel</h3><p class="small muted">Apprends le nom des étoiles en reo tahiti, comme les navigateurs, et regarde la lune de ce soir.</p><button class="btn" id="skyBtn">Regarder le ciel</button></div>
 
@@ -484,6 +495,7 @@ body.quiet .app{display:none}
   </div>
   <div class="stars" id="stars"></div>
   <button class="tbtn installfloat" id="installBtn" hidden>Installer lʼappli</button>
+  <button class="tbtn terefloat" id="tereBtn" hidden>Défi du jour</button>
   <p class="qhint" id="qhint">Touche deux fois ton manu pour dire comment tu te sens.</p>
 </div>
 <div class="ringbg" id="ringbg" hidden></div>
@@ -1031,9 +1043,9 @@ function quietMove(){ if(B.asking){ idle(2); return; } const hm=homePoint(); if(
 function setQuiet(on){ QUIET=on; store.set('quiet',on); document.body.classList.toggle('quiet',on); closeRing(); bubbleEl.classList.remove('show'); B.asking=false; B.afterIdle=null; B.onArrive=null;
   if(on){ renderHeart(); goHome(); } else { B.perched=false; renderHome(); startFly({x:Math.min(60,innerWidth-BW-8), y:groundY()}); } }
 function sayHTML(html, ms){ bubbleEl.innerHTML=html; bubbleEl.classList.add('show'); placeBubble(); clearTimeout(say.t); say.t=setTimeout(()=>bubbleEl.classList.remove('show'), ms||6000); }
-function miniMenu(){ sayHTML(`${esc(randomLine())}<div class="mini"><button data-m="check">Faire le point</button><button data-m="breathe">Respirer</button><button data-m="uke">Ukulele</button><button data-m="heart">Mon cœur</button><button data-m="garden">Faʻaʻapu</button><button data-m="chest">Coffre</button><button data-m="sky">Te raʻi</button>${has('x:dance')?'<button data-m="dance">Danser</button>':''}${has('x:flip')?'<button data-m="flip">Salto</button>':''}${QUIET?'<button data-m="app">Tout Manu Ora</button>':'<button data-m="quiet">Mode veille</button>'}</div>`, 9000); }
+function miniMenu(){ sayHTML(`${esc(randomLine())}<div class="mini"><button data-m="check">Faire le point</button><button data-m="tere">Te tere</button><button data-m="breathe">Respirer</button><button data-m="uke">Ukulele</button><button data-m="heart">Mon cœur</button><button data-m="garden">Faʻaʻapu</button><button data-m="chest">Coffre</button><button data-m="sky">Te raʻi</button>${has('x:dance')?'<button data-m="dance">Danser</button>':''}${has('x:flip')?'<button data-m="flip">Salto</button>':''}${QUIET?'<button data-m="app">Tout Manu Ora</button>':'<button data-m="quiet">Mode veille</button>'}</div>`, 9000); }
 bubbleEl.addEventListener('click', e=>{ const b=e.target.closest('[data-m]'); if(!b) return; e.stopPropagation(); bubbleEl.classList.remove('show'); const m=b.dataset.m;
-  if(m==='garden') openGarden(); else if(m==='chest') openChest(); else if(m==='sky') openSky(); else if(m==='dance'||m==='flip') playAnim(m); else if(m==='breathe') openBreath(null); else if(m==='check') openCheckin(); else if(m==='uke') playUke(); else if(m==='heart') openHeart(); else if(m==='app') setQuiet(false); else if(m==='quiet') setQuiet(true); else if(m==='pet') say('Glisse ton doigt sur mes plumes, tout doucement.'); });
+  if(m==='tere') openTere(); else if(m==='garden') openGarden(); else if(m==='chest') openChest(); else if(m==='sky') openSky(); else if(m==='dance'||m==='flip') playAnim(m); else if(m==='breathe') openBreath(null); else if(m==='check') openCheckin(); else if(m==='uke') playUke(); else if(m==='heart') openHeart(); else if(m==='app') setQuiet(false); else if(m==='quiet') setQuiet(true); else if(m==='pet') say('Glisse ton doigt sur mes plumes, tout doucement.'); });
 
 /* colour ring */
 function ringCenter(){ return {x:innerWidth/2, y:innerHeight/2-10}; }
@@ -1062,6 +1074,7 @@ $('#qfeather').onclick=()=>{ setQuiet(false); showTab('bird'); };
 $('#qgarden').onclick=()=>openGarden();
 $('#qchest').onclick=()=>openChest();
 $('#qsky').onclick=()=>openSky();
+$('#tereBtn').onclick=()=>openTere();
 function quietFree(){ return QUIET && !RING.open && $('#sheet').hidden && $('#crisis').hidden && $('#breath').hidden && !UKE.on && !PET.active; }
 setInterval(()=>{ if(!quietFree()) return; const now=Date.now(); if(now-lastEntryTs()>ASK_EVERY && now-lastAsk>ASK_EVERY){ lastAsk=now; store.set('lastAsk',lastAsk); askRing(true); } }, 30000);
 setTimeout(()=>{ if(quietFree() && Date.now()-lastEntryTs()>ASK_EVERY && Date.now()-lastAsk>20*60e3){ lastAsk=Date.now(); store.set('lastAsk',lastAsk); askRing(true); } }, 12000);
@@ -1488,6 +1501,63 @@ function skyButton(b){ const k=b.dataset.skyb;
   else if(k.indexOf('night:')===0){ cfg.night=k.slice(6); store.set('cfg',cfg); renderNight(); openSky(); } }
 renderNight();
 
+/* ---------- Te tere : le voyage, une lune en quatre semaines ---------- */
+const TERE=[
+  {ty:'ʻIte', fr:'se connaître', pil:'manao', skill:'Repérer ce que je ressens et lui donner un nom précis.',
+   pool:['Trois fois aujourdʼhui, arrête-toi dix secondes et demande-toi : quʼest-ce que je ressens, là ?','Cherche où se loge dans ton corps ton émotion la plus forte du jour : ventre, gorge, épaules ?','Trouve un mot plus précis que « bien » ou « mal » pour décrire ta journée.','Repère ce qui a changé ton humeur aujourdʼhui : un message, un lieu, une personne ?','Note un moment où tu as souri sans le décider. Quʼest-ce qui lʼa provoqué ?','Écoute une musique et nomme ce quʼelle fait monter en toi.','Ce soir, donne une couleur à ta journée dans ton cœur, et dis-toi pourquoi celle-là.','Repère une chose qui tʼénerve souvent. Quʼest-ce quʼelle touche chez toi ?'],
+   q:'Quelquʼun de plus jeune te demande : « Comment tu fais pour savoir ce que tu ressens ? » Que lui réponds-tu ?'},
+  {ty:'Mau', fr:'tenir bon', pil:'tino', skill:'Laisser passer la vague avant dʼagir.',
+   pool:['Quand quelque chose tʼagace aujourdʼhui, respire trois fois avant de répondre.','Fais la respiration de la vague une minute, même si tout va bien.','Attends dix minutes avant de répondre à un message qui te pique.','Si la colère monte, va marcher ou boire un verre dʼeau avant de parler.','Repère la pensée qui tourne en boucle. Dis-lui « je tʼai entendue », puis fais autre chose cinq minutes.','Fais une chose difficile que tu repousses, pendant cinq minutes seulement.','Ce soir, pose ton téléphone dix minutes avant de dormir et écoute les bruits autour.','Quand tu es tendu·e, caresse ton manu lentement et sens ton souffle ralentir.'],
+   q:'Un·e ami·e te dit : « Je mʼénerve trop vite. » Quʼest-ce qui marche pour toi, que tu pourrais lui conseiller ?'},
+  {ty:'Aroha', fr:'voir lʼautre', pil:'fetii', skill:'Deviner ce que lʼautre ressent, puis vérifier.',
+   pool:['Demande à quelquʼun comment il va, et écoute toute la réponse sans parler de toi.','Regarde un proche et devine son humeur. Puis demande-lui si tu as vu juste.','Pense à quelquʼun qui tʼa énervé·e. Trouve une raison possible, de son côté.','Repère quelquʼun qui reste seul aujourdʼhui. Dis-lui bonjour.','Dans une discussion, redis avec tes mots ce que lʼautre vient de dire avant de donner ton avis.','Demande à un ancien de te raconter un moment où il a eu peur, ou été fier.','Qui, autour de toi, a lʼair fatigué aujourdʼhui ? Que pourrais-tu lui alléger ?','Si quelquʼun te raconte un souci, ne donne pas de solution. Dis seulement : « Ça a lʼair dur. »'],
+   q:'Quʼas-tu découvert cette semaine sur quelquʼun, que tu nʼavais pas vu avant ?'},
+  {ty:'Tāhōʻē', fr:'se relier', pil:'fetii', skill:'Dire les choses qui rapprochent.',
+   pool:['Dis merci à quelquʼun pour une chose précise quʼil a faite.','Envoie une étoile avec un message à un·e ami·e lié·e, ou dis-le-lui en vrai.','Y a-t-il quelquʼun à qui tu dois un pardon ? Fais un premier pas, même petit.','Dis à quelquʼun une qualité que tu vois chez lui.','Propose ton aide à la maison sans quʼon te le demande.','Offre quelque chose : un fruit du faʻaʻapu, un coup de main, dix minutes de ton temps.','Dis à une personne de confiance une chose vraie sur comment tu vas.','Reprends contact avec quelquʼun à qui tu nʼas pas parlé depuis longtemps.'],
+   q:'Quel geste de cette semaine a le plus rapproché quelquʼun de toi ? Quʼest-ce que ça tʼa fait ?'}
+];
+const ISLES=['Tahiti','Moʻorea','Huahine','Raʻiātea','Tahaʻa','Bora Bora','Maupiti','Rangiroa','Fakarava','Nuku Hiva','Hiva Oa','Rurutu'];
+TERE.forEach((w,i)=>{ ACT['tere'+i]={t:'Te tere : '+w.ty, p:w.pil, d:w.skill}; });
+let tere=store.get('tere',null); if(!tere||!tere.w) tere={w:{},paid:0,first:null};
+function saveTere(){ store.set('tere',tere); tereChip(); }
+function tereNow(){ const syn=29.530588853, ref=Date.UTC(2000,0,6,18,14); const x=(Date.now()-ref)/864e5/syn; const month=Math.floor(x), p=x-month, week=Math.min(3,Math.floor(p*4)); return {month, week, key:'m'+month+'w'+week, left:Math.max(1,Math.ceil(((week+1)/4-p)*syn))}; }
+function tereRec(key){ if(!tere.w[key]) tere.w[key]={days:[],ans:'',pick:null}; return tere.w[key]; }
+function tereChoices(week){ const d=Math.floor((Date.now()-new Date().getTimezoneOffset()*60000)/864e5), pool=TERE[week].pool, s=(d*3)%pool.length; return [0,1,2].map(i=>(s+i)%pool.length); }
+function islandsCount(){ const m={}; Object.keys(tere.w).forEach(k=>{ if((tere.w[k].ans||'').trim()){ const mm=k.split('w')[0]; m[mm]=(m[mm]||0)+1; } }); return Object.keys(m).filter(k=>m[k]>=2).length; }
+function tereChip(){ const el=$('#tereBtn'); if(!el) return; const n=tereNow(), r=tere.w[n.key]; el.hidden = !!(r && r.days.includes(dayKey(Date.now()))); }
+function openTere(){
+  const keepY=(!$('#sheet').hidden && $('#tereBox')) ? sheetInner.scrollTop : 0;
+  const n=tereNow(), W=TERE[n.week], rec=tereRec(n.key), today=dayKey(Date.now()), done=rec.days.includes(today); if(tere.first===null){ tere.first=n.month; store.set('tere',tere); }
+  const steps=TERE.map((w,i)=>{ const r=tere.w['m'+n.month+'w'+i]; const ok=r&&(r.ans||'').trim(); return `<div class="tstep ${i===n.week?'cur':''} ${ok?'ok':''}"><b>${w.ty}</b><span>${w.fr}</span><i>${ok?'franchie':i===n.week?'en cours':i<n.week?'passée':'à venir'}</i></div>`; }).join('');
+  let ch;
+  if(done) ch=`<p class="small"><b>Défi du jour fait.</b> ${rec.pick&&rec.pick.d===today?esc(W.pool[rec.pick.i]):''}</p><p class="small muted">Reviens demain pour le suivant. ${rec.days.length} défi${rec.days.length>1?'s':''} cette semaine.</p>`;
+  else if(rec.pick && rec.pick.d===today) ch=`<p><b>${esc(W.pool[rec.pick.i])}</b></p><div class="row"><button class="btn ghost" data-tb="change">Changer</button><button class="btn primary" data-tb="done">Cʼest fait</button></div>`;
+  else ch=`<p class="small muted">Choisis celui qui te parle aujourdʼhui. Un seul suffit.</p><div class="stack">${tereChoices(n.week).map(i=>`<button class="btn tchoice" data-tp="${i}">${esc(W.pool[i])}</button>`).join('')}</div><p class="small muted">Pas envie aujourdʼhui ? Tu ne perds rien, le voyage tʼattend.</p>`;
+  const need=Math.max(0,3-rec.days.length);
+  const qcard = need>0 ? `<p class="small muted">Encore ${need} défi${need>1?'s':''} cette semaine pour ouvrir la question de lʼétape.</p>`
+    : `<p><b>${esc(W.q)}</b></p><textarea id="tereAns" maxlength="400" placeholder="Quelques mots suffisent. Ils restent sur ton téléphone.">${esc(rec.ans||'')}</textarea><button class="btn primary" data-tb="save">${(rec.ans||'').trim()?'Mettre à jour mon carnet':'Écrire dans mon carnet de bord'}</button>`;
+  const isl=islandsCount();
+  const book=Object.keys(tere.w).filter(k=>(tere.w[k].ans||'').trim()).sort((a,b)=>{ const pa=a.slice(1).split('w').map(Number), pb=b.slice(1).split('w').map(Number); return pb[0]-pa[0]||pb[1]-pa[1]; })
+    .map(k=>{ const p=k.slice(1).split('w').map(Number); return `<div class="card flat"><div class="eyebrow">Lune ${p[0]-(tere.first===null?p[0]:tere.first)+1} · ${TERE[p[1]].ty}, ${TERE[p[1]].fr}</div><p class="small muted">${esc(TERE[p[1]].q)}</p><p>${esc(tere.w[k].ans)}</p></div>`; }).join('') || '<p class="small muted">Ton carnet est vide pour lʼinstant. Chaque étape franchie y laisse quelques mots, à relire plus tard pour voir le chemin parcouru.</p>';
+  openSheet(`<div class="head"><div><div class="eyebrow">Le voyage · une lune, quatre étapes</div><h2>Te tere</h2></div><button class="x" id="sx" aria-label="Fermer">×</button></div>
+    <div id="tereBox" class="stack" style="gap:12px">
+    <div class="tsteps">${steps}</div>
+    <div class="card"><div style="display:flex;gap:12px;align-items:center"><svg viewBox="0 0 60 60" style="width:52px;height:52px;flex:none" aria-hidden="true"><rect width="60" height="60" rx="14" fill="#0B1C2E"/>${moonSVG(30,30,19)}</svg><div><div class="eyebrow">Étape ${n.week+1} sur 4 · encore ${n.left} jour${n.left>1?'s':''}</div><h3>${W.ty} · ${W.fr}</h3></div></div><p class="small">${W.skill}</p></div>
+    <div class="card"><div class="eyebrow">Le défi du jour</div>${ch}</div>
+    <div class="card"><div class="eyebrow">La question de lʼétape</div>${qcard}</div>
+    <div class="card flat"><div class="eyebrow">Îles atteintes : ${isl}</div><p class="small">${isl?ISLES.slice(0,Math.min(isl,12)).join(' · '):'Aucune pour lʼinstant.'}</p><p class="small muted">Une île est atteinte quand tu as franchi au moins deux étapes dans la même lune. Prochaine île : ${ISLES[isl%12]}.</p></div>
+    <div class="card flat"><div class="eyebrow">Mon carnet de bord</div><div class="stack">${book}</div></div>
+    <p class="small muted">Il nʼy a ni note ni niveau. Si tu tʼabsentes, tu reprends à lʼétape de la lune en cours, sans rien perdre.</p></div>`);
+  sheetInner.scrollTop=keepY;
+  $('#sx').onclick=closeSheet;
+  $('#tereBox').addEventListener('click', e=>{ const c=e.target.closest('[data-tp]'); if(c){ rec.pick={d:today,i:+c.dataset.tp}; saveTere(); openTere(); return; }
+    const b=e.target.closest('[data-tb]'); if(!b) return; const k=b.dataset.tb;
+    if(k==='change'){ rec.pick=null; saveTere(); openTere(); }
+    else if(k==='done'){ if(!rec.days.includes(today)) rec.days.push(today); saveTere(); award('tere'+n.week); openTere(); }
+    else if(k==='save'){ const v=($('#tereAns').value||'').trim().slice(0,400); if(!v){ toast('Écris quelques mots dʼabord'); return; } const before=islandsCount(); rec.ans=v; saveTere(); const after=islandsCount();
+      if(after>(tere.paid||0)){ const gain=(after-(tere.paid||0))*20; tere.paid=after; saveTere(); feathers+=gain; store.set('feathers',feathers); renderFeathers(); toast(`Île atteinte : ${ISLES[(after-1)%12]} ! +${gain} plumes`); } else toast('Étape franchie. Cʼest noté dans ton carnet.'); openTere(); } }); }
+tereChip(); setInterval(tereChip,10*60000);
+
 /* ---------- prévenir mon ama : seulement si la personne le demande ---------- */
 function trusted(){ return friends.filter(f=>f.ama); }
 function trustHTML(){ if(!SYNC_URL) return ''; const tr=trusted();
@@ -1541,7 +1611,7 @@ function doInstall(){
     : ['Dans la barre dʼadresse, clique sur lʼicône <b>Installer</b> (un écran avec une flèche).','Sinon : menu du navigateur → <b>« Installer Manu Ora »</b>.'];
   openSheet(`<div class="head"><h2>Installer Manu Ora</h2><button class="x" id="sx" aria-label="Fermer">×</button></div><p class="small muted">Lʼicône du manu apparaîtra sur ton écran dʼaccueil, et Manu Ora sʼouvrira comme une appli.</p><div class="stack">${steps.map((t,i)=>`<div class="card flat"><p><b>${i+1}.</b> ${t}</p></div>`).join('')}</div><button class="btn" id="instOk">Compris</button>`);
   $('#sx').onclick=closeSheet; $('#instOk').onclick=closeSheet; }
-$('#gardenBtn').onclick=()=>openGarden(); gardenBadge(); $('#skyBtn').onclick=()=>openSky();
+$('#gardenBtn').onclick=()=>openGarden(); gardenBadge(); $('#skyBtn').onclick=()=>openSky(); $('#tereHomeBtn').onclick=()=>openTere();
 $('#installBtn').onclick=doInstall; $('#installBtn2').onclick=doInstall;
 if(CAN_INSTALL && !STANDALONE) setInstall(true);
 
