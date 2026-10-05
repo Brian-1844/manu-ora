@@ -1173,7 +1173,7 @@ async function pollVisits(){ if(!SYNC_URL) return;
     friends.forEach(f=>{ const v=d[f.code]; if(!v || typeof v.t!=='number' || v.t<=(seenV[f.code]||0)) return;
       if(v.g==='etoile0'){ delete stars[f.code]; store.set('stars',stars); renderStars(); seenV[f.code]=v.t; store.set('seenV',seenV); }
       else if(v.g==='etoileNon'){ if(f.ama){ f.ama=false; store.set('friends',friends); renderFriends(); if(visitFree()) say((f.name||'Ton ami·e')+' ne peut pas être ta personne de confiance en ce moment. Choisis quelquʼun dʼautre.'); } seenV[f.code]=v.t; store.set('seenV',seenV); } });
-    friends.forEach(f=>{ const v=d[f.code]; if(v && isMutualKnown(f.code) && typeof v.t==='number' && typeof v.g==='string' && Object.prototype.hasOwnProperty.call(GEST,v.g) && v.t>(seenV[f.code]||0) && !VIS.queue.some(q=>q.from===f.code&&q.t===v.t))
+    friends.forEach(f=>{ const v=d[f.code]; if(v && typeof v.t==='number' && typeof v.g==='string' && Object.prototype.hasOwnProperty.call(GEST,v.g) && v.t>(seenV[f.code]||0) && !VIS.queue.some(q=>q.from===f.code&&q.t===v.t))
       VIS.queue.push({from:f.code, g:v.g, p:(typeof v.p==='string'?v.p:''), t:v.t, name:f.name||String(v.name||'').slice(0,20)||'ton ami·e'}); });
     runVisits(); }catch(e){} }
 function visitFree(){ return !VIS.busy && !RING.open && !UKE.on && !PET.active && B.state!=='drag' && B.state!=='fly' && $('#sheet').hidden && $('#crisis').hidden && $('#breath').hidden; }
@@ -1201,7 +1201,7 @@ function playVisit(v, look, done){ clearTimeout(PET.endT); B.onArrive=null; B.af
   },1600);
   setTimeout(()=>{ if(iv) clearInterval(iv); el.classList.remove('playing','pecking'); el.classList.add('flying'); el.style.transition='transform 1.5s ease-in'; el.style.transform=`translate(${sx}px,${sy}px)`; },6800);
   setTimeout(()=>{ el.remove(); if(B.state==='show') settle(2); done(); },8400); }
-setInterval(pollVisits,45000); setTimeout(pollVisits,8000);
+setInterval(pollVisits,20000); setTimeout(pollVisits,4000);
 document.addEventListener('visibilitychange', ()=>{ if(!document.hidden) pollVisits(); });
 
 /* ---------- faʻaʻapu : le jardin ---------- */
@@ -1385,7 +1385,7 @@ setInterval(chestBadge,60000);
 GEST.etoile={l:'', t:'tʼapporte une étoile : tu es sa personne de confiance.'};
 let stars=store.get('stars',{});
 function sendStar(code,on){ if(!SYNC_URL) return; fetch(`${SYNC_URL}/visits/${code}/${myCode}.json`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({g:on?'etoile':'etoile0', t:Date.now(), name:share.name||''})}).catch(()=>{}); }
-function renderStars(){ const el=$('#stars'); if(!el) return; const codes=Object.keys(stars).filter(c=>okCode(c) && friends.some(f=>f.code===c) && isMutualKnown(c));
+function renderStars(){ const el=$('#stars'); if(!el) return; const codes=Object.keys(stars).filter(c=>okCode(c) && friends.some(f=>f.code===c));
   el.innerHTML=codes.map(c=>`<button class="starbtn" data-star="${c}" aria-label="Étoile de confiance"><svg viewBox="0 0 30 30" aria-hidden="true"><polygon points="${starPts(15,15,13)}" fill="#F2C94C" stroke="#C99A1C" stroke-width="1.2" stroke-linejoin="round"/></svg></button>`).join(''); }
 function openStar(code){ const f=friends.find(x=>x.code===code); const who=esc((f&&f.name)||stars[code]||'Ton ami·e');
   openSheet(`<div class="head"><div><div class="eyebrow">Étoile de confiance</div><h2>${who} te fait confiance</h2></div><button class="x" id="sx" aria-label="Fermer">×</button></div>
