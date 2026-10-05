@@ -1105,7 +1105,7 @@ async function fetchFriends(){ if(!SYNC_URL) return; await Promise.all(friends.m
 let reqs=store.get('reqs',[]), blocked=store.get('blocked',[]);
 const okCode = c => typeof c==='string' && /^[A-Z0-9]{8}$/.test(c);
 function dbDel(path){ if(SYNC_URL) fetch(`${SYNC_URL}/${path}.json`,{method:'DELETE'}).catch(()=>{}); }
-function sendAsk(code){ if(!SYNC_URL) return; fetch(`${SYNC_URL}/visits/${code}/${myCode}.json`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({g:'ask', t:Date.now(), name:share.name||''})}).catch(()=>{}); }
+function sendAsk(code){ if(!SYNC_URL) return; fetch(`${SYNC_URL}/visits/${code}/${myCode}.json`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({g:'ask', t:Date.now(), name:share.name||''})}).then(r=>{ if(!r.ok) toast('La demande nʼest pas partie (refus '+r.status+'). Préviens la personne qui gère Manu Ora.'); }).catch(()=>toast('Pas de connexion : la demande nʼest pas partie. Réessaie plus tard.')); }
 function reqsHTML(){ if(!reqs.length) return ''; return '<div class="eyebrow">Demandes reçues</div>'+reqs.map((r,i)=>`<div class="friend" style="border-color:var(--lagoon)"><div><b>${esc(r.name||'Quelquʼun')}</b><div class="small muted">${fmtCode(r.code)} veut lier son cœur au tien</div></div><div class="stack"><button class="btn sm primary" data-acc="${i}">Accepter</button><button class="btn sm ghost" data-ref="${i}">Refuser</button></div></div>`).join(''); }
 function renderReqs(){ const el=$('#reqList'); if(el) el.innerHTML=reqsHTML(); }
 function acceptReq(i){ const r=reqs[i]; if(!r) return; reqs.splice(i,1); store.set('reqs',reqs); blocked=blocked.filter(c=>c!==r.code); store.set('blocked',blocked);
@@ -1166,7 +1166,7 @@ function openGesture(i){ const f=friends[i]; if(!f) return; const nm=f.name||fmt
   openSheet(`<div class="head"><div><div class="eyebrow">Rencontre des manu</div><h2>Un signe pour ${esc(nm)}</h2></div><button class="x" id="sx" aria-label="Fermer">×</button></div><p class="small muted">Ton manu ira le porter. ${esc(nm)} le verra à sa prochaine ouverture de Manu Ora.</p><div class="row" id="gests">${Object.keys(GEST).filter(k=>GEST[k].l).map(k=>`<button class="btn" data-g="${k}">${GEST[k].l}</button>`).join('')}</div><button class="btn ghost" id="gBack">Retour à mon cœur</button>`);
   $('#sx').onclick=closeSheet; $('#gBack').onclick=openHeart;
   $('#gests').addEventListener('click', e=>{ const b=e.target.closest('[data-g]'); if(!b) return; closeSheet(); sendGesture(f.code,b.dataset.g,nm); }); }
-async function pollVisits(){ if(!SYNC_URL||!share.on) return;
+async function pollVisits(){ if(!SYNC_URL) return;
   try{ const r=await fetch(`${SYNC_URL}/visits/${myCode}.json`); if(!r.ok) return; const d=await r.json(); if(!d || typeof d!=='object') return;
     let fresh=false; Object.keys(d).forEach(from=>{ const v=d[from]; if(!okCode(from) || !v || v.g!=='ask' || typeof v.t!=='number') return; if(blocked.includes(from) || friends.some(f=>f.code===from) || reqs.some(q=>q.code===from)) return; reqs.push({code:from, name:String(v.name||'').slice(0,20), t:v.t}); fresh=true; });
     if(fresh){ store.set('reqs',reqs); renderReqs(); if(visitFree()) say('Quelquʼun veut lier son cœur au tien.','Touche ton cœur pour répondre'); }
