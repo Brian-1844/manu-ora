@@ -75,6 +75,17 @@ Les recettes secrètes apparaissent comme « ??? » avec un indice dans le carne
 
 Quand quelqu'un choisit un ami comme personne de confiance, son manu lui porte une étoile qui brille en haut de l'écran de veille. En la touchant, l'ami lit ce que cela veut dire et peut la garder ou la rendre. S'il la rend, la personne est prévenue et peut choisir quelqu'un d'autre.
 
+## Gros stress · calmer la tempête
+
+Un bouton corail « Gros stress ? » est toujours visible sur l'écran calme (aussi dans le petit menu du manu et sur la carte d'accueil). Il ouvre un guide court, en quatre pas :
+
+1. **Souffler** – un cercle guide la respiration (expirer plus longtemps qu'inspirer).
+2. **Relâcher le corps** – poings, épaules, mâchoire.
+3. **Revenir ici** – 3 choses que je vois, 2 que j'entends, 1 que je touche.
+4. **Nommer** – choisir le mot qui va avec la tension ; il colore le cœur du jour.
+
+La personne note sa tension de 1 à 5 avant et après, voit la différence, reçoit quelques conseils pour la suite (boire de l'eau, bouger, parler à un ama, attendre avant de répondre à un message) et gagne une plume. Si la tension reste à 4 ou 5, le manu propose l'écran d'aide (numéros d'urgence). Ce guide ne remplace pas un professionnel : les textes sont à faire relire par un·e psychologue.
+
 ## Te tere (le voyage)
 
 Le fil conducteur de l'appli : une lune, quatre étapes d'environ une semaine, calées sur la phase de la lune.

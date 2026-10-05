@@ -293,6 +293,10 @@ body.quiet .app{display:none}
 .linkbtn{border:0;background:none;padding:0;color:var(--lagoon-ink);text-decoration:underline;font:inherit;font-weight:700;cursor:pointer}
 .qtop{flex-wrap:wrap;gap:4px;padding-left:10px;padding-right:10px}
 #qgarden,#qchest,#qsky{padding:5px 7px;gap:3px}
+.stressfloat{position:absolute;left:14px;bottom:calc(84px + env(safe-area-inset-bottom,0px));border-color:var(--coral);color:var(--coral)}
+.sbwrap{display:grid;place-items:center;height:190px}
+.sbreath{width:150px;height:150px;border-radius:50%;background:radial-gradient(circle at 40% 35%,var(--lagoon),var(--lagoon-ink));box-shadow:0 0 0 14px color-mix(in srgb,var(--lagoon) 18%,transparent);animation:sbreath 10s ease-in-out infinite}
+@keyframes sbreath{0%{transform:scale(.55)}40%{transform:scale(1)}100%{transform:scale(.55)}}
 .terefloat{position:absolute;left:14px;bottom:calc(36px + env(safe-area-inset-bottom,0px));background:var(--lagoon);border-color:var(--lagoon);color:#fff}
 .tsteps{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
 .tstep{border:1.5px solid var(--line);border-radius:12px;padding:8px 4px;text-align:center;display:flex;flex-direction:column;gap:2px;min-width:0;background:var(--surface)}
@@ -351,6 +355,7 @@ body.quiet .app{display:none}
             <button class="btn primary" id="btnCheck" data-i18n="checkin">Faire le point</button>
             <button class="btn" id="btnBreathe" data-i18n="breathe">Respirer 1 min</button>
             <button class="btn" id="btnUke">Ukulele</button>
+            <button class="btn coral" id="btnStress">Gros stress</button>
           </div>
         </div>
 
@@ -496,6 +501,7 @@ body.quiet .app{display:none}
   <div class="stars" id="stars"></div>
   <button class="tbtn installfloat" id="installBtn" hidden>Installer lʼappli</button>
   <button class="tbtn terefloat" id="tereBtn" hidden>Défi du jour</button>
+  <button class="tbtn stressfloat" id="stressBtn">Gros stress ?</button>
   <p class="qhint" id="qhint">Touche deux fois ton manu pour dire comment tu te sens.</p>
 </div>
 <div class="ringbg" id="ringbg" hidden></div>
@@ -787,6 +793,7 @@ function renderHome(){
 $('#btnCheck').onclick = openCheckin;
 $('#btnBreathe').onclick = ()=>openBreath(null);
 $('#btnUke').onclick = playUke;
+$('#btnStress').onclick = ()=>openStress(true);
 $('#helpNow').onclick = openCrisis;
 
 /* ---------- words ---------- */
@@ -1043,9 +1050,9 @@ function quietMove(){ if(B.asking){ idle(2); return; } const hm=homePoint(); if(
 function setQuiet(on){ QUIET=on; store.set('quiet',on); document.body.classList.toggle('quiet',on); closeRing(); bubbleEl.classList.remove('show'); B.asking=false; B.afterIdle=null; B.onArrive=null;
   if(on){ renderHeart(); goHome(); } else { B.perched=false; renderHome(); startFly({x:Math.min(60,innerWidth-BW-8), y:groundY()}); } }
 function sayHTML(html, ms){ bubbleEl.innerHTML=html; bubbleEl.classList.add('show'); placeBubble(); clearTimeout(say.t); say.t=setTimeout(()=>bubbleEl.classList.remove('show'), ms||6000); }
-function miniMenu(){ sayHTML(`${esc(randomLine())}<div class="mini"><button data-m="check">Faire le point</button><button data-m="tere">Te tere</button><button data-m="breathe">Respirer</button><button data-m="uke">Ukulele</button><button data-m="heart">Mon cœur</button><button data-m="garden">Faʻaʻapu</button><button data-m="chest">Coffre</button><button data-m="sky">Te raʻi</button>${has('x:dance')?'<button data-m="dance">Danser</button>':''}${has('x:flip')?'<button data-m="flip">Salto</button>':''}${QUIET?'<button data-m="app">Tout Manu Ora</button>':'<button data-m="quiet">Mode veille</button>'}</div>`, 9000); }
+function miniMenu(){ sayHTML(`${esc(randomLine())}<div class="mini"><button data-m="stress">Gros stress</button><button data-m="check">Faire le point</button><button data-m="tere">Te tere</button><button data-m="breathe">Respirer</button><button data-m="uke">Ukulele</button><button data-m="heart">Mon cœur</button><button data-m="garden">Faʻaʻapu</button><button data-m="chest">Coffre</button><button data-m="sky">Te raʻi</button>${has('x:dance')?'<button data-m="dance">Danser</button>':''}${has('x:flip')?'<button data-m="flip">Salto</button>':''}${QUIET?'<button data-m="app">Tout Manu Ora</button>':'<button data-m="quiet">Mode veille</button>'}</div>`, 9000); }
 bubbleEl.addEventListener('click', e=>{ const b=e.target.closest('[data-m]'); if(!b) return; e.stopPropagation(); bubbleEl.classList.remove('show'); const m=b.dataset.m;
-  if(m==='tere') openTere(); else if(m==='garden') openGarden(); else if(m==='chest') openChest(); else if(m==='sky') openSky(); else if(m==='dance'||m==='flip') playAnim(m); else if(m==='breathe') openBreath(null); else if(m==='check') openCheckin(); else if(m==='uke') playUke(); else if(m==='heart') openHeart(); else if(m==='app') setQuiet(false); else if(m==='quiet') setQuiet(true); else if(m==='pet') say('Glisse ton doigt sur mes plumes, tout doucement.'); });
+  if(m==='stress') openStress(true); else if(m==='tere') openTere(); else if(m==='garden') openGarden(); else if(m==='chest') openChest(); else if(m==='sky') openSky(); else if(m==='dance'||m==='flip') playAnim(m); else if(m==='breathe') openBreath(null); else if(m==='check') openCheckin(); else if(m==='uke') playUke(); else if(m==='heart') openHeart(); else if(m==='app') setQuiet(false); else if(m==='quiet') setQuiet(true); else if(m==='pet') say('Glisse ton doigt sur mes plumes, tout doucement.'); });
 
 /* colour ring */
 function ringCenter(){ return {x:innerWidth/2, y:innerHeight/2-10}; }
@@ -1075,6 +1082,7 @@ $('#qgarden').onclick=()=>openGarden();
 $('#qchest').onclick=()=>openChest();
 $('#qsky').onclick=()=>openSky();
 $('#tereBtn').onclick=()=>openTere();
+$('#stressBtn').onclick=()=>openStress(true);
 function quietFree(){ return QUIET && !RING.open && $('#sheet').hidden && $('#crisis').hidden && $('#breath').hidden && !UKE.on && !PET.active; }
 setInterval(()=>{ if(!quietFree()) return; const now=Date.now(); if(now-lastEntryTs()>ASK_EVERY && now-lastAsk>ASK_EVERY){ lastAsk=now; store.set('lastAsk',lastAsk); askRing(true); } }, 30000);
 setTimeout(()=>{ if(quietFree() && Date.now()-lastEntryTs()>ASK_EVERY && Date.now()-lastAsk>20*60e3){ lastAsk=Date.now(); store.set('lastAsk',lastAsk); askRing(true); } }, 12000);
@@ -1557,6 +1565,40 @@ function openTere(){
     else if(k==='save'){ const v=($('#tereAns').value||'').trim().slice(0,400); if(!v){ toast('Écris quelques mots dʼabord'); return; } const before=islandsCount(); rec.ans=v; saveTere(); const after=islandsCount();
       if(after>(tere.paid||0)){ const gain=(after-(tere.paid||0))*20; tere.paid=after; saveTere(); feathers+=gain; store.set('feathers',feathers); renderFeathers(); toast(`Île atteinte : ${ISLES[(after-1)%12]} ! +${gain} plumes`); } else toast('Étape franchie. Cʼest noté dans ton carnet.'); openTere(); } }); }
 tereChip(); setInterval(tereChip,10*60000);
+
+/* ---------- gros stress : calmer la tempête, pas à pas ---------- */
+ACT.calm={t:'Calmer la tempête', p:'tino', d:'Trois minutes pour faire redescendre la tension.'};
+const STRESS={i:0, before:3, after:3, emo:null};
+function openStress(start){ if(start){ STRESS.i=0; STRESS.before=3; STRESS.after=3; STRESS.emo=null; }
+  const i=STRESS.i, total=5; let body='', next='Continuer';
+  const scale=(id,val)=>`<input type="range" id="${id}" min="1" max="5" value="${val}"><div class="scale"><span>calme</span><span>tendu·e</span><span>très tendu·e</span></div>`;
+  if(i===0){ next='Commencer'; body=`<p><b>Tu nʼas rien à réussir.</b> On fait ça ensemble, pendant trois minutes. ${esc(cfg.name)} reste avec toi.</p><div class="card flat"><div class="eyebrow">Ta tension, là, maintenant</div>${scale('stB',STRESS.before)}</div><button class="linkbtn" data-st="crisis">Je suis en danger, ou jʼai des idées noires</button>`; }
+  else if(i===1) body=`<h3>1 · Le souffle</h3><p class="small">Inspire quand le cercle grandit. Expire lentement quand il rétrécit, plus longtemps que tu nʼas inspiré. Fais-le cinq fois.</p><div class="sbwrap"><div class="sbreath"></div></div><p class="small muted">Expirer longtemps dit à ton corps que le danger est passé.</p>`;
+  else if(i===2) body=`<h3>2 · Le corps</h3><div class="stack"><div class="card flat"><p><b>Les poings.</b> Serre-les fort cinq secondes, puis ouvre les mains dʼun coup. Trois fois.</p></div><div class="card flat"><p><b>Les épaules.</b> Monte-les vers les oreilles, tiens trois secondes, laisse-les tomber.</p></div><div class="card flat"><p><b>La mâchoire.</b> Desserre les dents, laisse la langue se poser.</p></div></div><p class="small muted">La tension se loge dans les muscles. Les serrer exprès, puis lâcher, les aide à se relâcher.</p>`;
+  else if(i===3) body=`<h3>3 · Ici, maintenant</h3><p class="small">Regarde autour de toi et dis-le dans ta tête, ou tout bas.</p><div class="stack"><div class="card flat"><p><b>Trois choses que tu vois.</b></p></div><div class="card flat"><p><b>Deux sons que tu entends.</b></p></div><div class="card flat"><p><b>Une chose que tu touches</b>, et ce quʼelle fait sous tes doigts.</p></div></div><p class="small muted">La tension vit dans « et si… ». Tes sens te ramènent à ce qui est là.</p>`;
+  else if(i===4){ const ids=['riri','peapea','matau','haama','rohirohi','fiu','oto','moemoe']; body=`<h3>4 · Un mot</h3><p class="small">Quel mot ressemble le plus à cette tension ? Lui donner un nom la rend déjà un peu plus petite.</p><div class="chips">${ids.map(id=>{ const e=EMO.find(x=>x.id===id); return `<button class="chip ${STRESS.emo===id?'on':''}" data-se="${id}" style="--c:${e.color}"><b><span class="sw"></span>${esc(e.ty)}</b><span>${esc(e.fr)}</span></button>`; }).join('')}</div><p class="small muted">Tu peux aussi passer cette étape.</p>`; }
+  else { next=null; const d=STRESS.before-STRESS.after; const res = STRESS.done ? `<div class="note"><b>${d>0?`Ta tension est passée de ${STRESS.before} à ${STRESS.after}.`:d===0?`Ta tension est restée à ${STRESS.after}.`:`Ta tension est montée à ${STRESS.after}.`}</b> ${d>0?'Cʼest toi qui as fait ça.':'Ça arrive : une grosse vague met du temps à passer. Tu peux recommencer, ou appeler quelquʼun.'}</div>` : '';
+    const amaL = ama.length ? ama.map(a=>`<div class="ama-item"><b>${esc(a.name)}</b><span class="muted small">${esc(a.tel||'')}</span></div>`).join('') : '<p class="small muted">Pense à une personne à qui tu peux dire : « Je suis tendu·e, tu as cinq minutes ? »</p>';
+    body = STRESS.done ? `${res}<div class="card"><div class="eyebrow">Pour la suite</div><div class="stack">
+        <p class="small"><b>Ne décide rien dʼimportant</b> et ne réponds pas aux messages tant que la tension est haute. Ça peut attendre une heure.</p>
+        <p class="small"><b>Bouge dix minutes :</b> marche, nage, va voir la mer.</p>
+        <p class="small"><b>Bois un verre dʼeau,</b> et mange si tu nʼas pas mangé.</p>
+        <p class="small"><b>Dis-le à quelquʼun :</b> « Je suis tendu·e. » Pas besoin dʼexpliquer.</p></div></div>
+      <div class="card flat"><div class="eyebrow">Mon ama</div><div class="stack">${amaL}</div></div>
+      <p class="small muted">Si cette tension revient souvent ou ne redescend pas, parles-en à un adulte de confiance, à lʼinfirmière ou à un médecin.</p>
+      <div class="row"><button class="btn ghost" data-st="again">Recommencer</button><button class="btn primary" data-st="close">Fermer</button></div>${STRESS.after>=4?'<button class="btn coral" data-st="crisis">Jʼai besoin dʼaide maintenant</button>':''}`
+      : `<h3>Et maintenant ?</h3><div class="card flat"><div class="eyebrow">Ta tension, là, maintenant</div>${scale('stA',STRESS.after)}</div><button class="btn primary" data-st="finish">Voir où jʼen suis</button>`; }
+  openSheet(`<div class="head"><div><div class="eyebrow">${i===0?'Grosse tension':i<=4?'Étape '+i+' sur 4':'Tu lʼas fait'}</div><h2>Calmer la tempête</h2></div><button class="x" id="sx" aria-label="Fermer">×</button></div>
+    <div id="stBox" class="stack" style="gap:12px">${body}${next?`<div class="row">${i>0?'<button class="btn ghost" data-st="back">Retour</button>':''}<button class="btn primary" data-st="next">${next}</button></div>`:''}</div>`);
+  $('#sx').onclick=()=>{ STRESS.done=false; closeSheet(); };
+  $('#stBox').addEventListener('click', e=>{ const c=e.target.closest('[data-se]'); if(c){ STRESS.emo = STRESS.emo===c.dataset.se ? null : c.dataset.se; openStress(); return; }
+    const b=e.target.closest('[data-st]'); if(!b) return; const k=b.dataset.st;
+    if(k==='next'){ if(STRESS.i===0){ STRESS.before=+$('#stB').value; say('Je suis là. On y va doucement.'); } if(STRESS.i===4 && STRESS.emo){ addEntry(STRESS.emo); } STRESS.i++; STRESS.done=false; openStress(); }
+    else if(k==='back'){ STRESS.i=Math.max(0,STRESS.i-1); openStress(); }
+    else if(k==='finish'){ STRESS.after=+$('#stA').value; STRESS.done=true; award('calm'); openStress(); }
+    else if(k==='again'){ openStress(true); }
+    else if(k==='close'){ STRESS.done=false; closeSheet(); say('Māuruuru. Tu peux revenir quand tu veux.'); }
+    else if(k==='crisis'){ STRESS.done=false; closeSheet(); openCrisis(); } }); }
 
 /* ---------- prévenir mon ama : seulement si la personne le demande ---------- */
 function trusted(){ return friends.filter(f=>f.ama); }
