@@ -75,6 +75,16 @@ Les recettes secrètes apparaissent comme « ??? » avec un indice dans le carne
 
 Quand quelqu'un choisit un ami comme personne de confiance, son manu lui porte une étoile qui brille en haut de l'écran de veille. En la touchant, l'ami lit ce que cela veut dire et peut la garder ou la rendre. S'il la rend, la personne est prévenue et peut choisir quelqu'un d'autre.
 
+## Te raʻi (le ciel)
+
+Une carte du ciel simplifiée avec onze repères nommés en reo tahiti : Matariʻi (Pléiades), Tauhā (Croix du Sud), Nāmatarua (Alpha et Bêta du Centaure), Te Matau a Māui (Scorpion), ʻAna-mua (Antarès), Tautoru (Baudrier d'Orion), ʻAna-varu (Bételgeuse), Taʻurua-faupapa (Sirius), Pīpiri mā (Castor et Pollux), Te Vaiora (Voie lactée), Marama (Lune).
+
+- **Explorer :** toucher une étoile affiche son nom, son sens et une courte histoire.
+- **Jouer :** « Où est Tauhā ? » ; cinq questions, une plume par partie (dans la limite de 3 activités par jour), et un compteur d'étoiles connues.
+- **La lune ce soir :** phase calculée, dessinée comme on la voit dans l'hémisphère sud.
+
+Sources des noms : All Skies Encyclopaedia (page « Tahiti ») et une présentation de J.-C. Teriierooiterai (UCLA, 2015). Les noms varient selon les îles et les auteurs (Sirius : Taʻurua-faupapa ou Taʻurua-nui-i-te-amo-ʻaha ; Scorpion : hameçon de Māui ou de Tafaʻi). À faire valider localement, de même que : Sirius comme ʻaveiʻa de Tahiti, les noms de nuits de lune cités (Tireo, Hotu, Māraʻi, Mutu) et la légende de Pīpiri mā.
+
 ## Lier son cœur à un ami (optionnel)
 
 Le partage des couleurs demande un tout petit serveur. Version gratuite avec Firebase :
@@ -125,3 +135,10 @@ Tout tient dans `index.html` (pas de serveur, pas de compte). Les données reste
 - Versions pa'umotu, marquisienne, australe.
 - Petites histoires à choix ('a'amu) pour apprendre à reconnaître les émotions chez les autres.
 - Mode école / groupe de jeunes, en lien avec le label « École en santé ».
+
+## Avant un partage public
+
+- **Bienvenue et confidentialité :** au premier lancement, l'appli affiche « Manu Ora n'est pas un soin médical » et un résumé des données. La page « Confidentialité » (lien en bas de l'accueil et dans « Cœurs liés ») détaille ce qui reste sur le téléphone, ce qui est partagé, et propose « Tout effacer ».
+- **Règles Firebase renforcées :** le fichier `firebase-regles.json` remplace les règles de test. Il refuse tout ce qui n'a pas la forme attendue (codes de 8 caractères, textes courts, champs connus) et interdit de lister les codes. Les liens entre cœurs continuent de fonctionner.
+- **Licence :** voir `LICENSE` (tous droits réservés).
+- **Restent à faire par des personnes :** vérifier les numéros d'aide par téléphone, relecture par un·e psychologue, validation du reo tahiti, avis sur les données personnelles de mineurs.

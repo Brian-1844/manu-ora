@@ -288,7 +288,10 @@ body.quiet .app{display:none}
 .plot .btn{width:100%;padding:6px 4px;font-size:.78rem;border-radius:10px}
 .plot b{font-family:var(--display);font-weight:600}
 .bird.shiny svg{filter:drop-shadow(0 0 7px rgba(255,214,110,.95)) drop-shadow(0 6px 6px rgba(0,0,0,.18)) saturate(1.2) brightness(1.06)}
-.qtop{flex-wrap:wrap;gap:6px}
+.linkbtn{border:0;background:none;padding:0;color:var(--lagoon-ink);text-decoration:underline;font:inherit;font-weight:700;cursor:pointer}
+.qtop{flex-wrap:wrap;gap:4px;padding-left:10px;padding-right:10px}
+#qgarden,#qchest,#qsky{padding:5px 7px;gap:3px}
+.installfloat{position:absolute;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));white-space:nowrap}
 .qfeather span:empty{display:none}
 .bird.shiny svg{filter:drop-shadow(0 0 7px var(--aura,#FFD66E)) drop-shadow(0 0 3px var(--aura,#FFD66E)) drop-shadow(0 6px 6px rgba(0,0,0,.18))}
 .bird.rainbow svg{animation:rainbowAura 5s linear infinite}
@@ -357,9 +360,12 @@ body.quiet .app{display:none}
 
         <div class="card"><h3>Ton faʻaʻapu</h3><p class="small muted" id="gardenHome">Plante une graine et reviens la voir pousser.</p><button class="btn" id="gardenBtn">Entrer dans le jardin</button></div>
 
+        <div class="card"><h3>Te raʻi · le ciel</h3><p class="small muted">Apprends le nom des étoiles en reo tahiti, comme les navigateurs, et regarde la lune de ce soir.</p><button class="btn" id="skyBtn">Regarder le ciel</button></div>
+
         <div class="card" id="installCard" hidden><h3>Installer Manu Ora</h3><p class="small muted">Ajoute lʼicône du manu sur ton écran dʼaccueil pour lʼouvrir comme une appli.</p><button class="btn primary" id="installBtn2">Installer</button></div>
 
         <div class="note">Manu Ora nʼest pas un soin médical. Si tu vas mal, parle à quelquʼun : le bouton <b>Aide</b> est toujours en haut à droite.</div>
+        <p class="small muted" style="text-align:center"><button class="linkbtn" data-priv>Confidentialité</button> · Version dʼessai · © 2026 Manu Ora (Brian-1844), tous droits réservés</p>
       </div>
     </section>
 
@@ -470,10 +476,11 @@ body.quiet .app{display:none}
 
 <div class="quiet" id="quiet">
   <div class="qtop">
-    <div style="display:flex;gap:6px;align-items:center"><button class="heartbtn" id="heartBtn" aria-label="Mon cœur aujourdʼhui"></button><button class="qfeather" id="qfeather" aria-label="Mes plumes"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 3C12 3 6 8 5 16l-2 5 2-.5C9 20 13 19 16 15c2-3 4-7 4-12Z" fill="currentColor" opacity=".25"/><path d="M20 3C12 3 6 8 5 16l-2 5M5 16c4-1 8-4 11-9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span id="qfeatherN">0</span></button><button class="qfeather" id="qgarden" aria-label="Mon faʻaʻapu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21V11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M12 12C12 7 8 5 4 5c0 5 3 8 8 7Z" fill="currentColor" opacity=".3" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M12 15c0-4 3-6 8-6 0 5-3 7-8 6Z" fill="currentColor" opacity=".3" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg><span id="qgardenN"></span></button><button class="qfeather" id="qchest" aria-label="Mon coffre"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10V8a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v2" fill="currentColor" opacity=".3" stroke="currentColor" stroke-width="1.6"/><rect x="4" y="10" width="16" height="9" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.6"/><rect x="10.5" y="9" width="3" height="4" rx="1" fill="currentColor"/></svg><span id="qchestN"></span></button></div>
-    <div style="display:flex;gap:8px;align-items:center"><button class="tbtn" id="installBtn" hidden>Installer</button><button class="menubtn" id="menuBtn" aria-label="Ouvrir tout Manu Ora">≡</button></div>
+    <div style="display:flex;gap:6px;align-items:center"><button class="heartbtn" id="heartBtn" aria-label="Mon cœur aujourdʼhui"></button><button class="qfeather" id="qfeather" aria-label="Mes plumes"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 3C12 3 6 8 5 16l-2 5 2-.5C9 20 13 19 16 15c2-3 4-7 4-12Z" fill="currentColor" opacity=".25"/><path d="M20 3C12 3 6 8 5 16l-2 5M5 16c4-1 8-4 11-9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span id="qfeatherN">0</span></button><button class="qfeather" id="qgarden" aria-label="Mon faʻaʻapu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21V11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M12 12C12 7 8 5 4 5c0 5 3 8 8 7Z" fill="currentColor" opacity=".3" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M12 15c0-4 3-6 8-6 0 5-3 7-8 6Z" fill="currentColor" opacity=".3" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg><span id="qgardenN"></span></button><button class="qfeather" id="qchest" aria-label="Mon coffre"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10V8a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v2" fill="currentColor" opacity=".3" stroke="currentColor" stroke-width="1.6"/><rect x="4" y="10" width="16" height="9" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.6"/><rect x="10.5" y="9" width="3" height="4" rx="1" fill="currentColor"/></svg><span id="qchestN"></span></button><button class="qfeather" id="qsky" aria-label="Te raʻi, le ciel"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 3a8 8 0 1 0 4 11 6.5 6.5 0 0 1-4-11Z" fill="currentColor" opacity=".3" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="6" cy="5" r="1.2" fill="currentColor"/><circle cx="4.5" cy="12" r="1" fill="currentColor"/></svg></button></div>
+    <button class="menubtn" id="menuBtn" aria-label="Ouvrir tout Manu Ora">≡</button>
   </div>
   <div class="stars" id="stars"></div>
+  <button class="tbtn installfloat" id="installBtn" hidden>Installer lʼappli</button>
   <p class="qhint" id="qhint">Touche deux fois ton manu pour dire comment tu te sens.</p>
 </div>
 <div class="ringbg" id="ringbg" hidden></div>
@@ -1014,9 +1021,9 @@ function quietMove(){ if(B.asking){ idle(2); return; } const hm=homePoint(); if(
 function setQuiet(on){ QUIET=on; store.set('quiet',on); document.body.classList.toggle('quiet',on); closeRing(); bubbleEl.classList.remove('show'); B.asking=false; B.afterIdle=null; B.onArrive=null;
   if(on){ renderHeart(); goHome(); } else { B.perched=false; renderHome(); startFly({x:Math.min(60,innerWidth-BW-8), y:groundY()}); } }
 function sayHTML(html, ms){ bubbleEl.innerHTML=html; bubbleEl.classList.add('show'); placeBubble(); clearTimeout(say.t); say.t=setTimeout(()=>bubbleEl.classList.remove('show'), ms||6000); }
-function miniMenu(){ sayHTML(`${esc(randomLine())}<div class="mini"><button data-m="check">Faire le point</button><button data-m="breathe">Respirer</button><button data-m="uke">Ukulele</button><button data-m="heart">Mon cœur</button><button data-m="garden">Faʻaʻapu</button><button data-m="chest">Coffre</button>${has('x:dance')?'<button data-m="dance">Danser</button>':''}${has('x:flip')?'<button data-m="flip">Salto</button>':''}${QUIET?'<button data-m="app">Tout Manu Ora</button>':'<button data-m="quiet">Mode veille</button>'}</div>`, 9000); }
+function miniMenu(){ sayHTML(`${esc(randomLine())}<div class="mini"><button data-m="check">Faire le point</button><button data-m="breathe">Respirer</button><button data-m="uke">Ukulele</button><button data-m="heart">Mon cœur</button><button data-m="garden">Faʻaʻapu</button><button data-m="chest">Coffre</button><button data-m="sky">Te raʻi</button>${has('x:dance')?'<button data-m="dance">Danser</button>':''}${has('x:flip')?'<button data-m="flip">Salto</button>':''}${QUIET?'<button data-m="app">Tout Manu Ora</button>':'<button data-m="quiet">Mode veille</button>'}</div>`, 9000); }
 bubbleEl.addEventListener('click', e=>{ const b=e.target.closest('[data-m]'); if(!b) return; e.stopPropagation(); bubbleEl.classList.remove('show'); const m=b.dataset.m;
-  if(m==='garden') openGarden(); else if(m==='chest') openChest(); else if(m==='dance'||m==='flip') playAnim(m); else if(m==='breathe') openBreath(null); else if(m==='check') openCheckin(); else if(m==='uke') playUke(); else if(m==='heart') openHeart(); else if(m==='app') setQuiet(false); else if(m==='quiet') setQuiet(true); else if(m==='pet') say('Glisse ton doigt sur mes plumes, tout doucement.'); });
+  if(m==='garden') openGarden(); else if(m==='chest') openChest(); else if(m==='sky') openSky(); else if(m==='dance'||m==='flip') playAnim(m); else if(m==='breathe') openBreath(null); else if(m==='check') openCheckin(); else if(m==='uke') playUke(); else if(m==='heart') openHeart(); else if(m==='app') setQuiet(false); else if(m==='quiet') setQuiet(true); else if(m==='pet') say('Glisse ton doigt sur mes plumes, tout doucement.'); });
 
 /* colour ring */
 function ringCenter(){ return {x:innerWidth/2, y:innerHeight/2-10}; }
@@ -1044,6 +1051,7 @@ $('#heartBtn').onclick=openHeart;
 $('#qfeather').onclick=()=>{ setQuiet(false); showTab('bird'); };
 $('#qgarden').onclick=()=>openGarden();
 $('#qchest').onclick=()=>openChest();
+$('#qsky').onclick=()=>openSky();
 function quietFree(){ return QUIET && !RING.open && $('#sheet').hidden && $('#crisis').hidden && $('#breath').hidden && !UKE.on && !PET.active; }
 setInterval(()=>{ if(!quietFree()) return; const now=Date.now(); if(now-lastEntryTs()>ASK_EVERY && now-lastAsk>ASK_EVERY){ lastAsk=now; store.set('lastAsk',lastAsk); askRing(true); } }, 30000);
 setTimeout(()=>{ if(quietFree() && Date.now()-lastEntryTs()>ASK_EVERY && Date.now()-lastAsk>20*60e3){ lastAsk=Date.now(); store.set('lastAsk',lastAsk); askRing(true); } }, 12000);
@@ -1100,7 +1108,7 @@ function openHeart(){ const today=todayEntries();
       <div class="num"><div><div class="who">Mon code, à donner à un·e ami·e</div><b class="code">${fmtCode(myCode)}</b></div><button class="copy" id="copyCode" data-n="${fmtCode(myCode)}">Copier</button></div>
       <label class="small" style="display:flex;gap:8px;align-items:center"><input type="checkbox" id="shareOn" ${share.on?'checked':''} ${off}> Partager les couleurs de mon cœur avec ceux qui ont mon code</label>
       <input type="text" id="shareName" placeholder="Ton prénom ou surnom" value="${esc(share.name||'')}" maxlength="20" ${off}>
-      <p class="small muted">Seules les couleurs du jour et lʼapparence de ton manu sont partagées, jamais tes notes. Quand vous avez chacun entré le code de lʼautre, vos manu peuvent se rendre visite.</p>
+      <p class="small muted">Seules les couleurs du jour et lʼapparence de ton manu sont partagées, jamais tes notes. Quand vous avez chacun entré le code de lʼautre, vos manu peuvent se rendre visite. <button class="linkbtn" data-priv>Confidentialité</button></p>
       <div class="row"><input type="text" id="friendCode" placeholder="Code de lʼami·e" ${off}><input type="text" id="friendName" placeholder="Son prénom" ${off}></div>
       <button class="btn sm" id="linkBtn" ${off}>Envoyer une demande de lien</button>
       <div class="stack" id="reqList">${reqsHTML()}</div>
@@ -1367,6 +1375,66 @@ function openStar(code){ const f=friends.find(x=>x.code===code); const who=esc((
 $('#stars').addEventListener('click', e=>{ const b=e.target.closest('[data-star]'); if(b) openStar(b.dataset.star); });
 renderStars(); chestBadge();
 
+/* ---------- Te raʻi : le ciel, les étoiles, la lune ---------- */
+ACT.sky={t:'Te raʻi : les étoiles', p:'varua', d:'Lever les yeux, comme les navigateurs.'};
+const SKY=[
+  {id:'vaiora', ty:'Te Vaiora', fr:'la Voie lactée', sens:'« lʼeau de vie »', txt:'La grande rivière de lumière qui traverse tout le ciel. Tauhā et Te Matau a Māui sont posés dessus.', hit:[318,172,30], lab:[322,138,'middle'], pts:[], lines:[]},
+  {id:'matarii', ty:'Matariʻi', fr:'les Pléiades', sens:'« les petits yeux »', txt:'Un petit groupe dʼétoiles serrées. Son lever, vers le 20 novembre, ouvre la saison de lʼabondance ; son coucher, vers le 20 mai, ouvre la saison où la terre se repose.', hit:[58,66,26], lab:[58,104,'middle'], pts:[[50,58,2.2],[58,54,2.6],[66,60,2.2],[54,66,2.4],[62,68,2.8],[70,70,2],[58,76,2]], lines:[]},
+  {id:'tautoru', ty:'Tautoru', fr:'le Baudrier dʼOrion', sens:'« les trois »', txt:'Trois étoiles bien alignées, faciles à trouver. Elles se lèvent presque exactement à lʼest et se couchent à lʼouest.', hit:[146,170,26], lab:[150,204,'middle'], pts:[[130,162,3],[146,170,3],[162,178,3]], lines:[[0,1],[1,2]]},
+  {id:'anavaru', ty:'ʻAna-varu', fr:'Bételgeuse', sens:'un des dix piliers du ciel', txt:'Une grosse étoile orangée, au-dessus de Tautoru. Les anciens comptaient dix « ʻana », des étoiles-piliers qui tiennent le ciel.', hit:[112,124,22], lab:[126,128,'start'], pts:[[112,124,4.2,'#FFB070']], lines:[]},
+  {id:'taurua', ty:'Taʻurua-faupapa', fr:'Sirius', sens:'la grande étoile-guide', txt:'Lʼétoile la plus brillante de la nuit. Elle passe juste au-dessus de Tahiti : cʼest son ʻaveiʻa, lʼétoile qui indique lʼîle aux navigateurs.', hit:[66,262,24], lab:[70,296,'middle'], pts:[[66,262,5.2,'#DCEBFF']], lines:[]},
+  {id:'pipiri', ty:'Pīpiri mā', fr:'Castor et Pollux', sens:'Pīpiri et sa sœur Rehua', txt:'Deux étoiles côte à côte. La légende raconte deux enfants, Pīpiri et Rehua, partis vivre dans le ciel ; on les voit ensemble pendant la saison fraîche.', hit:[226,62,26], lab:[226,100,'middle'], pts:[[214,56,3.2],[238,70,3.4,'#FFE2B8']], lines:[[0,1]]},
+  {id:'matau', ty:'Te Matau a Māui', fr:'le Scorpion', sens:'« lʼhameçon de Māui »', txt:'Une grande courbe dʼétoiles en forme dʼhameçon. On raconte que Māui sʼen est servi pour pêcher les îles au fond de lʼocéan.', hit:[272,262,50], lab:[300,328,'middle'], pts:[[250,188,2.8],[241,204,2.8],[237,222,2.8],[242,240,3],[250,260,2.8],[262,280,2.8],[280,292,2.8],[298,288,2.8],[307,274,3],[301,262,2.6]], lines:[[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,7],[7,8],[8,9]]},
+  {id:'anamua', ty:'ʻAna-mua', fr:'Antarès', sens:'« le pilier de lʼentrée »', txt:'Le cœur rouge de lʼhameçon de Māui. Cʼest le premier des dix piliers du ciel.', hit:[226,230,17], lab:[196,226,'end'], pts:[[232,231,4.6,'#FF7A5C']], lines:[]},
+  {id:'tauha', ty:'Tauhā', fr:'la Croix du Sud', sens:'« le groupe de quatre »', txt:'Quatre étoiles en croix. Son grand axe pointe vers le sud : cʼest la boussole des navigateurs polynésiens.', hit:[72,404,32], lab:[40,452,'middle'], pts:[[70,374,3.6],[73,434,4],[52,400,3.2],[92,407,3.4]], lines:[[0,1],[2,3]]},
+  {id:'namatarua', ty:'Nāmatarua', fr:'Alpha et Bêta du Centaure', sens:'« les deux yeux »', txt:'Deux étoiles très brillantes qui regardent Tauhā. Suis-les du regard : elles te montrent où est la croix.', hit:[140,452,24], lab:[156,484,'middle'], pts:[[128,446,4.4,'#FFF3C4'],[152,458,3.8]], lines:[[0,1]]},
+  {id:'marama', ty:'Marama', fr:'la Lune', sens:'elle rythme la pêche et les plantations', txt:'Chaque nuit de la lune porte un nom en reo. Tireo est le premier croissant, Hotu et Māraʻi sont les nuits de pleine lune, Mutu celle où la lune disparaît.', hit:[312,48,28], lab:[312,92,'middle'], pts:[], lines:[]}
+];
+const SKYST={sel:null, quiz:null, flash:null};
+let skyKnown=store.get('skyKnown',[]);
+function moonInfo(){ const syn=29.530588853, ref=Date.UTC(2000,0,6,18,14); let age=((Date.now()-ref)/864e5)%syn; if(age<0) age+=syn; const p=age/syn;
+  const name = (p<0.03||p>0.97)?'nouvelle lune':p<0.22?'premier croissant':p<0.28?'premier quartier':p<0.47?'lune gibbeuse croissante':p<0.53?'pleine lune':p<0.72?'lune gibbeuse décroissante':p<0.78?'dernier quartier':'dernier croissant';
+  return {age, p, name, night:Math.floor(age)+1, lit:Math.round((1-Math.cos(2*Math.PI*p))/2*100)}; }
+function moonSVG(cx,cy,r){ const p=moonInfo().p, rx=Math.max(0.01,r*Math.abs(Math.cos(2*Math.PI*p))); const waxing=p<0.5; /* hémisphère sud : croissant montant éclairé à gauche */
+  const outer=waxing?0:1; const term = waxing ? (p<0.25?1:0) : (p<0.75?1:0);
+  const lit=`M ${cx} ${cy-r} A ${r} ${r} 0 0 ${outer} ${cx} ${cy+r} A ${rx} ${r} 0 0 ${term} ${cx} ${cy-r} Z`;
+  return `<circle cx="${cx}" cy="${cy}" r="${r+7}" fill="#FFF1C4" opacity=".10"/><circle cx="${cx}" cy="${cy}" r="${r}" fill="#243A52"/><path d="${lit}" fill="#FFF1C4"/>`; }
+function skySVG(){ const quiz=!!SKYST.quiz; let h='<defs><linearGradient id="skyg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#071426"/><stop offset="1" stop-color="#12304A"/></linearGradient></defs><rect width="360" height="520" rx="18" fill="url(#skyg)"/>';
+  let seed=7; const rnd=()=>{ seed=(seed*16807)%2147483647; return seed/2147483647; };
+  for(let i=0;i<70;i++) h+=`<circle cx="${(rnd()*360).toFixed(0)}" cy="${(rnd()*520).toFixed(0)}" r="${(0.5+rnd()*0.9).toFixed(1)}" fill="#fff" opacity="${(0.25+rnd()*0.4).toFixed(2)}"/>`;
+  h+='<path d="M-20 520 Q160 330 380 120" stroke="#A9C1F0" stroke-opacity=".13" stroke-width="86" fill="none" stroke-linecap="round"/><path d="M-20 520 Q160 330 380 120" stroke="#DCE8FF" stroke-opacity=".12" stroke-width="34" fill="none" stroke-linecap="round"/>';
+  h+='<g data-sky="vaiora" style="cursor:pointer"><path d="M-20 520 Q160 330 380 120" stroke="#fff" stroke-opacity="0" stroke-width="64" fill="none" pointer-events="stroke"/></g>';
+  SKY.forEach(o=>{ if(o.id==='vaiora') return; const sel=SKYST.sel===o.id&&!quiz, fl=SKYST.flash&&SKYST.flash.id===o.id;
+    let g=`<g data-sky="${o.id}" style="cursor:pointer"><circle cx="${o.hit[0]}" cy="${o.hit[1]}" r="${o.hit[2]}" fill="#fff" fill-opacity="${fl?0.16:sel?0.08:0}" stroke="${fl?(SKYST.flash.ok?'#62C486':'#FF7A62'):'#FFE9A8'}" stroke-opacity="${fl?1:sel?0.9:0}" stroke-width="2"/>`;
+    o.lines.forEach(l=>{ const a=o.pts[l[0]], b=o.pts[l[1]]; g+=`<line x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" stroke="#CFE0FF" stroke-opacity=".45" stroke-width="1.2"/>`; });
+    o.pts.forEach(pt=>{ const c=pt[3]||'#FFFFFF'; g+=`<circle cx="${pt[0]}" cy="${pt[1]}" r="${pt[2]*2.4}" fill="${c}" opacity=".16"/><circle cx="${pt[0]}" cy="${pt[1]}" r="${pt[2]}" fill="${c}"/>`; });
+    if(o.id==='marama') g+=moonSVG(312,48,19);
+    h+=g+'</g>'; });
+  if(!quiz) SKY.forEach(o=>{ h+=`<text x="${o.lab[0]}" y="${o.lab[1]}" text-anchor="${o.lab[2]}" style="font:600 12.5px Fredoka,sans-serif;fill:${SKYST.sel===o.id?'#FFE9A8':'#DCE8FF'};pointer-events:none">${o.ty}</text>`; });
+  return `<svg viewBox="0 0 360 520" id="skySvg" style="width:100%;height:auto;display:block;border-radius:18px;touch-action:manipulation" role="img" aria-label="Carte du ciel">${h}</svg>`; }
+function startSkyQuiz(){ const ids=SKY.map(o=>o.id).sort(()=>Math.random()-0.5).slice(0,5); SKYST.quiz={q:ids,i:0,score:0,miss:false,msg:''}; SKYST.sel=null; openSky(); }
+function skyAnswer(id){ const Q=SKYST.quiz; if(!Q || SKYST.flash) return; const want=Q.q[Q.i], ok=id===want; const o=SKY.find(x=>x.id===id), w=SKY.find(x=>x.id===want);
+  if(ok){ if(!Q.miss){ Q.score++; if(!skyKnown.includes(want)){ skyKnown.push(want); store.set('skyKnown',skyKnown); } } Q.msg=`Oui ! ${w.ty}, ${w.fr}.`; SKYST.flash={id,ok:true}; openSky();
+    setTimeout(()=>{ SKYST.flash=null; Q.i++; Q.miss=false; Q.msg=''; if(Q.i>=Q.q.length){ const sc=Q.score; SKYST.quiz=null; SKYST.done=sc; award('sky'); } if(!$('#sheet').hidden && $('#skyBox')) openSky(); },1100); }
+  else { Q.miss=true; Q.msg=`Presque. Ça, cʼest ${o.ty} (${o.fr}). Cherche encore.`; SKYST.flash={id,ok:false}; openSky(); setTimeout(()=>{ SKYST.flash=null; if(!$('#sheet').hidden && $('#skyBox')) openSky(); },900); } }
+function openSky(){
+  const keepY=(!$('#sheet').hidden && $('#skyBox')) ? sheetInner.scrollTop : 0;
+  const Q=SKYST.quiz, m=moonInfo(); let panel;
+  if(Q){ const w=SKY.find(x=>x.id===Q.q[Q.i]); panel=`<div class="card"><div class="eyebrow">Question ${Q.i+1} sur ${Q.q.length} · ${Q.score} trouvée${Q.score>1?'s':''} du premier coup</div><h3>Où est ${w.ty} ?</h3><p class="small muted">${Q.msg||('Indice : '+w.fr+', '+w.sens+'.')}</p><button class="btn sm ghost" data-skyb="stop">Arrêter le jeu</button></div>`; }
+  else { const o=SKY.find(x=>x.id===SKYST.sel);
+    const info = o ? `<div class="card"><div class="eyebrow">${o.fr} · ${o.sens}</div><h3>${o.ty}</h3><p class="small">${o.txt}</p></div>` : `<div class="card flat"><p class="small">Touche une étoile ou un groupe dʼétoiles pour connaître son nom en reo tahiti et son histoire.</p></div>`;
+    const done = (typeof SKYST.done==='number') ? `<div class="note"><b>${SKYST.done} sur 5</b> du premier coup. ${SKYST.done>=4?'Tu lis le ciel comme un navigateur !':'Regarde encore la carte, puis rejoue.'}</div>` : '';
+    panel=`${done}${info}<div class="row"><button class="btn primary" data-skyb="quiz">Jouer : trouve lʼétoile</button></div><p class="small muted" style="text-align:center">Tu connais ${skyKnown.length} étoile${skyKnown.length>1?'s':''} sur ${SKY.length}.</p>`; }
+  openSheet(`<div class="head"><div><div class="eyebrow">Le ciel du fenua</div><h2>Te raʻi</h2></div><button class="x" id="sx" aria-label="Fermer">×</button></div>
+    <div id="skyBox" class="stack" style="gap:12px">${skySVG()}${panel}
+    <div class="card flat"><div style="display:flex;gap:12px;align-items:center"><svg viewBox="0 0 60 60" style="width:56px;height:56px;flex:none" aria-hidden="true"><rect width="60" height="60" rx="14" fill="#0B1C2E"/>${moonSVG(30,30,19)}</svg><div><div class="eyebrow">Marama · la lune ce soir</div><b>${m.name}</b><div class="small muted">Environ la ${m.night}<sup>e</sup> nuit de la lune · éclairée à ${m.lit} %</div></div></div></div>
+    <div class="card flat"><div class="eyebrow">Naviguer aux étoiles</div><p class="small">Les navigateurs suivaient des chemins dʼétoiles, les <b>rua</b>. Chaque île a aussi son <b>ʻaveiʻa</b>, une étoile qui passe juste au-dessus dʼelle : pour Tahiti, cʼest Taʻurua-faupapa.</p></div>
+    <p class="small muted">Carte simplifiée : les formes sont justes, pas les distances. Les noms varient selon les îles et les sources.</p></div>`);
+  sheetInner.scrollTop=keepY;
+  $('#sx').onclick=()=>{ SKYST.quiz=null; SKYST.flash=null; SKYST.done=undefined; closeSheet(); };
+  $('#skyBox').addEventListener('click', e=>{ const b=e.target.closest('[data-skyb]'); if(b){ if(b.dataset.skyb==='quiz'){ SKYST.done=undefined; startSkyQuiz(); } else { SKYST.quiz=null; SKYST.flash=null; openSky(); } return; }
+    const g=e.target.closest('[data-sky]'); if(!g) return; const id=g.getAttribute('data-sky'); if(SKYST.quiz) skyAnswer(id); else { SKYST.sel=id; SKYST.done=undefined; openSky(); } }); }
+
 /* ---------- prévenir mon ama : seulement si la personne le demande ---------- */
 function trusted(){ return friends.filter(f=>f.ama); }
 function trustHTML(){ if(!SYNC_URL) return ''; const tr=trusted();
@@ -1381,6 +1449,29 @@ function openAid(v){ const who=esc(v.name), when=new Date(v.t).toLocaleTimeStrin
   const steps=['<b>Appelle ou va le voir maintenant.</b> Pas besoin de trouver les bons mots : « Je suis là » suffit.','<b>Écoute</b>, sans juger ni faire la leçon. Laisse parler.','<b>Ne reste pas seul·e avec ça.</b> Préviens un adulte de confiance : parent, prof, infirmière, pasteur.','<b>Sʼil y a un danger tout de suite</b>, appelle le 15.'];
   openSheet(`<div class="head"><div><div class="eyebrow">Ton ama tʼappelle</div><h2>${who} a besoin de toi</h2></div><button class="x" id="sx" aria-label="Fermer">×</button></div><p class="small muted">${who} tʼa choisi·e comme personne de confiance et tʼa envoyé ce signe à ${when}.</p><div class="stack">${steps.map((t,i)=>`<div class="card flat"><p><b>${i+1}.</b> ${t}</p></div>`).join('')}</div><div class="stack" id="aidNums">${numbersHTML()}</div><button class="btn primary" id="aidOk">Compris, je mʼen occupe</button>`);
   $('#sx').onclick=closeSheet; $('#aidOk').onclick=closeSheet; $('#aidNums').addEventListener('click', copyNum); }
+
+/* ---------- confidentialité, bienvenue, tout effacer ---------- */
+function wipeAll(){ try{ dbDel(`hearts/${myCode}`); dbDel(`visits/${myCode}`); }catch(e){} try{ Object.keys(localStorage).filter(k=>k.indexOf('manuora.')===0).forEach(k=>localStorage.removeItem(k)); }catch(e){} toast('Tout est effacé'); setTimeout(()=>location.reload(),900); }
+function openPrivacy(){
+  openSheet(`<div class="head"><div><div class="eyebrow">Tes données</div><h2>Confidentialité</h2></div><button class="x" id="sx" aria-label="Fermer">×</button></div>
+    <div class="card flat"><h3>Ce qui reste sur ton téléphone</h3><p class="small">Ton cœur et ses couleurs, tes notes, tes plumes, ton faʻaʻapu, ton coffre, ton plan dʼaide et les numéros de ton ama. Personne dʼautre ne peut les lire, pas même la personne qui a créé Manu Ora.</p></div>
+    <div class="card flat"><h3>Ce qui est partagé, seulement si tu lies ton cœur</h3><p class="small">Le prénom ou surnom que tu écris, les couleurs de ta journée, lʼapparence de ton manu, les codes de tes ami·e·s lié·e·s, et les signes ou cadeaux que tu envoies. Ces informations sont rangées sous un code au hasard, sur un service de Google (Firebase) situé aux États-Unis.</p></div>
+    <div class="card flat"><h3>Ce qui nʼest jamais envoyé</h3><p class="small">Ce que tu écris dans tes notes ou ton plan, ton numéro de téléphone, ta position. Il nʼy a ni publicité ni compte à créer. Les polices dʼécriture sont chargées depuis Google Fonts.</p></div>
+    <div class="card flat"><h3>Si tu as moins de 15 ans</h3><p class="small">Montre Manu Ora à un parent ou à un adulte de confiance avant de lier ton cœur à quelquʼun, et ne lie ton cœur quʼà des personnes que tu connais vraiment.</p></div>
+    <div class="card flat"><h3>Effacer</h3><p class="small">« Changer mon code » (dans Cœurs liés) supprime ce qui était partagé sous lʼancien code. Le bouton ci-dessous efface tout : ce qui est partagé et ce qui est sur ce téléphone. Cʼest définitif.</p><button class="btn ghost" id="wipeBtn">Tout effacer</button></div>
+    <p class="small muted">Manu Ora nʼest pas un soin médical et ne remplace pas un professionnel de santé. Version dʼessai.</p>`);
+  $('#sx').onclick=closeSheet;
+  const wb=$('#wipeBtn'); wb.onclick=()=>{ if(wb.dataset.sure!=='1'){ wb.dataset.sure='1'; wb.textContent='Confirmer : tout effacer définitivement'; wb.classList.remove('ghost'); wb.classList.add('coral'); return; } wipeAll(); }; }
+function openWelcome(){
+  openSheet(`<div class="head"><div><div class="eyebrow">ʻIa ora na</div><h2>Bienvenue dans Manu Ora</h2></div></div>
+    <div style="display:flex;gap:10px;align-items:center"><div style="width:72px;flex:none">${birdSVG(cfg,'wl')}</div><p>Voici ton manu. Il tʼaide à mettre des mots et des couleurs sur ce que tu ressens, un peu chaque jour.</p></div>
+    <div class="card flat" style="border-color:var(--coral)"><p class="small"><b>Manu Ora nʼest pas un soin médical.</b> Il ne remplace ni un médecin, ni un psychologue, ni une personne à qui parler. Si tu vas très mal, le bouton <b>Aide</b> donne des numéros à appeler.</p></div>
+    <div class="card flat"><p class="small"><b>Tes données restent sur ton téléphone.</b> Rien nʼest partagé tant que tu ne lies pas ton cœur à un·e ami·e. <button class="linkbtn" data-priv>Lire la page Confidentialité</button></p></div>
+    <p class="small muted">Version dʼessai : il peut rester des erreurs.</p>
+    <button class="btn primary" id="welOk">Jʼai compris</button>`);
+  $('#welOk').onclick=()=>{ store.set('welcomed',true); closeSheet(); }; }
+document.addEventListener('click', e=>{ const b=e.target.closest('[data-priv]'); if(b){ e.preventDefault(); store.set('welcomed',true); openPrivacy(); } });
+if(!store.get('welcomed',false)) setTimeout(()=>{ if($('#sheet').hidden && !RING.open) openWelcome(); },900);
 
 /* ---------- install button ---------- */
 const CAN_INSTALL = !!document.querySelector('link[rel="manifest"]');
@@ -1397,7 +1488,7 @@ function doInstall(){
     : ['Dans la barre dʼadresse, clique sur lʼicône <b>Installer</b> (un écran avec une flèche).','Sinon : menu du navigateur → <b>« Installer Manu Ora »</b>.'];
   openSheet(`<div class="head"><h2>Installer Manu Ora</h2><button class="x" id="sx" aria-label="Fermer">×</button></div><p class="small muted">Lʼicône du manu apparaîtra sur ton écran dʼaccueil, et Manu Ora sʼouvrira comme une appli.</p><div class="stack">${steps.map((t,i)=>`<div class="card flat"><p><b>${i+1}.</b> ${t}</p></div>`).join('')}</div><button class="btn" id="instOk">Compris</button>`);
   $('#sx').onclick=closeSheet; $('#instOk').onclick=closeSheet; }
-$('#gardenBtn').onclick=()=>openGarden(); gardenBadge();
+$('#gardenBtn').onclick=()=>openGarden(); gardenBadge(); $('#skyBtn').onclick=()=>openSky();
 $('#installBtn').onclick=doInstall; $('#installBtn2').onclick=doInstall;
 if(CAN_INSTALL && !STANDALONE) setInstall(true);
 
