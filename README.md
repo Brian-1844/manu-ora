@@ -83,6 +83,13 @@ Une carte du ciel simplifiée avec onze repères nommés en reo tahiti : Matari�
 - **Jouer :** « Où est Tauhā ? » ; cinq questions, une plume par partie (dans la limite de 3 activités par jour), et un compteur d'étoiles connues.
 - **La lune ce soir :** phase calculée, dessinée comme on la voit dans l'hémisphère sud.
 
+### Le ciel qui se remplit, les cadeaux du ciel, mes ʻana
+
+- **Ciel de nuit :** de 18 h à 6 h (réglable : toujours, jamais), l'écran de veille devient un ciel étoilé avec la lune du soir. Chaque étoile trouvée du premier coup dans le jeu s'y allume pour de bon.
+- **Cadeaux du ciel (ne s'achètent pas) :** trois tātau gagnés en trouvant Tauhā, Te Matau a Māui et Matariʻi ; le plumage de nuit quand on connaît les onze étoiles.
+- **Offrir une étoile :** une étoile connue peut être offerte à un ami lié, avec un message choisi parmi six (« Je pense à toi », « Merci d'être là », « Courage, je suis avec toi », « Je suis fier·e de toi », « Pardon », « Tu me manques »). Elle s'allume dans le ciel de l'ami.
+- **Mes ʻana :** jusqu'à dix piliers personnels (une personne, un lieu, une chose qui tient debout). Chacun devient une étoile dans le ciel, sans nom affiché sur l'écran de veille, et la liste apparaît sur l'écran d'aide. Ils restent sur le téléphone.
+
 Sources des noms : All Skies Encyclopaedia (page « Tahiti ») et une présentation de J.-C. Teriierooiterai (UCLA, 2015). Les noms varient selon les îles et les auteurs (Sirius : Taʻurua-faupapa ou Taʻurua-nui-i-te-amo-ʻaha ; Scorpion : hameçon de Māui ou de Tafaʻi). À faire valider localement, de même que : Sirius comme ʻaveiʻa de Tahiti, les noms de nuits de lune cités (Tireo, Hotu, Māraʻi, Mutu) et la légende de Pīpiri mā.
 
 ## Lier son cœur à un ami (optionnel)

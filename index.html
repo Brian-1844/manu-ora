@@ -288,6 +288,8 @@ body.quiet .app{display:none}
 .plot .btn{width:100%;padding:6px 4px;font-size:.78rem;border-radius:10px}
 .plot b{font-family:var(--display);font-weight:600}
 .bird.shiny svg{filter:drop-shadow(0 0 7px rgba(255,214,110,.95)) drop-shadow(0 6px 6px rgba(0,0,0,.18)) saturate(1.2) brightness(1.06)}
+.nightsky{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+.quiet.night{background:linear-gradient(180deg,#071426 0%,#12304A 100%);--fg:#E7F3F2;--muted:#9FBBC1;--surface:#13303B;--surface-2:#0F2730;--line:#2A4C5A;--lagoon-ink:#9EE6EC;color:#E7F3F2}
 .linkbtn{border:0;background:none;padding:0;color:var(--lagoon-ink);text-decoration:underline;font:inherit;font-weight:700;cursor:pointer}
 .qtop{flex-wrap:wrap;gap:4px;padding-left:10px;padding-right:10px}
 #qgarden,#qchest,#qsky{padding:5px 7px;gap:3px}
@@ -475,6 +477,7 @@ body.quiet .app{display:none}
 </div>
 
 <div class="quiet" id="quiet">
+  <svg id="nightSky" class="nightsky" viewBox="0 0 360 520" preserveAspectRatio="xMidYMid meet" hidden aria-hidden="true"></svg>
   <div class="qtop">
     <div style="display:flex;gap:6px;align-items:center"><button class="heartbtn" id="heartBtn" aria-label="Mon cœur aujourdʼhui"></button><button class="qfeather" id="qfeather" aria-label="Mes plumes"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 3C12 3 6 8 5 16l-2 5 2-.5C9 20 13 19 16 15c2-3 4-7 4-12Z" fill="currentColor" opacity=".25"/><path d="M20 3C12 3 6 8 5 16l-2 5M5 16c4-1 8-4 11-9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span id="qfeatherN">0</span></button><button class="qfeather" id="qgarden" aria-label="Mon faʻaʻapu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21V11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M12 12C12 7 8 5 4 5c0 5 3 8 8 7Z" fill="currentColor" opacity=".3" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M12 15c0-4 3-6 8-6 0 5-3 7-8 6Z" fill="currentColor" opacity=".3" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg><span id="qgardenN"></span></button><button class="qfeather" id="qchest" aria-label="Mon coffre"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10V8a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v2" fill="currentColor" opacity=".3" stroke="currentColor" stroke-width="1.6"/><rect x="4" y="10" width="16" height="9" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.6"/><rect x="10.5" y="9" width="3" height="4" rx="1" fill="currentColor"/></svg><span id="qchestN"></span></button><button class="qfeather" id="qsky" aria-label="Te raʻi, le ciel"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 3a8 8 0 1 0 4 11 6.5 6.5 0 0 1-4-11Z" fill="currentColor" opacity=".3" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="6" cy="5" r="1.2" fill="currentColor"/><circle cx="4.5" cy="12" r="1" fill="currentColor"/></svg></button></div>
     <button class="menubtn" id="menuBtn" aria-label="Ouvrir tout Manu Ora">≡</button>
@@ -561,7 +564,8 @@ const ACT = {
 /* ---------- bird drawing ---------- */
 const COLORS = ['#2F7FD8','#1AA3B1','#3B8C58','#F0A23A','#E4583F','#E05D8A','#8A5BC4','#2B2F3A','#F4EFE4'];
 const BELLY = ['#F6F1E7','#FFD9A8','#CDEFF1','#F9C9D6','#DDEBC8','#FFFFFF'];
-const TATTOO = {none:'Aucun', niho:'Niho mano', orama:'ʻŌrama', honu:'Honu', tiare:'Tiare'};
+const TATTOO = {none:'Aucun', niho:'Niho mano', orama:'ʻŌrama', honu:'Honu', tiare:'Tiare', tauha:'Tauhā', matau:'Te Matau a Māui', matarii:'Matariʻi'};
+const STAR_T = {tauha:'tauha', matau:'matau', matarii:'matarii'};
 const ACC = {tiare:'Tiare à lʼoreille', aute:'ʻAute (hibiscus)', hei:'Hei (couronne de fleurs)', papale:'Pāpale (chapeau tressé)', titia:'Titiʻa mata (lunettes de soleil)', pupu:'Collier de pūpū (coquillages)', poe:'Collier de poe (perles noires)', pareu:'Pāreu'};
 let cfg = Object.assign({name:'Vini', body:'#2F7FD8', belly:'#F6F1E7', tattoo:'none', hei:false, tiare:true, pareu:false, pupu:false, corner:'br'}, store.get('cfg',{}));
 
@@ -613,6 +617,8 @@ function accParts(c){
   return {top: hei+papale+flower+(userHat?'':(S.top||'')), eyes: titia, neck: neck||S.neck||'', body: S.body||''};
 }
 function birdSVG(c, id){
+  if(c.nuit) c=Object.assign({},c,{body:'#16264A'});
+  const nstars = c.nuit ? `<g clip-path="url(#${id}-clip)" fill="#FFF1C4"><circle cx="36" cy="62" r="1.3"/><circle cx="48" cy="52" r="1.6"/><circle cx="62" cy="58" r="1.1"/><circle cx="72" cy="66" r="1.4"/><circle cx="40" cy="78" r="1.2"/><circle cx="30" cy="70" r="1"/><circle cx="56" cy="48" r="1"/><circle cx="78" cy="76" r="1.1"/></g>` : '';
   const wing = shade(c.body, .78), ink = lum(c.body) > .55 ? '#10303B' : '#F4EFE4';
   const honu = c.animal==='honu';
   const clip = honu ? '<ellipse cx="52" cy="70" rx="32" ry="20"/>' : '<ellipse cx="55" cy="68" rx="30" ry="24"/>';
@@ -621,6 +627,9 @@ function birdSVG(c, id){
     <pattern id="${id}-orama" width="16" height="8" patternUnits="userSpaceOnUse"><path d="M0 5 Q4 0 8 5 T16 5" fill="none" stroke="${ink}" stroke-width="2"/></pattern>
     <pattern id="${id}-honu" width="14" height="12" patternUnits="userSpaceOnUse"><polygon points="7,1 12,4 12,9 7,12 2,9 2,4" fill="none" stroke="${ink}" stroke-width="1.6"/></pattern>
     <pattern id="${id}-tiare" width="14" height="14" patternUnits="userSpaceOnUse"><g fill="${ink}"><circle cx="7" cy="3.2" r="1.7"/><circle cx="10.6" cy="5.4" r="1.7"/><circle cx="10.6" cy="9.6" r="1.7"/><circle cx="7" cy="11.8" r="1.7"/><circle cx="3.4" cy="9.6" r="1.7"/><circle cx="3.4" cy="5.4" r="1.7"/></g></pattern>
+    <pattern id="${id}-tauha" width="18" height="18" patternUnits="userSpaceOnUse"><path d="M9 3V15M4 8L14 9" stroke="${ink}" stroke-width=".7"/><g fill="${ink}"><circle cx="9" cy="3" r="1.6"/><circle cx="9" cy="15" r="1.8"/><circle cx="4" cy="8" r="1.4"/><circle cx="14" cy="9" r="1.5"/></g></pattern>
+    <pattern id="${id}-matau" width="15" height="18" patternUnits="userSpaceOnUse"><path d="M9.5 2 V10.5 Q9.5 15.5 5.5 14.5 Q3 13.5 4 10.5" fill="none" stroke="${ink}" stroke-width="2" stroke-linecap="round"/></pattern>
+    <pattern id="${id}-matarii" width="16" height="16" patternUnits="userSpaceOnUse"><g fill="${ink}"><circle cx="5" cy="5" r="1.3"/><circle cx="9" cy="4" r="1.5"/><circle cx="12" cy="7" r="1.2"/><circle cx="6" cy="9" r="1.4"/><circle cx="10" cy="10" r="1.6"/><circle cx="8" cy="13" r="1.1"/></g></pattern>
     <pattern id="${id}-pareu" width="8" height="8" patternUnits="userSpaceOnUse"><rect width="8" height="8" fill="#E4583F"/><circle cx="4" cy="4" r="1.6" fill="#FFF6E3"/></pattern>`;
   const tattoo = c.tattoo && c.tattoo!=='none' ? `<rect x="18" y="40" width="72" height="60" fill="url(#${id}-${c.tattoo})" opacity=".6" clip-path="url(#${id}-clip)"/>` : '';
   const pareu = c.pareu ? `<rect x="18" y="74" width="72" height="30" fill="url(#${id}-pareu)" clip-path="url(#${id}-clip)"/><path d="M${honu?22:26} 74 L${honu?82:84} 74" stroke="#FFF6E3" stroke-width="2"/>` : '';
@@ -632,7 +641,7 @@ function birdSVG(c, id){
     return head + `
     <g class="tail"><polygon points="22,72 6,78 22,82" fill="${skin}"/></g>
     <g class="legs"><g class="leg l1"><ellipse cx="32" cy="90" rx="11" ry="5" transform="rotate(28 32 90)" fill="${skin}"/></g><g class="leg l2"><ellipse cx="64" cy="93" rx="11" ry="5" transform="rotate(-18 64 93)" fill="${skin}"/></g></g>
-    <g class="body"><ellipse cx="52" cy="85" rx="28" ry="7" fill="${c.belly}"/><ellipse cx="52" cy="70" rx="32" ry="20" fill="${c.body}"/><path d="M38 52 L44 70 L38 90 M66 52 L60 70 L66 90 M44 70 L60 70 M20 70 L44 70 M60 70 L84 70" fill="none" stroke="${line}" stroke-width="1.6" clip-path="url(#${id}-clip)"/>${tattoo}${pareu}${A.body}</g>
+    <g class="body"><ellipse cx="52" cy="85" rx="28" ry="7" fill="${c.belly}"/><ellipse cx="52" cy="70" rx="32" ry="20" fill="${c.body}"/><path d="M38 52 L44 70 L38 90 M66 52 L60 70 L66 90 M44 70 L60 70 M20 70 L44 70 M60 70 L84 70" fill="none" stroke="${line}" stroke-width="1.6" clip-path="url(#${id}-clip)"/>${nstars}${tattoo}${pareu}${A.body}</g>
     ${uke}
     <g class="wing"><ellipse cx="70" cy="85" rx="15" ry="6" transform="rotate(32 70 85)" fill="${skin}"/></g>
     <g transform="translate(31 25) scale(.72)">${A.neck}</g>
@@ -645,7 +654,7 @@ function birdSVG(c, id){
       <g class="leg l1"><line x1="48" y1="88" x2="46" y2="103" stroke="#F0A23A" stroke-width="3" stroke-linecap="round"/><polyline points="38,104 46,103 54,105" fill="none" stroke="#F0A23A" stroke-width="3" stroke-linecap="round"/></g>
       <g class="leg l2"><line x1="58" y1="88" x2="60" y2="103" stroke="#D98B2B" stroke-width="3" stroke-linecap="round"/><polyline points="52,104 60,103 68,105" fill="none" stroke="#D98B2B" stroke-width="3" stroke-linecap="round"/></g>
     </g>
-    <g class="body"><ellipse cx="55" cy="68" rx="30" ry="24" fill="${c.body}"/><ellipse cx="60" cy="74" rx="18" ry="14" fill="${c.belly}"/>${tattoo}${pareu}${A.body}</g>
+    <g class="body"><ellipse cx="55" cy="68" rx="30" ry="24" fill="${c.body}"/><ellipse cx="60" cy="74" rx="18" ry="14" fill="${c.belly}"/>${nstars}${tattoo}${pareu}${A.body}</g>
     ${uke}
     <g class="wing"><ellipse cx="44" cy="66" rx="19" ry="11" transform="rotate(-18 44 66)" fill="${wing}"/><ellipse cx="40" cy="64" rx="12" ry="6" transform="rotate(-18 40 64)" fill="${shade(c.body,.9)}"/></g>
     ${A.neck}
@@ -805,7 +814,7 @@ const ANIM={dance:'ʻOri (danse)', flip:'Salto'};
 const ANIMAL={manu:'Manu (oiseau)', honu:'Honu (tortue)'};
 const RIVAL={tiare:'aute',aute:'tiare',hei:'papale',papale:'hei',pupu:'poe',poe:'pupu'};
 if(!store.get('shopInit',false)){ ['c:'+cfg.body,'t:'+cfg.tattoo,...Object.keys(ACC).filter(k=>cfg[k]).map(k=>'a:'+k)].forEach(id=>OWN.add(id)); store.set('owned',[...OWN]); store.set('shopInit',true); }
-const has = id => FREE.has(id)||OWN.has(id);
+const has = id => FREE.has(id)||OWN.has(id)||(id.indexOf('t:')===0 && STAR_T[id.slice(2)] && store.get('skyKnown',[]).includes(STAR_T[id.slice(2)]));
 let days = store.get('days',[]);
 function renderFeathers(){ const t=feathers+(feathers===1?' plume':' plumes'); ['#feathers','#feathers2'].forEach(s=>{ const el=$(s); if(el) el.textContent=t; });
   const qn=$('#qfeatherN'); if(qn) qn.textContent=feathers;
@@ -830,7 +839,7 @@ function renderCustom(){
   $('#swBody').innerHTML = COLORS.map(c=>{ const ok=has('c:'+c); return `<button class="swatch ${cfg.body===c?'on':''} ${ok?'':'lock'}" style="background:${c};color:${lum(c)>.55?'#10303B':'#fff'}" data-c="${c}" aria-label="Plumage ${c}${ok?'':', 10 plumes'}">${ok?'':PRICE.c}</button>`; }).join('');
   $('#swBelly').innerHTML = BELLY.map(c=>`<button class="swatch ${cfg.belly===c?'on':''}" style="background:${c};border-color:${cfg.belly===c?'var(--fg)':'var(--line)'}" data-c="${c}" aria-label="Ventre ${c}"></button>`).join('');
   $('#optAnimal').innerHTML = Object.keys(ANIMAL).map(k=>optBtn('an:'+k,PRICE.an,k,ANIMAL[k],(cfg.animal||'manu')===k)).join('');
-  $('#optTattoo').innerHTML = Object.keys(TATTOO).map(k=>optBtn('t:'+k,PRICE.t,k,TATTOO[k],cfg.tattoo===k)).join('');
+  $('#optTattoo').innerHTML = Object.keys(TATTOO).map(k=>(STAR_T[k]&&!has('t:'+k)) ? `<button class="lock" data-k="${k}">${TATTOO[k]}<span class="price">à trouver dans le ciel</span></button>` : optBtn('t:'+k,PRICE.t,k,TATTOO[k],cfg.tattoo===k)).join('');
   $('#optAcc').innerHTML = Object.keys(ACC).map(k=>optBtn('a:'+k,PRICE.a,k,ACC[k],!!cfg[k])).join('');
   $('#optAnim').innerHTML = Object.keys(ANIM).map(k=>optBtn('x:'+k,PRICE.x,k,ANIM[k]+(has('x:'+k)?' ▶':''),false)).join('');
   $('#optCorner').innerHTML = [['tl','Haut gauche'],['tr','Haut droite'],['bl','Bas gauche'],['br','Bas droite']].map(([k,l])=>`<button class="${!cfg.spot&&(cfg.corner||'br')===k?'on':''}" data-k="${k}">${l}</button>`).join('');
@@ -842,7 +851,7 @@ function renderCustom(){
 function saveCfg(){ store.set('cfg',cfg); renderCustom(); pushHeart(); }
 $('#swBody').addEventListener('click', e=>{ const b=e.target.closest('[data-c]'); if(b){ const c=b.dataset.c; tryUse('c:'+c,PRICE.c,'cette couleur',()=>{ cfg.body=c; saveCfg(); }); } });
 $('#swBelly').addEventListener('click', e=>{ const b=e.target.closest('[data-c]'); if(b){ cfg.belly=b.dataset.c; saveCfg(); } });
-$('#optTattoo').addEventListener('click', e=>{ const b=e.target.closest('[data-k]'); if(b){ const k=b.dataset.k; tryUse('t:'+k,PRICE.t,TATTOO[k],()=>{ cfg.tattoo=k; saveCfg(); }); } });
+$('#optTattoo').addEventListener('click', e=>{ const b=e.target.closest('[data-k]'); if(b){ const k=b.dataset.k; if(STAR_T[k]&&!has('t:'+k)){ toast('Ce tātau se gagne : trouve '+TATTOO[k]+' du premier coup dans Te raʻi.'); return; } tryUse('t:'+k,PRICE.t,TATTOO[k],()=>{ cfg.tattoo=k; saveCfg(); }); } });
 $('#optCorner').addEventListener('click', e=>{ const b=e.target.closest('[data-k]'); if(b){ cfg.corner=b.dataset.k; cfg.spot=null; saveCfg(); if(QUIET) goHome(); } });
 $('#optAcc').addEventListener('click', e=>{ const b=e.target.closest('[data-k]'); if(b){ const k=b.dataset.k; tryUse('a:'+k,PRICE.a,ACC[k],()=>{ cfg[k]=!cfg[k]; if(cfg[k]&&RIVAL[k]) cfg[RIVAL[k]]=false; saveCfg(); }); } });
 $('#optSeason').addEventListener('click', e=>{ const b=e.target.closest('[data-k]'); if(b){ cfg.season = b.dataset.k==='on'; saveCfg(); } });
@@ -985,6 +994,7 @@ function openCrisis(){
     <div class="stack">${numbersHTML()}</div>
     <div class="card flat"><h3>Mon ama</h3>${amaHTML}</div>
     ${trustHTML()}
+    ${anaCrisisHTML()}
     ${helps ? `<div class="card flat"><h3>Ce qui mʼaide, tu lʼas écrit toi-même</h3><p>${esc(helps)}</p></div>` : ''}
     <div class="row"><button class="btn primary" id="cBreath">Respirer avec ${esc(cfg.name)}</button><button class="btn ghost" id="cSafe">Je suis en sécurité pour lʼinstant</button></div>
     <p class="small muted">Si tu es en danger tout de suite, appelle le 15. Manu Ora ne remplace pas une personne ni un professionnel.</p>`;
@@ -1132,9 +1142,9 @@ const GEST={salut:{l:'Salut', t:'te dit ʻIa ora na !'}, calin:{l:'Câlin', t:'t
 const VIS={queue:[],busy:false};
 let seenV=store.get('seenV',{});
 function cleanCfg(c){ c=c||{}; const hex=v=>typeof v==='string' && /^#[0-9a-fA-F]{6}$/.test(v);
-  const o={body:hex(c.body)?c.body:'#1AA3B1', belly:hex(c.belly)?c.belly:'#F6F1E7', tattoo:(typeof c.tattoo==='string' && Object.prototype.hasOwnProperty.call(TATTOO,c.tattoo))?c.tattoo:'none', animal:c.animal==='honu'?'honu':'manu', season:c.season!==false};
+  const o={body:hex(c.body)?c.body:'#1AA3B1', belly:hex(c.belly)?c.belly:'#F6F1E7', tattoo:(typeof c.tattoo==='string' && Object.prototype.hasOwnProperty.call(TATTOO,c.tattoo))?c.tattoo:'none', animal:c.animal==='honu'?'honu':'manu', season:c.season!==false, nuit:c.nuit===true};
   Object.keys(ACC).forEach(k=>{ o[k]=c[k]===true; }); return o; }
-function myLook(){ const o={body:cfg.body, belly:cfg.belly, tattoo:cfg.tattoo, animal:cfg.animal||'manu', season:cfg.season!==false}; Object.keys(ACC).forEach(k=>{ o[k]=!!cfg[k]; }); return o; }
+function myLook(){ const o={body:cfg.body, belly:cfg.belly, tattoo:cfg.tattoo, animal:cfg.animal||'manu', season:cfg.season!==false, nuit:!!cfg.nuit}; Object.keys(ACC).forEach(k=>{ o[k]=!!cfg[k]; }); return o; }
 function isMutualKnown(code){ return FR[code]===undefined || isMutual(code); }
 function isMutual(code){ const d=FR[code]; return !!(d && d!=='err' && Array.isArray(d.links) && d.links.includes(myCode)); }
 function sendGesture(code,g,name){ if(!SYNC_URL) return; fetch(`${SYNC_URL}/visits/${code}/${myCode}.json`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({g, t:Date.now(), name:share.name||''})})
@@ -1166,14 +1176,14 @@ function playVisit(v, look, done){ clearTimeout(PET.endT); B.onArrive=null; B.af
   requestAnimationFrame(()=>requestAnimationFrame(()=>{ el.style.transition='transform 1.5s ease-in-out'; el.style.transform=`translate(${tx}px,${ty}px)`; }));
   const who=esc(v.name), old=Date.now()-v.t>3*60000, when=new Date(v.t).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}); let iv=null;
   setTimeout(()=>{ el.classList.remove('flying'); const d=FR[v.from]; const ents=(d&&d!=='err'&&d.day===dayKey(Date.now())&&Array.isArray(d.entries))?d.entries:[];
-    sayHTML(`<span style="display:flex;gap:8px;align-items:center">${heartSVG(ents,'vh',30)}<span>Le manu de <b>${who}</b> ${(v.g==='don'&&ITEMS[v.p])?`tʼoffre ${ITEMS[v.p].un}. Ton manu rayonne !`:(v.g==='don'&&PLANTS[v.p])?`tʼoffre ${PLANTS[v.p].un} de son faʻaʻapu.`:GEST[v.g].t}${old?`<span class="cta">Il est passé à ${when}.</span>`:''}</span></span>`, 6000);
+    sayHTML(`<span style="display:flex;gap:8px;align-items:center">${heartSVG(ents,'vh',30)}<span>Le manu de <b>${who}</b> ${(v.g==='don'&&starGift(v.p))?`tʼoffre lʼétoile ${starGift(v.p).o.ty} : « ${starGift(v.p).msg} »`:(v.g==='don'&&ITEMS[v.p])?`tʼoffre ${ITEMS[v.p].un}. Ton manu rayonne !`:(v.g==='don'&&PLANTS[v.p])?`tʼoffre ${PLANTS[v.p].un} de son faʻaʻapu.`:GEST[v.g].t}${old?`<span class="cta">Il est passé à ${when}.</span>`:''}</span></span>`, 6000);
     const mx=(B.x+tx)/2+BW/2, my=B.y+20;
     if(v.g==='salut'){ el.classList.add('pecking'); birdEl.classList.add('pecking'); setTimeout(()=>{ el.classList.remove('pecking'); birdEl.classList.remove('pecking'); },1100); }
     else if(v.g==='calin'){ el.style.transition='transform .5s ease'; el.style.transform=`translate(${tx+(left?-22:22)}px,${ty}px)`; for(let i=0;i<7;i++) setTimeout(()=>petal(mx,my),i*220); }
     else if(v.g==='tiare'){ for(let i=0;i<9;i++) setTimeout(()=>petal(mx+(Math.random()*60-30),my-10),i*180); }
     else if(v.g==='aide'){ setTimeout(()=>openAid(v),1800); }
     else if(v.g==='etoile'){ for(let i=0;i<6;i++) setTimeout(()=>{ const s=document.createElement('div'); s.className='petal'; s.innerHTML=`<svg viewBox="0 0 20 20"><polygon points="${starPts(10,10,8)}" fill="#F2C94C"/></svg>`; s.style.transform=`translate(${mx-9+(Math.random()*50-25)}px,${my-20}px)`; $('#birdlayer').appendChild(s); setTimeout(()=>s.remove(),1500); },i*200); stars[v.from]=v.name; store.set('stars',stars); setTimeout(renderStars,1400); }
-    else if(v.g==='don'){ for(let i=0;i<8;i++) setTimeout(()=>petal(mx+(Math.random()*50-25),my-10),i*180); const P=PLANTS[v.p]; if(P){ feathers+=P.worth; store.set('feathers',feathers); addSeed(v.p); renderFeathers(); setTimeout(()=>toast(`+${P.worth} plumes et 1 graine de ${P.name}`),1500); } else if(ITEMS[v.p]){ setShine(ITEMS[v.p].aura); setTimeout(()=>toast('Aura jusquʼà demain : '+ITEMS[v.p].mood),1500); } }
+    else if(v.g==='don'){ for(let i=0;i<8;i++) setTimeout(()=>petal(mx+(Math.random()*50-25),my-10),i*180); const P=PLANTS[v.p]; if(P){ feathers+=P.worth; store.set('feathers',feathers); addSeed(v.p); renderFeathers(); setTimeout(()=>toast(`+${P.worth} plumes et 1 graine de ${P.name}`),1500); } else if(ITEMS[v.p]){ setShine(ITEMS[v.p].aura); setTimeout(()=>toast('Aura jusquʼà demain : '+ITEMS[v.p].mood),1500); } else if(starGift(v.p)){ const sid=starGift(v.p).o.id; if(!skyGifts.includes(sid)){ skyGifts.push(sid); store.set('skyGifts',skyGifts); } setShine('#DCE8FF'); renderNight(); } }
     else { el.classList.add('playing'); iv=setInterval(noteFx,380); }
   },1600);
   setTimeout(()=>{ if(iv) clearInterval(iv); el.classList.remove('playing','pecking'); el.classList.add('flying'); el.style.transition='transform 1.5s ease-in'; el.style.transform=`translate(${sx}px,${sy}px)`; },6800);
@@ -1414,7 +1424,7 @@ function skySVG(){ const quiz=!!SKYST.quiz; let h='<defs><linearGradient id="sky
   return `<svg viewBox="0 0 360 520" id="skySvg" style="width:100%;height:auto;display:block;border-radius:18px;touch-action:manipulation" role="img" aria-label="Carte du ciel">${h}</svg>`; }
 function startSkyQuiz(){ const ids=SKY.map(o=>o.id).sort(()=>Math.random()-0.5).slice(0,5); SKYST.quiz={q:ids,i:0,score:0,miss:false,msg:''}; SKYST.sel=null; openSky(); }
 function skyAnswer(id){ const Q=SKYST.quiz; if(!Q || SKYST.flash) return; const want=Q.q[Q.i], ok=id===want; const o=SKY.find(x=>x.id===id), w=SKY.find(x=>x.id===want);
-  if(ok){ if(!Q.miss){ Q.score++; if(!skyKnown.includes(want)){ skyKnown.push(want); store.set('skyKnown',skyKnown); } } Q.msg=`Oui ! ${w.ty}, ${w.fr}.`; SKYST.flash={id,ok:true}; openSky();
+  if(ok){ if(!Q.miss){ Q.score++; if(!skyKnown.includes(want)){ skyKnown.push(want); store.set('skyKnown',skyKnown); renderNight(); renderCustom(); const tk=Object.keys(STAR_T).find(k=>STAR_T[k]===want); if(tk) setTimeout(()=>toast('Cadeau du ciel : le tātau '+TATTOO[tk]+' !'),1300); else if(skyKnown.length>=SKY.length) setTimeout(()=>toast('Tu connais tout le ciel : le plumage de nuit est à toi !'),1300); } } Q.msg=`Oui ! ${w.ty}, ${w.fr}.`; SKYST.flash={id,ok:true}; openSky();
     setTimeout(()=>{ SKYST.flash=null; Q.i++; Q.miss=false; Q.msg=''; if(Q.i>=Q.q.length){ const sc=Q.score; SKYST.quiz=null; SKYST.done=sc; award('sky'); } if(!$('#sheet').hidden && $('#skyBox')) openSky(); },1100); }
   else { Q.miss=true; Q.msg=`Presque. Ça, cʼest ${o.ty} (${o.fr}). Cherche encore.`; SKYST.flash={id,ok:false}; openSky(); setTimeout(()=>{ SKYST.flash=null; if(!$('#sheet').hidden && $('#skyBox')) openSky(); },900); } }
 function openSky(){
@@ -1422,18 +1432,61 @@ function openSky(){
   const Q=SKYST.quiz, m=moonInfo(); let panel;
   if(Q){ const w=SKY.find(x=>x.id===Q.q[Q.i]); panel=`<div class="card"><div class="eyebrow">Question ${Q.i+1} sur ${Q.q.length} · ${Q.score} trouvée${Q.score>1?'s':''} du premier coup</div><h3>Où est ${w.ty} ?</h3><p class="small muted">${Q.msg||('Indice : '+w.fr+', '+w.sens+'.')}</p><button class="btn sm ghost" data-skyb="stop">Arrêter le jeu</button></div>`; }
   else { const o=SKY.find(x=>x.id===SKYST.sel);
-    const info = o ? `<div class="card"><div class="eyebrow">${o.fr} · ${o.sens}</div><h3>${o.ty}</h3><p class="small">${o.txt}</p></div>` : `<div class="card flat"><p class="small">Touche une étoile ou un groupe dʼétoiles pour connaître son nom en reo tahiti et son histoire.</p></div>`;
+    const info = o ? `<div class="card"><div class="eyebrow">${o.fr} · ${o.sens}</div><h3>${o.ty}</h3><p class="small">${o.txt}</p>${starGiveHTML(o)}</div>` : `<div class="card flat"><p class="small">Touche une étoile ou un groupe dʼétoiles pour connaître son nom en reo tahiti et son histoire.</p></div>`;
     const done = (typeof SKYST.done==='number') ? `<div class="note"><b>${SKYST.done} sur 5</b> du premier coup. ${SKYST.done>=4?'Tu lis le ciel comme un navigateur !':'Regarde encore la carte, puis rejoue.'}</div>` : '';
     panel=`${done}${info}<div class="row"><button class="btn primary" data-skyb="quiz">Jouer : trouve lʼétoile</button></div><p class="small muted" style="text-align:center">Tu connais ${skyKnown.length} étoile${skyKnown.length>1?'s':''} sur ${SKY.length}.</p>`; }
   openSheet(`<div class="head"><div><div class="eyebrow">Le ciel du fenua</div><h2>Te raʻi</h2></div><button class="x" id="sx" aria-label="Fermer">×</button></div>
     <div id="skyBox" class="stack" style="gap:12px">${skySVG()}${panel}
     <div class="card flat"><div style="display:flex;gap:12px;align-items:center"><svg viewBox="0 0 60 60" style="width:56px;height:56px;flex:none" aria-hidden="true"><rect width="60" height="60" rx="14" fill="#0B1C2E"/>${moonSVG(30,30,19)}</svg><div><div class="eyebrow">Marama · la lune ce soir</div><b>${m.name}</b><div class="small muted">Environ la ${m.night}<sup>e</sup> nuit de la lune · éclairée à ${m.lit} %</div></div></div></div>
-    <div class="card flat"><div class="eyebrow">Naviguer aux étoiles</div><p class="small">Les navigateurs suivaient des chemins dʼétoiles, les <b>rua</b>. Chaque île a aussi son <b>ʻaveiʻa</b>, une étoile qui passe juste au-dessus dʼelle : pour Tahiti, cʼest Taʻurua-faupapa.</p></div>
+    ${SKYST.quiz?'':skyExtrasHTML()}<div class="card flat"><div class="eyebrow">Naviguer aux étoiles</div><p class="small">Les navigateurs suivaient des chemins dʼétoiles, les <b>rua</b>. Chaque île a aussi son <b>ʻaveiʻa</b>, une étoile qui passe juste au-dessus dʼelle : pour Tahiti, cʼest Taʻurua-faupapa.</p></div>
     <p class="small muted">Carte simplifiée : les formes sont justes, pas les distances. Les noms varient selon les îles et les sources.</p></div>`);
   sheetInner.scrollTop=keepY;
   $('#sx').onclick=()=>{ SKYST.quiz=null; SKYST.flash=null; SKYST.done=undefined; closeSheet(); };
-  $('#skyBox').addEventListener('click', e=>{ const b=e.target.closest('[data-skyb]'); if(b){ if(b.dataset.skyb==='quiz'){ SKYST.done=undefined; startSkyQuiz(); } else { SKYST.quiz=null; SKYST.flash=null; openSky(); } return; }
-    const g=e.target.closest('[data-sky]'); if(!g) return; const id=g.getAttribute('data-sky'); if(SKYST.quiz) skyAnswer(id); else { SKYST.sel=id; SKYST.done=undefined; openSky(); } }); }
+  $('#skyBox').addEventListener('click', e=>{ const b=e.target.closest('[data-skyb]'); if(b){ skyButton(b); return; }
+    const st=e.target.closest('[data-sto]'); if(st){ if(SKYST.sel) giveStar(SKYST.sel, st.dataset.sto); return; }
+    const ad=e.target.closest('[data-anadel]'); if(ad){ pillars.splice(+ad.dataset.anadel,1); store.set('pillars',pillars); renderNight(); openSky(); return; }
+    const g=e.target.closest('[data-sky]'); if(!g) return; const id=g.getAttribute('data-sky'); if(SKYST.quiz) skyAnswer(id); else { SKYST.sel=id; SKYST.give=false; SKYST.msg=undefined; SKYST.done=undefined; openSky(); } }); }
+
+/* ---------- le ciel qui se remplit, cadeaux du ciel, mes ʻana ---------- */
+let pillars=store.get('pillars',[]), skyGifts=store.get('skyGifts',[]);
+const ANA_POS=[[178,36],[262,118],[30,150],[205,120],[30,330],[150,300],[330,340],[200,400],[280,430],[110,330]];
+function isNight(){ const m=cfg.night||'auto'; if(m==='on') return true; if(m==='off') return false; const h=new Date().getHours(); return h>=18||h<6; }
+function nightInner(){ let seed=11; const rnd=()=>{ seed=(seed*16807)%2147483647; return seed/2147483647; }; let h='';
+  for(let i=0;i<80;i++) h+=`<circle cx="${(rnd()*460-50).toFixed(0)}" cy="${(rnd()*900-190).toFixed(0)}" r="${(0.5+rnd()*0.8).toFixed(1)}" fill="#fff" opacity="${(0.2+rnd()*0.35).toFixed(2)}"/>`;
+  const lit=id=>skyKnown.includes(id)||skyGifts.includes(id);
+  if(lit('vaiora')) h+='<path d="M-20 520 Q160 330 380 120" stroke="#A9C1F0" stroke-opacity=".12" stroke-width="86" fill="none" stroke-linecap="round"/>';
+  SKY.forEach(o=>{ if(o.id==='marama'||!lit(o.id)) return; o.lines.forEach(l=>{ const a=o.pts[l[0]], b=o.pts[l[1]]; h+=`<line x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" stroke="#CFE0FF" stroke-opacity=".4" stroke-width="1.1"/>`; });
+    o.pts.forEach(pt=>{ const c=pt[3]||'#FFFFFF'; h+=`<circle cx="${pt[0]}" cy="${pt[1]}" r="${pt[2]*2.4}" fill="${c}" opacity=".16"/><circle cx="${pt[0]}" cy="${pt[1]}" r="${pt[2]}" fill="${c}"/>`; }); });
+  pillars.slice(0,10).forEach((p,i)=>{ const q=ANA_POS[i]; h+=`<circle cx="${q[0]}" cy="${q[1]}" r="9" fill="#FFE2A8" opacity=".16"/><polygon points="${starPts(q[0],q[1],5)}" fill="#FFE2A8"/>`; });
+  return h+moonSVG(312,118,17); }
+function renderNight(){ const q=$('#quiet'), el=$('#nightSky'); if(!q||!el) return; const on=isNight(); q.classList.toggle('night',on); if(on){ el.innerHTML=nightInner(); el.removeAttribute('hidden'); } else { el.innerHTML=''; el.setAttribute('hidden',''); } }
+setInterval(renderNight,5*60000);
+const STAR_MSG=['Je pense à toi.','Merci dʼêtre là.','Courage, je suis avec toi.','Je suis fier·e de toi.','Pardon.','Tu me manques.'];
+function starGift(p){ const m=/^s(\d)?_([a-z]+)$/.exec(typeof p==='string'?p:''); if(!m) return null; const o=SKY.find(x=>x.id===m[2]); return o ? {o, msg:STAR_MSG[+(m[1]||0)]||STAR_MSG[0]} : null; }
+function giveStar(id,code){ if(!SYNC_URL) return;
+  fetch(`${SYNC_URL}/visits/${code}/${myCode}.json`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({g:'don', p:'s'+(SKYST.msg||0)+'_'+id, t:Date.now(), name:share.name||''})})
+    .then(r=>{ SKYST.give=false; SKYST.msg=undefined; if(!$('#sheet').hidden && $('#skyBox')) openSky(); toast(r.ok?'Étoile offerte ! Elle brillera dans son ciel.':'Envoi impossible, réessaie plus tard'); })
+    .catch(()=>toast('Pas de connexion, réessaie plus tard')); }
+function starGiveHTML(o){ if(!SYNC_URL) return ''; if(!skyKnown.includes(o.id)) return '<p class="small muted">Trouve-la du premier coup dans le jeu : elle sʼallumera dans ton ciel et tu pourras lʼoffrir.</p>';
+  if(!SKYST.give) return '<button class="btn sm" data-skyb="give">Offrir cette étoile à un·e ami·e</button>';
+  if(SKYST.msg===undefined) return '<span class="small muted">Quʼest-ce que tu veux lui dire avec cette étoile ?</span><div class="stack">'+STAR_MSG.map((t,i)=>`<button class="btn sm" data-skyb="msg:${i}">${t}</button>`).join('')+'</div>';
+  const mut=friends.filter(f=>isMutual(f.code)); return mut.length ? '<span class="small muted">Pour qui ?</span><div class="row">'+mut.map(f=>`<button class="btn sm primary" data-sto="${f.code}">${esc(f.name||fmtCode(f.code))}</button>`).join('')+'</div>' : '<span class="small muted">Lie dʼabord ton cœur à un·e ami·e.</span>'; }
+function anaListHTML(del){ return pillars.length ? pillars.map((p,i)=>`<div class="ama-item"><span style="display:flex;gap:8px;align-items:center"><svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><polygon points="${starPts(10,10,8)}" fill="#F0A23A"/></svg><b>${esc(p.t)}</b></span>${del?`<button class="btn sm ghost" data-anadel="${i}">Retirer</button>`:''}</div>`).join('') : ''; }
+function anaCrisisHTML(){ return pillars.length ? `<div class="card flat"><h3>Mes ʻana, ce qui me tient debout</h3><div class="stack">${anaListHTML(false)}</div></div>` : ''; }
+function skyExtrasHTML(){ const n=skyKnown.length, all=n>=SKY.length; const mode=cfg.night||'auto';
+  const tats=Object.keys(STAR_T).map(k=>{ const o=SKY.find(x=>x.id===STAR_T[k]); const ok=skyKnown.includes(o.id); return `<div class="hrow" style="grid-template-columns:1fr auto"><span><b>Tātau ${TATTOO[k]}</b> <span class="small muted">· en trouvant ${o.ty}</span></span><span class="small" style="font-weight:700;color:${ok?'var(--fern)':'var(--muted)'}">${ok?'gagné':'à trouver'}</span></div>`; }).join('');
+  return `<div class="card"><div class="eyebrow">Mes ʻana · mes piliers</div><p class="small">Les anciens comptaient dix <b>ʻana</b>, des étoiles-piliers qui tiennent le ciel. Quels sont les tiens ? Une personne, un lieu, une chose qui te tient debout. Chacun devient une étoile dans ton ciel.</p><div class="stack">${anaListHTML(true)}</div>${pillars.length<10?'<div class="row"><input type="text" id="anaInput" maxlength="24" placeholder="Mamie, la mer, le ukulele…"><button class="btn sm" data-skyb="anaadd">Ajouter</button></div>':'<p class="small muted">Dix piliers : ton ciel tient bien.</p>'}<p class="small muted">Tes ʻana restent sur ton téléphone. Ils apparaissent aussi sur lʼécran dʼaide, pour les jours difficiles.</p></div>
+    <div class="card flat"><div class="eyebrow">Cadeaux du ciel</div>${tats}<div class="hrow" style="grid-template-columns:1fr auto"><span><b>Plumage de nuit</b> <span class="small muted">· en connaissant les ${SKY.length} étoiles (${n}/${SKY.length})</span></span>${all?`<button class="btn sm ${cfg.nuit?'primary':''}" data-skyb="nuit">${cfg.nuit?'Porté':'Porter'}</button>`:'<span class="small muted" style="font-weight:700">à gagner</span>'}</div><p class="small muted">Les tātau gagnés se choisissent dans « Mon manu ». Ces cadeaux ne sʼachètent pas avec des plumes.</p></div>
+    <div class="card flat"><div class="eyebrow">Ciel de nuit sur lʼécran de veille</div><div class="opt">${[['auto','La nuit seulement'],['on','Toujours'],['off','Jamais']].map(x=>`<button class="${mode===x[0]?'on':''}" data-skyb="night:${x[0]}">${x[1]}</button>`).join('')}</div><p class="small muted">Les étoiles que tu connais sʼy allument une à une, avec la lune du soir.</p></div>`; }
+function skyButton(b){ const k=b.dataset.skyb;
+  if(k==='quiz'){ SKYST.done=undefined; SKYST.give=false; startSkyQuiz(); }
+  else if(k==='stop'){ SKYST.quiz=null; SKYST.flash=null; openSky(); }
+  else if(k.indexOf('msg:')===0){ SKYST.msg=+k.slice(4); openSky(); }
+  else if(k==='give'){ SKYST.give=true; SKYST.msg=undefined; openSky(); if(SYNC_URL&&friends.length) fetchFriends().then(()=>{ if(!$('#sheet').hidden && $('#skyBox') && SKYST.give) openSky(); }); }
+  else if(k==='anaadd'){ const v=($('#anaInput').value||'').trim(); if(!v){ toast('Écris dʼabord un pilier'); return; } if(pillars.length>=10) return; pillars.push({t:v.slice(0,24)}); store.set('pillars',pillars); renderNight(); openSky(); toast('Une étoile de plus dans ton ciel'); }
+  else if(k==='nuit'){ cfg.nuit=!cfg.nuit; saveCfg(); openSky(); }
+  else if(k.indexOf('night:')===0){ cfg.night=k.slice(6); store.set('cfg',cfg); renderNight(); openSky(); } }
+renderNight();
 
 /* ---------- prévenir mon ama : seulement si la personne le demande ---------- */
 function trusted(){ return friends.filter(f=>f.ama); }
