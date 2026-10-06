@@ -388,6 +388,9 @@ body.quiet .app{display:none}
 .newtag{display:inline-block;margin-left:6px;background:var(--btn);color:var(--btn-ink);border-radius:999px;padding:1px 7px;font-size:.68rem;font-weight:800;vertical-align:middle}
 .wprev{width:120px;margin:0 auto 6px}
 .swatches{display:flex;flex-wrap:wrap;gap:8px}
+.ggrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:8px 0}
+.gg b{display:block;font-family:var(--display);font-weight:600;font-size:.9rem}
+.gg .small{display:block;margin-bottom:4px}
 .installfloat{display:flex;align-items:center;padding:0}
 .installfloat[hidden]{display:none}
 .installfloat button{border:0;background:none;font:inherit;color:inherit;padding:6px 4px 6px 12px;cursor:pointer}
@@ -495,6 +498,7 @@ body.quiet .app{display:none}
           <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap" class="small"><b id="gaugeLbl"></b><span class="muted" id="featherTotal"></span></div>
           <p class="small muted">Une journée complète (une couleur dans ton cœur + une activité) rapporte 10 plumes. Chaque activité : 1 plume, 3 par jour au plus. Tous les 7 jours : 20 de plus.</p>
           <div class="preview" id="preview"></div>
+          <div class="card flat" id="growCard"></div>
           <label class="small muted" for="birdName">Son nom</label>
           <input type="text" id="birdName" maxlength="16" placeholder="Vini">
         </div>
@@ -720,8 +724,34 @@ function accParts(c){
   const userHat = c.hei||c.papale;
   return {top: hei+papale+flower+(userHat?'':(S.top||'')), eyes: titia, neck: neck||S.neck||'', body: S.body||''};
 }
+const GROW_LOOK=[null,
+  {s:.72,hs:1.2,er:5.6,wl:13,tl:.5,crest:0,dx:-3,dy:5},
+  {s:.82,hs:1.1,er:5.0,wl:15.5,tl:.75,crest:0,dx:-1.5,dy:2.5},
+  {s:.92,hs:1.03,er:4.6,wl:18,tl:1,crest:0,dx:0,dy:0},
+  {s:1,hs:1,er:4.2,wl:20,tl:1.2,crest:2,dx:0,dy:0},
+  {s:1,hs:1,er:4.2,wl:21,tl:1.3,crest:3,dx:.5,dy:-1},
+  {s:1,hs:.98,er:4.0,wl:22,tl:1.4,crest:4,dx:1,dy:-2}];
+function growLook(c){ const g=Math.max(1,Math.min(6,parseInt(c.g,10)||4)); const L=Object.assign({g}, GROW_LOOK[g]); L.red=Math.max(0,Math.min(3,parseInt(c.red,10)||0)); L.words=Array.isArray(c.words)?c.words.slice(0,14):[]; L.fx=false; return L; }
+/* aile en éventail, style dessin animé : 7 grandes plumes (rémiges) sous 7 petites (couvertures) ; chaque émotion nommée colore une plume */
+function wingSVG(L, body){ const fx=L.fx, wl=L.wl, F=wl*[0,1.0,1.15,1.3,1.5,1.7,1.9][L.g]*(fx?[0,1,1.05,1.12,1.2,1.28,1.36][L.g]:1); const px=44+wl*.8, py=66-wl*.5; const dark=shade(body,.78), mid=shade(body,.9), edge=shade(body,.58);
+  const fe=(len,w,ang,pt,col,base,long)=>{ const fill=col||base, line=col?shade(col,.6):edge; const tx=-len*(1.03-pt*.22), ty=w*(1.08-pt*.55);
+    const d=`M0 ${(-w*.45).toFixed(1)} C${(-len*.3).toFixed(1)} ${(-w).toFixed(1)} ${tx.toFixed(1)} ${(-ty).toFixed(1)} ${(-len).toFixed(1)} 0 C${tx.toFixed(1)} ${ty.toFixed(1)} ${(-len*.3).toFixed(1)} ${w.toFixed(1)} 0 ${(w*.45).toFixed(1)}Z`;
+    let x=''; if(fx){ const lt=shade(fill,1.5);
+      if(col) x+=`<path d="${d}" fill="none" stroke="${col}" stroke-width="2.6" opacity=".3" stroke-linejoin="round"/>`;
+      x+=`<path d="${d}" fill="${fill}" stroke="${line}" stroke-width=".55" stroke-linejoin="round"/><ellipse cx="${(-len*.74).toFixed(1)}" cy="0" rx="${(len*.2).toFixed(1)}" ry="${(w*.5).toFixed(1)}" fill="${lt}" opacity=".5"/>`;
+      if(long){ x+=`<circle cx="${(-len*.8).toFixed(1)}" cy="0" r="${(w*.34).toFixed(1)}" fill="${col?'#FFF6D8':lt}" opacity=".9"/><circle cx="${(-len*.8).toFixed(1)}" cy="0" r="${(w*.15).toFixed(1)}" fill="${line}"/>`;
+        if(L.g>=3) x+=`<path d="M${(-len*.98).toFixed(1)} 0 q${(-len*.16).toFixed(1)} ${(w*.5).toFixed(1)} ${(-len*.22).toFixed(1)} ${(-w*.5).toFixed(1)} q${(len*.02).toFixed(1)} ${(-w*.9).toFixed(1)} ${(len*.07).toFixed(1)} ${(-w*.35).toFixed(1)}" fill="none" stroke="${fill}" stroke-width=".9" stroke-linecap="round"/>`; } }
+    else x=`<path d="${d}" fill="${fill}" stroke="${line}" stroke-width=".55" stroke-linejoin="round"/>`;
+    return `<g transform="translate(${px.toFixed(1)} ${py.toFixed(1)}) rotate(${(180-ang).toFixed(1)})">${x}<path d="M${(-len*.18).toFixed(1)} 0 H${(-len*(fx&&long?.62:.86)).toFixed(1)}" stroke="#fff" stroke-width=".6" stroke-linecap="round" opacity=".38"/></g>`; };
+  let h='';
+  for(let j=6;j>=0;j--) h+=fe(F*(.8+j*.07), wl*.27, 176+j*6, j/6, L.words[j], j%2?dark:mid, true);
+  for(let j=6;j>=0;j--) h+=fe(F*(.46+j*.025), wl*.26, 173+j*6.5, 0, L.words[7+j], j%2?mid:dark, false);
+  h+=`<ellipse cx="${(px-wl*.12).toFixed(1)}" cy="${(py+wl*.1).toFixed(1)}" rx="${(wl*.46).toFixed(1)}" ry="${(wl*.36).toFixed(1)}" transform="rotate(28 ${px.toFixed(1)} ${py.toFixed(1)})" fill="${mid}" stroke="${edge}" stroke-width=".5"/>`;
+  if(fx && L.g>=4){ const n=[0,0,0,0,2,4,6][L.g]; for(let i=0;i<n;i++){ const a=(150+i*23)*Math.PI/180, r=F*(1.02+((i*37)%10)/40); const x=px+r*Math.cos(a), y=py+r*Math.sin(a), q=1.1+(i%3)*.45; h+=`<path d="M${x.toFixed(1)} ${(y-2.2*q).toFixed(1)} l${(.6*q).toFixed(1)} ${(1.6*q).toFixed(1)} l${(1.6*q).toFixed(1)} ${(.6*q).toFixed(1)} l${(-1.6*q).toFixed(1)} ${(.6*q).toFixed(1)} l${(-.6*q).toFixed(1)} ${(1.6*q).toFixed(1)} l${(-.6*q).toFixed(1)} ${(-1.6*q).toFixed(1)} l${(-1.6*q).toFixed(1)} ${(-.6*q).toFixed(1)} l${(1.6*q).toFixed(1)} ${(-.6*q).toFixed(1)}z" fill="#FFF1C4" opacity=".95"/>`; } }
+  return h; }
 function birdSVG(c, id){
   if(c.nuit) c=Object.assign({},c,{body:'#16264A'});
+  const L=growLook(c); const vw=120/L.s, vh=110/L.s;
   const nstars = c.nuit ? `<g clip-path="url(#${id}-clip)" fill="#FFF1C4"><circle cx="36" cy="62" r="1.3"/><circle cx="48" cy="52" r="1.6"/><circle cx="62" cy="58" r="1.1"/><circle cx="72" cy="66" r="1.4"/><circle cx="40" cy="78" r="1.2"/><circle cx="30" cy="70" r="1"/><circle cx="56" cy="48" r="1"/><circle cx="78" cy="76" r="1.1"/></g>` : '';
   const wing = shade(c.body, .78), ink = lum(c.body) > .55 ? '#10303B' : '#F4EFE4';
   const honu = c.animal==='honu';
@@ -739,7 +769,7 @@ function birdSVG(c, id){
   const pareu = c.pareu ? `<rect x="18" y="74" width="72" height="30" fill="url(#${id}-pareu)" clip-path="url(#${id}-clip)"/><path d="M${honu?22:26} 74 L${honu?82:84} 74" stroke="#FFF6E3" stroke-width="2"/>` : '';
   const A = accParts(c);
   const uke = `<g class="uke"><line x1="60" y1="74" x2="30" y2="54" stroke="#8A5A2B" stroke-width="4.5" stroke-linecap="round"/><rect x="24" y="48" width="9" height="8" rx="2" transform="rotate(34 28 52)" fill="#5A3A1E"/><ellipse cx="66" cy="78" rx="12" ry="9" transform="rotate(34 66 78)" fill="#C98A4B" stroke="#8A5A2B" stroke-width="1.2"/><circle cx="64" cy="77" r="3" fill="#5A3A1E"/><line x1="72" y1="82" x2="30" y2="54" stroke="#FFF6E3" stroke-width=".7"/></g>`;
-  const head = `<svg viewBox="0 0 120 110" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs>${pats}<clipPath id="${id}-clip">${clip}</clipPath></defs>`;
+  const head = `<svg viewBox="${(-(vw-120)/2).toFixed(2)} ${(-(vh-110)).toFixed(2)} ${vw.toFixed(2)} ${vh.toFixed(2)}" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs>${pats}<clipPath id="${id}-clip">${clip}</clipPath></defs>`;
   if(honu){
     const skin = shade(c.body,.7), line = shade(c.body,.55);
     return head + `
@@ -753,16 +783,16 @@ function birdSVG(c, id){
   </svg>`;
   }
   return head + `
-    <g class="tail"><polygon points="30,66 4,56 10,74 4,86 30,76" fill="${wing}"/><polygon points="30,70 12,66 14,80 30,76" fill="${c.body}"/></g>
+    <g class="tail"><g transform="translate(30 71) scale(${L.tl} 1) translate(-30 -71)">${[0,1,2].slice(0,L.red).map(i=>`<polygon points="30,69.5 ${-1-i*2},${63-i*5.5} ${2-i*2},${66-i*5} 30,72.5" fill="#C8402F" stroke="#8E1322" stroke-width=".5"/><line x1="28" y1="71" x2="${4-i*2}" y2="${65-i*5.2}" stroke="#F28CB1" stroke-width=".8" opacity=".6"/>`).join('')}${L.g>=4?`<polygon points="30,69 -4,66 -2,71 -4,76 30,73" fill="${wing}"/>`:''}<polygon points="30,66 4,56 10,74 4,86 30,76" fill="${wing}"/><polygon points="30,70 12,66 14,80 30,76" fill="${c.body}"/></g></g>
     <g class="legs">
       <g class="leg l1"><line x1="48" y1="88" x2="46" y2="103" stroke="#F0A23A" stroke-width="3" stroke-linecap="round"/><polyline points="38,104 46,103 54,105" fill="none" stroke="#F0A23A" stroke-width="3" stroke-linecap="round"/></g>
       <g class="leg l2"><line x1="58" y1="88" x2="60" y2="103" stroke="#D98B2B" stroke-width="3" stroke-linecap="round"/><polyline points="52,104 60,103 68,105" fill="none" stroke="#D98B2B" stroke-width="3" stroke-linecap="round"/></g>
     </g>
     <g class="body"><ellipse cx="55" cy="68" rx="30" ry="24" fill="${c.body}"/><ellipse cx="60" cy="74" rx="18" ry="14" fill="${c.belly}"/>${nstars}${tattoo}${pareu}${A.body}</g>
     ${uke}
-    <g class="wing"><ellipse cx="44" cy="66" rx="19" ry="11" transform="rotate(-18 44 66)" fill="${wing}"/><ellipse cx="40" cy="64" rx="12" ry="6" transform="rotate(-18 40 64)" fill="${shade(c.body,.9)}"/></g>
+    <g class="wing">${wingSVG(L,c.body)}</g>
     ${A.neck}
-    <g class="head"><circle cx="82" cy="46" r="18" fill="${c.body}"/><circle cx="84" cy="52" r="9" fill="${c.belly}" opacity=".9"/><polygon points="98,45 114,50 98,55" fill="#F0A23A"/><circle cx="92" cy="50" r="3.6" fill="#F28CB1" opacity=".6"/><g class="eye"><circle cx="89" cy="42" r="4.2" fill="#10303B"/><circle cx="90.5" cy="40.5" r="1.4" fill="#fff"/></g>${A.top}${A.eyes}</g>
+    <g class="head"><g transform="translate(${82+L.dx} ${46+L.dy}) scale(${L.hs}) translate(-82 -46)">${(L.crest&&!c.papale)?[[76,31,69,16,80,27],[80,30,77,12,86,26],[84,30,88,13,90,27],[72,34,63,24,76,30]].slice(0,L.crest).map((q,i)=>`<polygon points="${q[0]},${q[1]} ${q[2]},${q[3]} ${q[4]},${q[5]}" fill="${i%2?wing:c.body}" stroke="${wing}" stroke-width=".6"/>${L.g>=6?`<circle cx="${q[2]}" cy="${q[3]}" r="1.8" fill="#F2C94C"/>`:''}`).join(''):''}<circle cx="82" cy="46" r="18" fill="${c.body}"/><circle cx="84" cy="52" r="9" fill="${c.belly}" opacity=".9"/><polygon points="98,45 114,50 98,55" fill="#F0A23A"/><circle cx="92" cy="50" r="3.6" fill="#F28CB1" opacity=".6"/><g class="eye"><circle cx="89" cy="42" r="${L.er}" fill="#10303B"/><circle cx="${(89+L.er*.36).toFixed(1)}" cy="${(42-L.er*.36).toFixed(1)}" r="${(L.er*.33).toFixed(1)}" fill="#fff"/></g>${A.top}${A.eyes}</g></g>
   </svg>`;
 }
 function renderBird(){ $('#birdFlip').innerHTML = birdSVG(cfg,'live'); $('#preview').innerHTML = birdSVG(cfg,'pv'); try{ if(window.ManuNative) window.ManuNative.setBird(birdSVG(cfg,'nat')); }catch(e){} }
@@ -805,7 +835,7 @@ const LINES = ['Un petit air de ukulele ?','Caresse-moi doucement, ça apaise.',
 function randomLine(){ if(cfg.season!==false && Math.random()<.3) return seasonNow().line; return LINES[Math.floor(Math.random()*LINES.length)]; }
 function say(txt, cta){ bubbleEl.innerHTML = esc(txt) + (cta?`<span class="cta">${esc(cta)}</span>`:''); bubbleEl.classList.add('show'); placeBubble(); clearTimeout(say.t); say.t=setTimeout(()=>bubbleEl.classList.remove('show'), 4200); }
 function placeBubble(){ if(!bubbleEl.classList.contains('show')) return; const bw=bubbleEl.offsetWidth, bh=bubbleEl.offsetHeight; let x=B.x+10, right=false; if(x+bw>innerWidth-8){ x=B.x+BW-bw-10; right=true; } x=Math.max(8,x); let y=B.y-bh-14; if(y<4){ y=B.y+BH+10; } bubbleEl.style.transform=`translate(${x}px,${y}px)`; bubbleEl.classList.toggle('right',right); }
-setInterval(()=>{ if(B.state==='idle' && !RING.open && !B.asking && !birdEl.classList.contains('sleeping') && Math.random()<(QUIET?.12:.45) && $('#sheet').hidden && $('#crisis').hidden && $('#breath').hidden) say(randomLine(), QUIET?'Touche-moi deux fois pour dire comment tu vas':'Touche-moi pour faire le point'); }, 14000);
+setInterval(()=>{ if(B.state==='idle' && !RING.open && !B.asking && !birdEl.classList.contains('sleeping') && Math.random()<(QUIET?.12:.45)*growAskFactor() && $('#sheet').hidden && $('#crisis').hidden && $('#breath').hidden) say(randomLine(), QUIET?'Touche-moi deux fois pour dire comment tu vas':'Touche-moi pour faire le point'); }, 14000);
 birdEl.addEventListener('click', ()=>{ if(PET.just) return; const now=Date.now(); if(now-TAP.bird<380){ clearTimeout(TAP.t); TAP.bird=0; askRing(false); return; } TAP.bird=now; TAP.t=setTimeout(()=>{ TAP.bird=0; if(!RING.open){ birdEl.classList.remove('sleeping'); miniMenu(); } },380); });
 birdEl.addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); openCheckin(); } });
 /* petting: stroke the bird with a finger or the mouse */
@@ -858,7 +888,7 @@ function playUke(){
 addEventListener('resize', ()=>{ if(RING.open){ closeRing(); release(); return; } if(QUIET){ if(B.state==='idle' && !B.asking){ const hm=homePoint(); B.x=hm.x; B.y=hm.y; } return; } B.y = B.perched ? perchPoints()[0].y : groundY(); B.x=Math.min(B.x, innerWidth-BW-8); });
 
 /* ---------- tabs ---------- */
-function showTab(id){ ['home','words','bird','help'].forEach(t=>{ $('#tab-'+t).hidden = t!==id; }); document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('on', b.dataset.tab===id)); $('#panel').scrollTop=0; if(id==='home') renderHome(); if(id==='help') renderHelp(); }
+function showTab(id){ ['home','words','bird','help'].forEach(t=>{ $('#tab-'+t).hidden = t!==id; }); document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('on', b.dataset.tab===id)); $('#panel').scrollTop=0; if(id==='home') renderHome(); if(id==='help') renderHelp(); if(id==='bird'){ try{ renderGrow(); }catch(e){} } }
 document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>showTab(b.dataset.tab));
 
 /* ---------- home ---------- */
@@ -1139,7 +1169,7 @@ function setQuiet(on){ QUIET=on; store.set('quiet',on); document.body.classList.
 function sayHTML(html, ms){ bubbleEl.innerHTML=html; bubbleEl.classList.add('show'); placeBubble(); clearTimeout(say.t); say.t=setTimeout(()=>bubbleEl.classList.remove('show'), ms||6000); }
 function miniMenu(){ sayHTML(`${esc(randomLine())}<div class="mini"><button data-m="stress">Trop de stress</button><button data-m="check">Faire le point</button><button data-m="place">Lieux</button><button data-m="tere">Te tere</button><button data-m="breathe">Respirer</button><button data-m="uke">Ukulele</button><button data-m="heart">Mon cœur</button><button data-m="garden">Faʻaʻapu</button><button data-m="chest">Coffre</button><button data-m="sky">Te raʻi</button>${has('x:dance')?'<button data-m="dance">Danser</button>':''}${has('x:flip')?'<button data-m="flip">Salto</button>':''}${QUIET?'<button data-m="app">Tout Manu Ora</button>':'<button data-m="quiet">Mode veille</button>'}</div>`, 9000); }
 bubbleEl.addEventListener('click', e=>{ const b=e.target.closest('[data-m]'); if(!b) return; e.stopPropagation(); bubbleEl.classList.remove('show'); const m=b.dataset.m;
-  if(m.indexOf('door:')===0){ openDoor(m.slice(5)); return; } if(m==='later') return;
+  if(m.indexOf('door:')===0){ openDoor(m.slice(5)); return; } if(m==='later') return; if(m.indexOf('sg:')===0){ openSharedGarden(m.slice(3)); return; }
   if(m==='stress') openStress(true); else if(m==='place') openPlace(); else if(m==='tere') openTere(); else if(m==='garden') openGarden(); else if(m==='chest') openChest(); else if(m==='sky') openSky(); else if(m==='dance'||m==='flip') playAnim(m); else if(m==='breathe') openBreath(null); else if(m==='check') openCheckin(); else if(m==='uke') playUke(); else if(m==='heart') openHeart(); else if(m==='app') setQuiet(false); else if(m==='quiet') setQuiet(true); else if(m==='pet') say('Glisse ton doigt sur mes plumes, tout doucement.'); });
 
 /* colour ring */
@@ -1148,7 +1178,7 @@ function askRing(auto){ if(RING.open) return; RING.open=true; B.asking=true; B.a
   const c=ringCenter(); const tgt={x:c.x-BW/2, y:c.y-BH/2};
   const go=()=>{ setState('idle'); B.t=1e9; showRing(auto); };
   if(Math.hypot(tgt.x-B.x,tgt.y-B.y)<4) go(); else { B.perched=false; startFly(tgt); B.onArrive=go; } }
-function showRing(auto){ const svg=$('#ringsvg'); const W=innerWidth, H=innerHeight; svg.setAttribute('viewBox',`0 0 ${W} ${H}`); const c=ringCenter(); const R=Math.max(88, Math.min(120, W/2-95)); let h=`<text class="title" x="${c.x}" y="${c.y-R-74}" text-anchor="middle">${auto?'E aha tō ʻoe huru ?':'La couleur de ton ʻāʻau ?'}</text><text class="sub" x="${c.x}" y="${c.y-R-52}" text-anchor="middle">Touche une couleur, ou à côté pour passer</text>`;
+function showRing(auto){ const svg=$('#ringsvg'); const W=innerWidth, H=innerHeight; svg.setAttribute('viewBox',`0 0 ${W} ${H}`); const c=ringCenter(); const R=Math.max(88, Math.min(120, W/2-95)); let h=`<text class="title" x="${c.x}" y="${c.y-R-74}" text-anchor="middle">${(()=>{ if(!auto) return 'La couleur de ton ʻāʻau ?'; try{ const y=growStage()>=2?yesterdayEmo():null; return y?('Hier : '+esc(y.ty)+'. Et aujourdʼhui ?'):'E aha tō ʻoe huru ?'; }catch(e){ return 'E aha tō ʻoe huru ?'; } })()}</text><text class="sub" x="${c.x}" y="${c.y-R-52}" text-anchor="middle">Touche une couleur, ou à côté pour passer</text>`;
   RING_ORDER.forEach((id,i)=>{ const a=(-90+i*360/RING_ORDER.length)*Math.PI/180; const x=(c.x+R*Math.cos(a)).toFixed(1), y=(c.y+R*Math.sin(a)).toFixed(1); const lx=(c.x+(R+26)*Math.cos(a)).toFixed(1), ly=(c.y+(R+26)*Math.sin(a)).toFixed(1); const ca=Math.cos(a); const anchor=ca>.35?'start':ca<-.35?'end':'middle';
     if(id==='__dark'){ h+=`<g class="dot dark" data-id="__dark"><circle cx="${x}" cy="${y}" r="16" fill="#2B2F3A"/><text x="${lx}" y="${ly}" text-anchor="${anchor}" dominant-baseline="middle">idées noires</text></g>`; return; }
     const e=EMO.find(m=>m.id===id); h+=`<g class="dot" data-id="${id}"><circle cx="${x}" cy="${y}" r="16" fill="${e.color}"/><text x="${lx}" y="${ly}" text-anchor="${anchor}" dominant-baseline="middle">${esc(e.ty)}</text></g>`; });
@@ -1251,9 +1281,9 @@ const GEST={salut:{l:'Salut', t:'te dit ʻIa ora na !'}, calin:{l:'Câlin', t:'t
 const VIS={queue:[],busy:false};
 let seenV=store.get('seenV',{});
 function cleanCfg(c){ c=c||{}; const hex=v=>typeof v==='string' && /^#[0-9a-fA-F]{6}$/.test(v);
-  const o={body:hex(c.body)?c.body:'#1AA3B1', belly:hex(c.belly)?c.belly:'#F6F1E7', tattoo:(typeof c.tattoo==='string' && Object.prototype.hasOwnProperty.call(TATTOO,c.tattoo))?c.tattoo:'none', animal:c.animal==='honu'?'honu':'manu', season:c.season!==false, nuit:c.nuit===true};
+  const o={body:hex(c.body)?c.body:'#1AA3B1', belly:hex(c.belly)?c.belly:'#F6F1E7', tattoo:(typeof c.tattoo==='string' && Object.prototype.hasOwnProperty.call(TATTOO,c.tattoo))?c.tattoo:'none', animal:c.animal==='honu'?'honu':'manu', season:c.season!==false, nuit:c.nuit===true, g:Math.max(1,Math.min(6,parseInt(c.g,10)||4)), red:Math.max(0,Math.min(3,parseInt(c.red,10)||0)), fx:c.fx===true};
   Object.keys(ACC).forEach(k=>{ o[k]=c[k]===true; }); return o; }
-function myLook(){ const o={body:cfg.body, belly:cfg.belly, tattoo:cfg.tattoo, animal:cfg.animal||'manu', season:cfg.season!==false, nuit:!!cfg.nuit}; Object.keys(ACC).forEach(k=>{ o[k]=!!cfg[k]; }); return o; }
+function myLook(){ const o={body:cfg.body, belly:cfg.belly, tattoo:cfg.tattoo, animal:cfg.animal||'manu', season:cfg.season!==false, nuit:!!cfg.nuit, g:String(cfg.g||4), red:String(cfg.red||0), fx:!!cfg.fx}; Object.keys(ACC).forEach(k=>{ o[k]=!!cfg[k]; }); return o; }
 function isMutualKnown(code){ return FR[code]===undefined || isMutual(code); }
 function isMutual(code){ const d=FR[code]; return !!(d && d!=='err' && Array.isArray(d.links) && d.links.includes(myCode)); }
 function sendGesture(code,g,name){ if(!SYNC_URL) return; fetch(`${SYNC_URL}/visits/${code}/${myCode}.json`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({g, t:Date.now(), name:share.name||''})})
@@ -1359,6 +1389,11 @@ function plantSVG(p,stage){
       let s='<path d="M52 110 Q50 76 68 36 L74 38 Q60 78 64 110Z" fill="url(#pgTrunk)"/>'; for(let i=0;i<7;i++){ const t=i/7; s+=`<path d="M${f1(52+ (68-52)*t*t+1)} ${f1(104-66*t)} q5 -2 ${f1(10-3*t)} 1" stroke="#5A3A1E" stroke-width=".8" fill="none" opacity=".6"/>`; }
       s+=`<g transform="translate(140 0) scale(-1 1)">${frond(-18,40,G.d)+frond(-48,42,G.m)+frond(12,36,G.m)}</g>`+frond(-18,42,G.m)+frond(-50,44,G.l)+frond(14,38,G.d)+frond(-82,34,G.m)+`<g transform="translate(140 0) scale(-1 1)">${frond(-80,32,G.l)}</g>`;
       if(fr) [[65,42],[73,45],[69,50],[77,39]].forEach(q=>{ s+=`<circle cx="${q[0]}" cy="${q[1]}" r="5" fill="#8A5F36" stroke="#4E3219" stroke-width=".7"/><circle cx="${q[0]-1.5}" cy="${q[1]-1.8}" r="1.5" fill="#fff" opacity=".3"/>`; }); return s; },
+    apetahi:fr=>{ let s=''; [[-30,30,-58],[30,30,58],[-18,40,-28],[18,40,28],[0,44,0],[-36,22,-80],[36,22,80]].forEach((q,i)=>{ s+=leaf(60+q[0]*.3,108,q[1],7.5,q[2],i%2?G.m:G.d); });
+      const half=(x,y,sc)=>`<g transform="translate(${x} ${y}) scale(${sc})"><path d="M0 0 C-9 -1 -15 -8 -13 -17 C-10 -15 -7 -12 -5 -9 C-6 -14 -4 -19 0 -22 C4 -19 6 -14 5 -9 C7 -12 10 -15 13 -17 C15 -8 9 -1 0 0Z" fill="#FFFDF6" stroke="#E2D6B8" stroke-width=".6"/><path d="M0 -1 C-2 -6 -2 -10 -1 -16" stroke="#EAE0C4" stroke-width=".6" fill="none"/><circle r="2.4" fill="#F4D35E"/></g>`;
+      if(fr) s+=half(42,76,.95)+half(78,72,1.05)+half(60,60,.9); return s; },
+    ahia:fr=>{ let s=trunk(60,10,66)+canopy(60,48,34,['#1E6A3D','#2C8A4E','#56B16A']);
+      if(fr) [[42,64],[58,72],[74,66],[66,52],[48,48]].forEach(q=>{ s+=`<path d="M${q[0]} ${q[1]-9} v3" stroke="#5E7A2E" stroke-width="1"/><path d="M${q[0]} ${q[1]-6} c-5 0 -6.5 9 -2.5 12.5 c2 1.6 3 1.6 5 0 c4 -3.5 2.5 -12.5 -2.5 -12.5z" fill="#D8322B" stroke="#8E1322" stroke-width=".6"/><ellipse cx="${q[0]-1.5}" cy="${q[1]-1}" rx="1.1" ry="2" fill="#fff" opacity=".35"/>`; }); return s; },
     taro:fr=>{ const tl=(x,h,r,sc,c)=>`<path d="M60 108 Q${(60+x)/2} ${108-h*.6} ${x} ${108-h}" stroke="#7DA85B" stroke-width="2.4" fill="none" stroke-linecap="round"/><g transform="translate(${x} ${108-h}) rotate(${r}) scale(${sc})"><path d="M0 4 C-4 2 -14 -4 -13 -16 C-12 -26 -4 -30 0 -34 C4 -30 12 -26 13 -16 C14 -4 4 2 0 4Z" fill="${c}"/><path d="M0 4 C4 2 14 -4 13 -16 C12 -26 4 -30 0 -34Z" fill="#fff" opacity=".12"/><path d="M0 2 V-30 M0 -6 l-9 -6 M0 -6 l9 -6 M0 -16 l-8 -5 M0 -16 l8 -5" stroke="#CBE7A6" stroke-width=".9" fill="none" opacity=".8"/></g>`;
       let s=tl(26,30,-52,.95,G.m)+tl(94,32,52,.95,G.d)+tl(40,50,-24,1,G.l)+tl(82,52,26,1,G.m)+tl(60,60,0,1.08,'#3C9958');
       if(fr) s+='<ellipse cx="60" cy="108" rx="13" ry="7" fill="#9C7B8E" stroke="#6B4A5E" stroke-width=".8"/><path d="M50 106 q10 -4 20 0 M52 110 q8 3 16 0" stroke="#6B4A5E" stroke-width=".6" fill="none" opacity=".7"/>'; return s; },
@@ -1394,7 +1429,7 @@ function openGarden(){
   const mut=friends.filter(f=>isMutual(f.code));
   const plots=garden.plots.map((pl,i)=>{ if(pl && !PLANTS[pl.p]) pl=null; const st=pl?plotStage(pl):0; let body;
     if(!pl){ if(GSEL&&GSEL.i===i){ const av=Object.keys(PLANTS).filter(k=>(garden.seeds[k]||0)>0); body = av.length ? av.map(k=>`<button class="btn sm" data-seed="${k}">${PLANTS[k].name} · ${PLANTS[k].days} j</button>`).join('') : '<span class="small muted">Plus de graines. Une journée complète en donne une.</span>'; } else body=`<button class="btn sm ghost" data-plant="${i}">Planter</button>`; }
-    else if(st<3) body=`<b>${PLANTS[pl.p].name}</b><span class="small muted">${plotLeft(pl)}</span>`;
+    else if(st<3) body=`<b>${PLANTS[pl.p].name}</b><span class="small muted">${plotLeft(pl)}</span>${(garden.items.compost||0)>0?`<button class="btn sm" data-comp="${i}">Compost · −1 j</button>`:''}`;
     else if(GSEL&&GSEL.i===i&&GSEL.give) body = mut.length ? '<span class="small muted">Pour qui ?</span>'+mut.map(f=>`<button class="btn sm primary" data-to="${f.code}">${esc(f.name||fmtCode(f.code))}</button>`).join('') : '<span class="small muted">Lie dʼabord ton cœur à un·e ami·e.</span>';
     else body=`<b>${PLANTS[pl.p].name}</b><span class="small" style="color:var(--fern);font-weight:700">Mûr !</span><button class="btn sm primary" data-give="${i}">Offrir</button><button class="btn sm" data-sell="${i}">Échanger · ${PLANTS[pl.p].worth} plumes</button><button class="btn sm ghost" data-keep="${i}">Mettre au coffre</button>`;
     return `<div class="plot">${plantSVG(pl?pl.p:null,st)}${body}</div>`; }).join('');
@@ -1402,15 +1437,18 @@ function openGarden(){
     <div style="display:flex;gap:10px;align-items:center"><div style="width:58px;flex:none">${birdSVG(cfg,'gd')}</div><p class="small muted">Plante, laisse le temps faire, puis récolte. Rien ne meurt ici : si tu tʼabsentes, tes fruits tʼattendent.</p></div>
     <div class="card flat"><div class="eyebrow">Mes graines</div><div style="display:flex;flex-wrap:wrap;gap:6px">${seedsLine}</div></div>
     <div class="plots" id="plots">${plots}</div>
-    <div class="card"><div class="eyebrow">Coffre et atelier</div><p class="small muted">Mets tes récoltes au coffre, puis mélange-les : hei de fleurs, salade de fruits, monoï… Certaines recettes sont secrètes.</p><button class="btn" id="toChest">Ouvrir le coffre</button></div>
+    <div class="card"><div class="eyebrow">Coffre et atelier</div><p class="small muted">Mets tes récoltes au coffre, puis mélange-les : hei de fleurs, salade de fruits, monoï, compost… Certaines recettes sont secrètes.</p><button class="btn" id="toChest">Ouvrir le coffre</button></div>
+    ${SYNC_URL?`<div class="card flat"><div class="eyebrow">Faʻaʻapu partagé</div><p class="small muted">Un champ à deux avec un cœur lié : des plantes qui ne poussent que là, seulement les jours où vous arrosez tous les deux, et une récolte partagée à parts égales.</p>${mut.length?`<div class="row">${mut.map(f=>`<button class="btn sm" data-sgopen="${f.code}">Avec ${esc(f.name||fmtCode(f.code))}</button>`).join('')}</div>`:'<span class="small muted">Lie dʼabord ton cœur à un·e ami·e (et quʼil ou elle lie le sien).</span>'}</div>`:''}
     <p class="small muted">Offrir un fruit donne ses plumes et une graine à ton ami·e, et te rend une graine. Tu gagnes aussi une graine à chaque journée complète, et une graine de haʻari tous les 7 jours.</p>`);
   sheetInner.scrollTop=keepY;
   $('#sx').onclick=()=>{ GSEL=null; MSEL=false; closeSheet(); };
   $('#toChest').onclick=()=>{ GSEL=null; openChest(); };
+  sheetInner.querySelectorAll('[data-sgopen]').forEach(b=>{ b.onclick=()=>openSharedGarden(b.dataset.sgopen); });
   $('#plots').addEventListener('click', e=>{ const t=e.target.closest('button'); if(!t) return; const d=t.dataset;
     if(d.plant!==undefined){ GSEL={i:+d.plant}; openGarden(); }
     else if(d.seed && GSEL){ const k=d.seed; if(PLANTS[k] && (garden.seeds[k]||0)>0 && !garden.plots[GSEL.i]){ garden.seeds[k]--; garden.plots[GSEL.i]={p:k,t:Date.now()}; GSEL=null; saveGarden(); openGarden(); toast('Planté : '+PLANTS[k].name+', mûr dans '+PLANTS[k].days+' j'); } }
     else if(d.sell!==undefined){ const i=+d.sell, pl=garden.plots[i]; if(pl && plotStage(pl)===3){ const w=PLANTS[pl.p].worth; feathers+=w; store.set('feathers',feathers); garden.plots[i]=null; GSEL=null; saveGarden(); renderFeathers(); openGarden(); toast('+'+w+' plumes'); } }
+    else if(d.comp!==undefined){ const i=+d.comp, pl=garden.plots[i]; if(pl && plotStage(pl)<3 && (garden.items.compost||0)>0){ garden.items.compost--; pl.t-=864e5; saveGarden(); chestBadge(); openGarden(); toast(plotStage(pl)===3?'Compost : déjà mûre !':'Compost : mûre un jour plus tôt'); } }
     else if(d.keep!==undefined){ const i=+d.keep, pl=garden.plots[i]; if(pl && plotStage(pl)===3){ garden.store[pl.p]=(garden.store[pl.p]||0)+1; garden.plots[i]=null; GSEL=null; if(pl.p==='haari') addSeed('haari'); saveGarden(); openGarden(); toast(pl.p==='haari'?'1 coco au coffre, et une noix à replanter':'Au coffre : 1 '+PLANTS[pl.p].name); } }
     else if(d.give!==undefined){ GSEL={i:+d.give, give:true}; openGarden(); }
     else if(d.to && GSEL){ giveFruit(GSEL.i, d.to); } });
@@ -1480,6 +1518,7 @@ Object.assign(ITEMS,{
   heitipa:{name:'Hei tīpaniē', un:'un hei de tīpaniē', worth:32, aura:'#F9C846', mood:'lʼaccueil (maeva)', need:{tipanie:4,tiare:1}, days:0, hint:'Des fleurs au cœur jaune, et une blanche.'},
   jus:{name:'Jus de fruits frais', un:'un jus de fruits frais', worth:45, aura:'#FF9A3D', mood:'lʼélan', need:{painapo:1,anani:1,iita:1}, days:0, hint:'Trois fruits juteux, un de chaque.'},
   poetaro:{name:'Poʻe taro', un:'un poʻe taro', worth:42, aura:'#B79AC8', mood:'le partage', need:{taro:2,haari:1}, days:0, hint:'Du taro, un peu de coco.'},
+  compost:{name:'Compost', un:'un sac de compost', worth:15, aura:'#6E8F2E', mood:'la patience', need:{haari:1,meia:1}, days:0, hint:'Un coco et une banane : la terre sʼen souvient.', soil:true},
   monoivan:{name:'Monoï vānira', un:'un flacon de monoï vānira', worth:70, aura:'#C89B6A', mood:'la douceur', need:{tiare:2,vanira:1,haari:1}, days:3, hint:'Une gousse parfumée parmi les tiare, dans lʼhuile.', care:true, secret:true}});
 ING.forEach(k=>{ if(typeof garden.store[k]!=='number') garden.store[k]=0; });
 if(!garden.items) garden.items={};
@@ -1521,6 +1560,7 @@ function openChest(){
     return `<div class="card flat"><div style="display:flex;gap:10px;align-items:center"><span class="auradot" style="background:${it.aura==='rainbow'?'conic-gradient(#E4583F,#F2C94C,#3B8C58,#5B6FB8,#E4583F)':it.aura}"></span><div><b>${it.name} ×${garden.items[id]}</b><div class="small muted">Aura : ${it.mood}</div></div></div>${btns}</div>`; }).join('') || '<p class="small muted">Rien pour lʼinstant. Essaie un mélange dans lʼatelier.</p>';
   const book=Object.keys(ITEMS).map(id=>{ const it=ITEMS[id], known=garden.known.includes(id);
     return (it.secret&&!known) ? `<div class="hrow" style="grid-template-columns:1fr"><span><b>???</b> <span class="small muted">· recette secrète · indice : ${it.hint}</span></span></div>`
+      : it.shared ? `<div class="hrow" style="grid-template-columns:1fr"><span><b>${it.name}</b> <span class="small muted">· ${it.hint}</span></span></div>`
       : `<div class="hrow" style="grid-template-columns:1fr"><span><b>${it.name}</b> <span class="small muted">· ${needTxt(it.need)}${it.days?` · macère ${it.days} j`:''}${known?' · déjà fait':''}</span></span></div>`; }).join('');
   openSheet(`<div class="head"><div><div class="eyebrow">Le coffre de ${esc(cfg.name)}</div><h2>Coffre et atelier</h2></div><button class="x" id="sx" aria-label="Fermer">×</button></div>
     <div id="chestBox" class="stack" style="gap:12px">
@@ -1538,7 +1578,7 @@ function openChest(){
     else if(d.ch==='mix') mixNow();
     else if(d.ch==='bottle'){ if(macState()===2){ const id=garden.mac.id; const first=!garden.known.includes(id); garden.mac=null; garden.items[id]=(garden.items[id]||0)+1; learn(id); saveGarden(); chestBadge(); openChest(); toast((first&&ITEMS[id].secret?'Recette secrète découverte : ':'En flacon : ')+ITEMS[id].name+' !'); } }
     else if(d.ch==='garden'){ CSEL=null; openGarden(); }
-    else if(d.use){ const id=d.use, it=ITEMS[id]; if(garden.items[id]>0){ garden.items[id]--; saveGarden(); chestBadge(); setShine(it.aura); if(it.care) openSelfCare(); else { closeSheet(); say(`${it.name} ! Je rayonne : ${it.mood}.`); } } }
+    else if(d.use){ const id=d.use, it=ITEMS[id]; if(it.soil){ CSEL=null; openGarden(); toast('Touche « Compost » sur une plante qui pousse'); return; } if(garden.items[id]>0){ garden.items[id]--; saveGarden(); chestBadge(); setShine(it.aura); if(it.care) openSelfCare(); else { closeSheet(); say(`${it.name} ! Je rayonne : ${it.mood}.`); } } }
     else if(d.igive){ CSEL=d.igive; openChest(); }
     else if(d.isell){ const id=d.isell; if(garden.items[id]>0){ garden.items[id]--; feathers+=ITEMS[id].worth; store.set('feathers',feathers); saveGarden(); chestBadge(); renderFeathers(); openChest(); toast('+'+ITEMS[id].worth+' plumes'); } }
     else if(d.ito && CSEL){ giveItem(CSEL,d.ito); } });
@@ -1822,7 +1862,7 @@ function endAway(s){ clearTimeout(AWAY.t); AWAY.on=false; AWAY.gone=false; birdE
   if(s!=='fly'){ const hm=QUIET?homePoint():{x:B.x<0?20:innerWidth-BW-20, y:groundY()}; B.x=hm.x; B.y=hm.y; } }
 function comeBack(called){ if(!AWAY.on||!AWAY.gone) return; const nm=AWAY.name;
   if(QUIET) goHome(); else { B.perched=false; startFly({x:B.x<0?24:innerWidth-BW-24, y:groundY()}); }
-  const prev=B.onArrive; B.onArrive=()=>{ if(prev) prev(); say(called?'Me revoilà ! Ton signe est déposé chez '+nm+'.':'Me revoilà ! Jʼai déposé ton signe chez '+nm+'.'); }; }
+  const prev=B.onArrive; B.onArrive=()=>{ if(prev) prev(); say(called?'Me revoilà ! Ton signe est déposé chez '+nm+'.':'Me revoilà ! Jʼai déposé ton signe chez '+nm+'.'+(growStage()>=3?' '+STORIES[Math.floor(Math.random()*STORIES.length)]:'')); }; }
 
 /* ---------- sauvegarde dans un fichier ---------- */
 try{ if(navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(()=>{}); }catch(e){}
@@ -1882,6 +1922,9 @@ function sceneInner(id){
       +'<path d="M168 368 C160 420 244 452 226 504 C200 552 120 590 100 640" stroke="#C9EEF6" stroke-width="10" fill="none" opacity=".55"/>'
       +'<path class="sc-flow" d="M170 372 C164 420 240 454 220 504 C196 552 150 592 140 640" stroke="#fff" stroke-width="2" fill="none" opacity=".5"/><path class="sc-flow" style="animation-delay:-1.1s" d="M176 400 C190 440 262 470 250 510 C236 556 220 600 216 640" stroke="#fff" stroke-width="1.6" fill="none" opacity=".4"/>'
       +'<ellipse cx="196" cy="470" rx="13" ry="7" fill="#8C9AA0"/><ellipse cx="192" cy="467" rx="6" ry="2.5" fill="#B4C0C4"/><ellipse cx="236" cy="548" rx="17" ry="9" fill="#7E8C92"/><ellipse cx="231" cy="544" rx="8" ry="3" fill="#AAB6BA"/><ellipse cx="120" cy="596" rx="14" ry="7" fill="#8C9AA0"/>'
+      +(()=>{ const eel=(dur,begin,rev,sc,path)=>{ const a='M-24 0 Q-18 -5 -12 0 T0 0 T12 0', b='M-24 0 Q-18 5 -12 0 T0 0 T12 0'; const move=RM?'':`<animateMotion dur="${dur}s" begin="${begin}s" repeatCount="indefinite" rotate="${rev?'auto-reverse':'auto'}" ${rev?'keyPoints="1;0" keyTimes="0;1" calcMode="linear"':''} path="${path}"/>`; const wig=at=>RM?'':`<animate attributeName="d" dur="1.1s" repeatCount="indefinite" values="${a};${b};${a}"/>`;
+          return `<g opacity=".9" ${RM?`transform="translate(${rev?'214 470':'196 420'}) rotate(60)"`:''}>${move}<g transform="scale(${sc})"><path d="${a}" fill="none" stroke="#3E3226" stroke-width="6.5" stroke-linecap="round">${wig()}</path><path d="${a}" fill="none" stroke="#6B5A45" stroke-width="2.2" stroke-linecap="round" opacity=".8">${wig()}</path><ellipse cx="14" cy="0" rx="6" ry="3.8" fill="#3E3226"/><circle cx="16.5" cy="-1.4" r="1.3" fill="#8FD3F4"/><circle cx="16.5" cy="1.4" r="1.3" fill="#8FD3F4"/></g></g>`; };
+        return eel(19,-3,false,1.5,'M172 376 C166 420 240 454 222 504 C198 552 152 592 142 650')+eel(26,-11,true,1.2,'M182 384 C186 430 256 462 244 508 C232 556 206 600 200 650'); })()
       +'<g class="sc-leafrun"><path d="M0 0 q8 -9 18 -2 q-8 9 -18 2z" fill="#F0A23A"/><path d="M1 0 l15 -2" stroke="#B5731E" stroke-width=".8"/></g>'
       +'<path d="M-1400 640 V540 Q-60 520 30 566 Q70 590 60 640Z" fill="#2F8A50"/><path d="M1760 640 V520 Q420 510 320 560 Q270 590 276 640Z" fill="#2F8A50"/>'
       +fern(30,646,-20,1.5)+fern(62,650,10,1.2)+fern(4,650,-46,1.3)+fern(322,646,22,1.5)+fern(350,650,-8,1.25)+fern(300,652,48,1.1);
@@ -2011,7 +2054,7 @@ const GUIDE=[
   {id:'sky',    t:'Te raʻi, le ciel', d:'Apprends les étoiles par leur nom tahitien. Elles sʼallument la nuit sur ton écran.', b:'Regarder le ciel', open:()=>openSky()}];
 let guide=store.get('guide',null);
 if(!guide || !Array.isArray(guide.seen) || !Array.isArray(guide.days)) guide={seen:[], days:[], today:'', todayDay:''};
-const DATA_V=2;
+const DATA_V=3;
 (function(){ const v=store.get('v',0);
   if(v<2 && store.get('welcomed',false) && !guide.seen.length){ guide.seen=GUIDE.map(g=>g.id); guide.days=[dayKey(Date.now())]; }
   store.set('guide',guide); if(v!==DATA_V) store.set('v',DATA_V); })();
@@ -2060,6 +2103,103 @@ function openQuietMenu(){ const k=dayKey(Date.now()); const isNew=id=>(guide.tod
 $('#menuBtn').onclick=openQuietMenu;
 renderQuietPills(); guideTick(); document.addEventListener('visibilitychange', ()=>{ if(!document.hidden) guideTick(); });
 setTimeout(()=>{ try{ const k=dayKey(Date.now()); if(!QUIET || !doorSeen('tere') || store.get('tereNag','')===k || !visitFree() || bubbleEl.classList.contains('show')) return; const n=tereNow(), r=tere.w[n.key]; if(r && r.days.includes(k)) return; store.set('tereNag',k); sayHTML('Un petit défi aujourdʼhui ? Deux minutes.<div class="mini"><button data-m="door:tere">Voir le défi</button><button data-m="later">Plus tard</button></div>', 15000); }catch(e){} }, 25000);
+
+/* ---------- croissance du manu : six stades, un mois au plus par stade, jamais de retour en arrière ---------- */
+const STAGES=[null,
+  {n:'Pīpī', fr:'le poussin', line:'Je suis tout petit. Dis-moi juste comment tu te sens, ça me suffit.'},
+  {n:'Manu ʻāpī', fr:'le jeune manu', line:'Jʼai grandi un peu. Maintenant je me souviens dʼhier.'},
+  {n:'Manu rere', fr:'le manu qui vole', line:'Mes ailes sont plus longues. Je peux te demander de quoi tu as besoin, pas seulement comment tu vas.'},
+  {n:'Manu paʻari', fr:'le manu posé', line:'Je me tiens plus droit. Je parlerai un peu moins, et je penserai aux autres aussi.'},
+  {n:'Manu ʻura', fr:'le manu aux plumes rouges', line:'Une plume rouge va pousser chaque mois. Chaque mois, on regardera ton cœur ensemble.'},
+  {n:'Tupuna manu', fr:'lʼancien', line:'Je ne grandirai plus. Maintenant, cʼest à moi de te laisser la parole.'}];
+const STORIES=['Jʼai vu la mer toute plate, comme un miroir.','Un chien dormait au soleil, sans rien demander à personne.','Les cocotiers faisaient du bruit, mais pas de souci.','Jʼai croisé un autre manu : il mʼa dit ʻia ora na.','Il y avait un arc-en-ciel au-dessus de la montagne, personne ne regardait.','Le vent tournait, puis il sʼest calmé. Comme toi parfois.'];
+const isoDay = d => d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+function monthLater(iso){ const d=new Date(iso+'T12:00:00'); d.setMonth(d.getMonth()+1); return isoDay(d); }
+var grow=store.get('grow',null);
+if(!grow || typeof grow.stage!=='number'){
+  const first = log.length ? Math.min.apply(null, log.map(l=>l.ts)) : Date.now();
+  const months = Math.max(0, Math.floor((Date.now()-first)/(30.4*864e5)));
+  const stage = store.get('welcomed',false) ? Math.min(6, 1+months) : 1; const today=isoDay(new Date());
+  grow={stage, since:today, next:monthLater(today), red:0, notes:[], hist:[{d:today,s:stage}]}; store.set('grow',grow); }
+function growCounters(){ const now=Date.now(); const recent=log.filter(l=>now-l.ts<31*864e5); const pres=new Set(recent.map(l=>dayKey(l.ts))).size;
+  const cnt={}; log.forEach(l=>{ if(l.emo && l.emo!=='__dark') cnt[l.emo]=(cnt[l.emo]||0)+1; }); const voc=Object.keys(cnt).filter(k=>cnt[k]>=2).length;
+  let con=friends.length + friends.filter(f=>f.ama).length + Object.keys(stars||{}).length; try{ con+=Object.keys(tere.w||{}).filter(k=>(tere.w[k].days||[]).length>=3).length; }catch(e){}
+  return {pres, voc, con, need:{pres:6+grow.stage, voc:2+grow.stage, con:1}}; }
+function wordColors(){ const seen=[]; log.forEach(l=>{ if(l.emo && l.emo!=='__dark' && !seen.includes(l.emo)) seen.push(l.emo); }); return seen.slice(0,14).map(id=>{ const e=EMO.find(x=>x.id===id); return e?e.color:'#999'; }); }
+function syncGrowCfg(){ cfg.g=grow.stage; cfg.red=grow.red; cfg.words=wordColors(); store.set('cfg',cfg); try{ renderBird(); }catch(e){} }
+function growAskFactor(){ return (grow&&grow.stage)?[0,1.3,1.15,1,.85,.7,.6][grow.stage]:1; }
+function growStage(){ return (grow&&grow.stage)?grow.stage:4; }
+function yesterdayEmo(){ const y=dayKey(Date.now()-864e5); const e=log.filter(l=>dayKey(l.ts)===y && l.emo && l.emo!=='__dark').pop(); return e?EMO.find(x=>x.id===e.emo):null; }
+function monthTop(){ const now=Date.now(); const cnt={}; log.filter(l=>now-l.ts<31*864e5 && l.emo && l.emo!=='__dark').forEach(l=>{ cnt[l.emo]=(cnt[l.emo]||0)+1; }); const k=Object.keys(cnt).sort((a,b)=>cnt[b]-cnt[a])[0]; return k?{e:EMO.find(x=>x.id===k), n:cnt[k]}:null; }
+function growTick(){ const today=isoDay(new Date()); if(today<grow.next) return; const c=growCounters(); const met=(c.pres>=c.need.pres?1:0)+(c.voc>=c.need.voc?1:0)+(c.con>=c.need.con?1:0);
+  grow.next=monthLater(today); let kind='none';
+  if(grow.stage<6 && met>=2){ grow.stage++; grow.since=today; grow.hist.push({d:today,s:grow.stage}); kind='stage'; }
+  else if(grow.stage>=5 && grow.red<3){ grow.red++; kind='red'; }
+  store.set('grow',grow); syncGrowCfg(); setTimeout(()=>growMoment(kind,c), 5000); }
+function growMoment(kind,c){ if(!QUIET || !visitFree()){ setTimeout(()=>growMoment(kind,c), 15000); return; }
+  birdEl.classList.remove('sleeping'); for(let i=0;i<10;i++) setTimeout(()=>petal(B.x+BW/2+(Math.random()*60-30), B.y+10+Math.random()*30), i*140);
+  const st=STAGES[grow.stage]; let txt='';
+  if(kind==='stage') txt=`${esc(cfg.name)} a grandi : <b>${st.n}</b>, ${st.fr}. ${esc(st.line)}`;
+  else if(kind==='red') txt=`Une plume rouge de plus dans ma queue : un mois de plus ensemble.`;
+  else txt=`Un mois de plus ensemble. Je grandis à mon rythme : ${c.pres} jour${c.pres>1?'s':''} avec toi ce mois-ci.`;
+  if(grow.stage>=5){ const t=monthTop(); if(t) txt+=` Ce mois-ci, tu as surtout été <b>${esc(t.e.ty)}</b> (${t.n} fois). Quʼest-ce que tu en retiens ?`; }
+  sayHTML(txt, 14000); }
+function renderGrow(){ const el=$('#growCard'); if(!el) return; const st=STAGES[grow.stage], c=growCounters(); const g=(v,n)=>`<div class="gauge" style="height:6px"><div class="gaugeFill" style="width:${Math.min(100,Math.round(v/n*100))}%"></div></div>`;
+  const next=new Date(grow.next+'T12:00:00').toLocaleDateString('fr-FR',{day:'numeric',month:'long'});
+  el.innerHTML=`<div class="eyebrow">Sa croissance</div><h3>${st.n} · ${st.fr}</h3><p class="small">${esc(st.line)}</p>
+    ${grow.stage<6?`<div class="ggrid"><div class="gg"><b>Présence</b><span class="small muted">${c.pres} / ${c.need.pres} jours</span>${g(c.pres,c.need.pres)}</div><div class="gg"><b>Mots</b><span class="small muted">${c.voc} / ${c.need.voc} émotions</span>${g(c.voc,c.need.voc)}</div><div class="gg"><b>Liens</b><span class="small muted">${c.con} / ${c.need.con}</span>${g(c.con,c.need.con)}</div></div>
+    <p class="small muted">Deux jauges sur trois suffisent. Prochain stade possible le ${next}. Jamais plus dʼun stade par mois, jamais de retour en arrière, rien à acheter.</p>`:`<p class="small muted">Dernier stade. ${grow.red<3?'Une plume rouge de plus chaque mois, jusquʼà trois.':'Trois plumes rouges : le plumage est complet.'}</p>`}
+    <p class="small"><b>Plumage de mots</b> : ${cfg.words?cfg.words.length:0} émotion${(cfg.words||[]).length>1?'s':''} sur 14. Chaque émotion que tu nommes pour la première fois ajoute une plume colorée à son aile.</p>
+    ${grow.stage>=6?`<button class="btn sm" id="futureNote">Écrire un mot à mon futur moi</button>`:''}`;
+  const fb=$('#futureNote'); if(fb) fb.onclick=openFutureNote; }
+function openFutureNote(){ openSheet(`<div class="head"><div><div class="eyebrow">Tupuna manu</div><h2>Un mot pour toi, dans un mois</h2></div><button class="x" id="sx" aria-label="Fermer">×</button></div><p class="small">Écris quelque chose à la personne que tu seras dans un mois. ${esc(cfg.name)} le gardera, et te le rendra le moment venu. Il reste sur ton téléphone.</p><textarea id="fnTxt" rows="4" maxlength="300" placeholder="Nʼoublie pas que…"></textarea><button class="btn primary" id="fnOk">Confier à ${esc(cfg.name)}</button>`);
+  $('#sx').onclick=closeSheet; $('#fnOk').onclick=()=>{ const t=($('#fnTxt').value||'').trim(); if(!t){ toast('Écris dʼabord un mot'); return; } grow.notes=(grow.notes||[]).concat([{t, d:isoDay(new Date()), open:monthLater(isoDay(new Date()))}]).slice(-5); store.set('grow',grow); closeSheet(); say('Je le garde. Dans un mois, je te le rendrai.'); }; }
+function futureNoteTick(){ const today=isoDay(new Date()); const n=(grow.notes||[]).find(x=>!x.shown && x.open<=today); if(!n) return; if(!QUIET || !visitFree()){ setTimeout(futureNoteTick, 20000); return; }
+  n.shown=true; store.set('grow',grow); sayHTML(`Un mot de toi, écrit le ${new Date(n.d+'T12:00:00').toLocaleDateString('fr-FR',{day:'numeric',month:'long'})} :<br><i>« ${esc(n.t)} »</i>`, 20000); }
+setTimeout(()=>{ try{ const k=dayKey(Date.now()); if(growStage()<4 || !QUIET || !friends.length || store.get('careNag','')===k || !visitFree() || bubbleEl.classList.contains('show')) return; store.set('careNag',k); sayHTML('Qui aurait besoin dʼun signe aujourdʼhui ?<div class="mini"><button data-m="heart">Mon cœur</button><button data-m="later">Plus tard</button></div>', 14000); }catch(e){} }, 40000);
+syncGrowCfg(); growTick(); setTimeout(futureNoteTick, 12000); document.addEventListener('visibilitychange', ()=>{ if(!document.hidden){ growTick(); futureNoteTick(); } });
+
+/* ---------- faʻaʻapu partagé : un champ à deux, des plantes qui ne poussent que là, récolte partagée ---------- */
+const SPLANTS={ apetahi:{name:'tiare ʻāpetahi', un:'une tiare ʻāpetahi', days:5, worth:40, item:'heiapetahi', d:'La fleur en demi-couronne de Raʻiātea. Elle ne pousse quʼà deux : cinq jours où vous lʼarrosez tous les deux.'},
+  ahia:{name:'ʻāhiʻa', un:'des ʻāhiʻa', days:3, worth:25, item:null, d:'La pomme de montagne, rouge et juteuse. Trois jours à deux, et une graine pour chacun.'} };
+ITEMS.heiapetahi={name:'Hei ʻāpetahi', un:'un hei de tiare ʻāpetahi', worth:60, aura:'#F7A8C4', mood:'lʼamitié (hoa)', need:{}, days:0, hint:'Ne se fabrique pas : il pousse dans un faʻaʻapu partagé.', shared:true};
+let sgSeen=store.get('sgSeen',{}); if(typeof sgSeen!=='object'||!sgSeen) sgSeen={};
+const SG={}; let SGP=null;
+function pairKey(code){ return [myCode,code].sort().join('_'); }
+async function sgFetch(code){ if(!SYNC_URL) return null; try{ const r=await fetch(`${SYNC_URL}/gardens/${pairKey(code)}.json`); if(!r.ok) return null; const d=await r.json(); SG[code]=(d&&typeof d==='object')?d:{}; return SG[code]; }catch(e){ return null; } }
+function sgDays(d){ if(!d||!d.p||!d.care) return []; const a=d.care[myCode]||{}; const other=Object.keys(d.care).find(k=>k!==myCode); const b=other?(d.care[other]||{}):{}; return Object.keys(a).filter(k=>b[k]); }
+function sgClaim(code,d){ if(!d||!d.last||typeof d.last.t!=='number') return; const k=pairKey(code); if((sgSeen[k]||0)>=d.last.t) return; sgSeen[k]=d.last.t; store.set('sgSeen',sgSeen);
+  const sp=SPLANTS[d.last.p]; if(!sp) return; feathers+=sp.worth; store.set('feathers',feathers); renderFeathers(); let msg=`Récolte partagée : ${sp.un}, +${sp.worth} plumes pour toi et pour ton ami·e`;
+  if(sp.item){ garden.items[sp.item]=(garden.items[sp.item]||0)+1; learn(sp.item); msg+=' · '+ITEMS[sp.item].un+' au coffre'; } else { const s=addSeed(); msg+=' · 1 graine de '+PLANTS[s].name; }
+  saveGarden(); chestBadge(); toast(msg); }
+async function openSharedGarden(code){ const f=friends.find(x=>x.code===code); if(!f) return; const nm=f.name||fmtCode(code); SGP=code;
+  openSheet(`<div class="head"><div><div class="eyebrow">Faʻaʻapu partagé</div><h2>Avec ${esc(nm)}</h2></div><button class="x" id="sx" aria-label="Fermer">×</button></div><p class="small muted">Je vais voir le champ…</p>`); $('#sx').onclick=()=>{ SGP=null; closeSheet(); };
+  const d=await sgFetch(code); if(SGP!==code) return; if(d===null){ sheetInner.querySelector('p').textContent='Le champ partagé nʼest pas joignable pour lʼinstant. Réessaie plus tard.'; return; }
+  sgClaim(code,d); renderSharedGarden(code,d); }
+function renderSharedGarden(code,d){ const f=friends.find(x=>x.code===code); const nm=esc((f&&f.name)||fmtCode(code)); const today=dayKey(Date.now()); let body='';
+  if(!d.p){ body=`<p class="small">Ce champ nʼappartient à aucun de vous deux : ce qui y pousse est à partager. Les plantes dʼici ne poussent nulle part ailleurs, et seulement les jours où <b>vous lʼarrosez tous les deux</b>. À la récolte, chacun reçoit la même chose.</p><div class="stack">${Object.keys(SPLANTS).map(k=>`<button class="pans" data-sg="plant:${k}"><b>${SPLANTS[k].name} · ${SPLANTS[k].days} jours à deux</b><span class="small">${SPLANTS[k].d}</span></button>`).join('')}</div>`; }
+  else { const sp=SPLANTS[d.p]||{name:d.p,days:5,worth:0}; const days=sgDays(d); const f_=Math.min(1,days.length/sp.days); const st=f_>=1?3:f_>=.6?2:f_>=.2?1:0; const me=!!((d.care||{})[myCode]||{})[today]; const other=Object.keys(d.care||{}).find(k=>k!==myCode); const him=!!(other&&((d.care||{})[other]||{})[today]);
+    body=`<div style="display:flex;gap:12px;align-items:center"><div style="width:110px;flex:none">${plantSVG(d.p,st)}</div><div><b>${sp.name}</b><div class="small muted">Plantée par ${d.by===myCode?'toi':nm}</div><div class="small" style="margin-top:6px"><b>${days.length} / ${sp.days}</b> jour${days.length>1?'s':''} à deux</div></div></div>
+      <div class="card flat"><div class="eyebrow">Aujourdʼhui</div><div class="small">Toi : <b>${me?'arrosé ✓':'pas encore'}</b> · ${nm} : <b>${him?'arrosé ✓':'pas encore'}</b></div><p class="small muted">Un jour compte quand vous avez arrosé tous les deux. Si lʼun oublie, rien nʼest perdu : le jour ne compte pas, cʼest tout.</p>${st<3?(me?'<span class="small muted">Māuruuru. Reviens demain.</span>':'<button class="btn primary" data-sg="care">Arroser aujourdʼhui</button>'):''}</div>
+      ${st>=3?`<div class="card"><div class="eyebrow">Mûre !</div><p class="small">La récolte sera donnée à vous deux, à parts égales : <b>+${sp.worth} plumes</b> chacun${sp.item?' et '+ITEMS[sp.item].un+' chacun':' et une graine chacun'}.</p><button class="btn primary" data-sg="harvest">Récolter pour nous deux</button></div>`:''}`; }
+  openSheet(`<div class="head"><div><div class="eyebrow">Faʻaʻapu partagé</div><h2>Avec ${nm}</h2></div><button class="x" id="sx" aria-label="Fermer">×</button></div>${body}<button class="btn ghost" data-sg="back">Retour au faʻaʻapu</button>`);
+  $('#sx').onclick=()=>{ SGP=null; closeSheet(); };
+  sheetInner.querySelectorAll('[data-sg]').forEach(b=>{ b.onclick=()=>sgAction(code,b.dataset.sg,d); }); }
+async function sgAction(code,act,d){ const k=pairKey(code); const today=dayKey(Date.now()); const url=`${SYNC_URL}/gardens/${k}`; const hdr={headers:{'Content-Type':'application/json'}};
+  const fail=()=>toast('Envoi impossible, réessaie plus tard');
+  try{
+    if(act==='back'){ SGP=null; openGarden(); return; }
+    if(act.indexOf('plant:')===0){ const p=act.slice(6); if(!SPLANTS[p]) return; const body={p, t:Date.now(), by:myCode, care:{[myCode]:{[today]:true}}}; if(d&&d.last) body.last=d.last;
+      const r=await fetch(url+'.json',{method:'PUT',...hdr,body:JSON.stringify(body)}); if(!r.ok){ fail(); return; } toast('Plantée. Tu as arrosé pour aujourdʼhui.'); }
+    else if(act==='care'){ const r=await fetch(`${url}/care/${myCode}.json`,{method:'PATCH',...hdr,body:JSON.stringify({[today]:true})}); if(!r.ok){ fail(); return; } toast('Arrosé pour aujourdʼhui'); try{ award('garden'); }catch(e){} }
+    else if(act==='harvest'){ const sp=SPLANTS[d.p]; if(!sp || sgDays(d).length<sp.days){ toast('Pas encore mûre'); return; } const last={p:d.p, t:Date.now(), by:myCode};
+      const r=await fetch(url+'.json',{method:'PATCH',...hdr,body:JSON.stringify({p:'', t:0, by:myCode, care:null, last})}); if(!r.ok){ fail(); return; } sgClaim(code,{last}); flyAwayTo(code); }
+    const nd=await sgFetch(code); if(SGP===code && nd) renderSharedGarden(code,nd);
+  }catch(e){ fail(); } }
+async function pollGardens(){ if(!SYNC_URL || !friends.length) return; for(const f of friends){ const d=await sgFetch(f.code); if(!d) continue; sgClaim(f.code,d);
+    if(d.p && d.care){ const other=Object.keys(d.care).find(k=>k!==myCode); const today=dayKey(Date.now()); if(other && (d.care[other]||{})[today] && !((d.care[myCode]||{})[today]) && store.get('sgNag','')!==today+f.code && visitFree()){ store.set('sgNag',today+f.code); const nm=f.name||'ton ami·e'; sayHTML(`${esc(nm)} a arrosé votre faʻaʻapu partagé. À toi !<div class="mini"><button data-m="sg:${f.code}">Arroser</button><button data-m="later">Plus tard</button></div>`, 15000); } } } }
+setTimeout(pollGardens, 9000); setInterval(pollGardens, 5*60000);
+ACT.garden = ACT.garden || {t:'Prendre soin du faʻaʻapu', p:'fetii', d:'Arroser à deux, même un petit champ, cʼest déjà se relier.'};
 
 /* ---------- install button ---------- */
 const CAN_INSTALL = !!document.querySelector('link[rel="manifest"]');

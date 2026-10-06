@@ -4,6 +4,27 @@ Ton manu, tes émotions. Un compagnon-oiseau polynésien qui se promène sur l'�
 
 **Prototype** : ce n'est pas un soin médical. En cas d'idées noires, l'appli renvoie vers SOS Suicide Polynésie, le 3114 et le 15.
 
+## La croissance du manu
+
+Le manu mûrit avec la personne, au plus **un stade par mois**, et ne revient jamais en arrière. Six stades, du poussin à l'ancien (noms en reo tahiti à faire valider) :
+
+| Stade | Apparence | Comportement |
+|---|---|---|
+| 1 · Pīpī, le poussin | petit, tête ronde, grands yeux, queue courte | questions simples ; demande plus souvent |
+| 2 · Manu ʻāpī, le jeune manu | un peu plus grand, premières couleurs | se souvient d'hier (« Hier : riri. Et aujourd'hui ? ») |
+| 3 · Manu rere, le manu qui vole | ailes plus longues | revient de ses visites avec une petite histoire |
+| 4 · Manu paʻari, le manu posé | queue longue, petite huppe | demande moins souvent ; « Qui aurait besoin d'un signe aujourd'hui ? » |
+| 5 · Manu ʻura | une plume rouge de plus chaque mois (jusqu'à trois) | bilan du mois : l'émotion la plus nommée, une question de recul |
+| 6 · Tupuna manu, l'ancien | huppe à pointes dorées, plumage complet | propose d'écrire un mot à son futur soi, rendu un mois plus tard |
+
+**Ce qui fait grandir** (trois jauges, visibles dans « Mon manu ») : la *présence* (jours avec au moins une couleur, sur 31 jours), les *mots* (émotions différentes nommées au moins deux fois) et les *liens* (cœurs liés, ama, étoiles, semaines de Te tere suivies). Deux jauges sur trois suffisent ; les seuils montent doucement avec le stade. Pas de série à tenir, rien à acheter, rien à perdre.
+
+**Plumage de mots** : chaque émotion nommée pour la première fois ajoute une petite plume de sa couleur sur l'aile (14 au plus). Le manu porte le vocabulaire de la personne.
+
+**Le moment du mois** : à la date anniversaire (un mois après le début, puis chaque mois), le manu se réveille, des pétales tombent, il dit en une phrase ce qui a changé. Les amis voient l'apparence du manu (stade, plumes rouges) mais jamais de numéro de stade ni de jauge.
+
+Les utilisateurs existants reçoivent un stade calculé sur leurs mois d'historique. Données dans `manuora.grow` (incluses dans la sauvegarde).
+
 ## Première ouverture et menu
 
 - **Bienvenue en deux écrans** : on nomme le manu et on choisit sa couleur, puis deux choses à savoir (pas un soin médical, données sur le téléphone). En fermant, le manu propose tout de suite la ronde des couleurs.
@@ -104,7 +125,7 @@ Sur l'écran calme, le bouton « Choisir un lieu » (aussi dans le petit menu du
 
 | Lieu | Animation | Activité |
 |---|---|---|
-| **Te vai** · la montagne et la rivière | cascade, eau qui coule, feuille qui descend | *Poser un souci sur la rivière* : écrire ce qui pèse (rien n'est gardé), dire si cela dépend de soi ou non, recevoir un conseil adapté |
+| **Te vai** · la montagne et la rivière | cascade, eau qui coule, feuille qui descend, deux puhi (anguilles) qui nagent | *Poser un souci sur la rivière* : écrire ce qui pèse (rien n'est gardé), dire si cela dépend de soi ou non, recevoir un conseil adapté |
 | **Tahatai** · la plage | vagues, pirogue, cocotier | *Trois coquillages* : trois bonnes choses de la journée, gardées sur le téléphone et relisibles les jours difficiles |
 | **Te ʻoire** · la ville | truck et voiture qui passent, roulotte | *Dire non, sans se fâcher* : quatre situations de pression du groupe, trois réponses possibles, un retour sur chacune |
 | **Te fare haʻapiʻiraʻa** · l'école | ballon, arbre | *Un moment difficile à l'école* : le trac, une dispute (phrase en « je »), les moqueries (victime, témoin, auteur) |
@@ -112,6 +133,13 @@ Sur l'écran calme, le bouton « Choisir un lieu » (aussi dans le petit menu du
 Chaque activité terminée donne une plume (dans la limite de trois par jour). Les textes sur les moqueries et la pression du groupe sont à faire relire en priorité par un·e psychologue ; les noms de lieux en reo tahiti par un locuteur.
 
 **Jour ou nuit** : l'apparence claire ou sombre suit l'heure (clair de 6 h à 18 h), et non plus le thème sombre du téléphone. Dans « Choisir un lieu », trois boutons permettent de forcer : Automatique, Toujours le jour, Toujours la nuit.
+
+## Compost et faʻaʻapu partagé
+
+- **Compost** (recette : 1 coco + 1 meiʻa) : dans le faʻaʻapu, le bouton « Compost · −1 j » sur une plante qui pousse la fait mûrir un jour plus tôt.
+- **Faʻaʻapu partagé** : avec chaque cœur lié (lien accepté des deux côtés), un champ commun. Deux plantes n'existent que là : la **tiare ʻāpetahi** (5 jours à deux) et le **ʻāhiʻa** (3 jours à deux). Un jour ne compte que si **les deux** ont arrosé ce jour-là ; un oubli ne fait rien perdre. À la récolte, chacun reçoit exactement la même chose (plumes, et un hei ʻāpetahi ou une graine). Le manu prévient quand l'ami·e a arrosé.
+- **Règles Firebase à mettre à jour** : le champ partagé utilise un nouveau chemin `gardens/`. Recoller le contenu de `firebase-regles.json` dans la console Firebase (Realtime Database › Règles), sinon le champ partagé reste injoignable. Le reste de l'appli n'est pas touché.
+- À valider avec une personne ressource : la tiare ʻāpetahi est une fleur protégée et chargée de sens à Raʻiātea ; vérifier qu'il est acceptable d'en faire une plante de jeu et un hei.
 
 ## Te tere (le voyage)
 
