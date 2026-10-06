@@ -141,6 +141,30 @@ Chaque activité terminée donne une plume (dans la limite de trois par jour). L
 - **Règles Firebase à mettre à jour** : le champ partagé utilise un nouveau chemin `gardens/`. Recoller le contenu de `firebase-regles.json` dans la console Firebase (Realtime Database › Règles), sinon le champ partagé reste injoignable. Le reste de l'appli n'est pas touché.
 - À valider avec une personne ressource : la tiare ʻāpetahi est une fleur protégée et chargée de sens à Raʻiātea ; vérifier qu'il est acceptable d'en faire une plante de jeu et un hei.
 
+## Les airs de ukulele
+
+Le bouton Ukulele ouvre un choix de cinq airs. Ce sont des airs **originaux**, écrits pour Manu Ora dans l'esprit des musiques du fenua ; aucune chanson existante n'est reprise. Ils se débloquent en prenant soin de soi, jamais avec des plumes.
+
+| Air | Caractère | Se débloque avec |
+|---|---|---|
+| Pehe mātāmua | le premier air | dès le début |
+| ʻAparima | lent et doux | 3 journées complètes |
+| Tāʻiri pāʻumotu | frappe très rapide, son clair du ukulele tahitien | 6 émotions différentes nommées |
+| Pehe tōʻere | tambour de bois (tōʻere) et pahu, le ukulele répond | 3e stade du manu |
+| Hīmene pō | berceuse à trois temps | 5 étoiles apprises dans Te raʻi |
+
+Les sons sont fabriqués dans le navigateur (aucun fichier audio). Noms et styles à faire valider par un musicien du fenua.
+
+## L'heure du coucher
+
+À partir de 22 h (réglable : 21 h, 22 h, 23 h ou jamais, dans Menu › Heure du coucher) et jusqu'à 5 h :
+
+- le manu bâille et invite **une seule fois par nuit** : « Il est tard… Moi je vais dormir. Et toi ? » avec deux réponses, **Bonne nuit** ou **J'ai besoin de parler** ;
+- « Bonne nuit » ouvre un court rituel (pourquoi dormir aide, trois souffles, poser le téléphone loin de l'oreiller, la berceuse Hīmene pō si elle est débloquée), puis le manu s'endort ;
+- « J'ai besoin de parler » : le manu reste et ouvre la ronde des couleurs. Aucun reproche ;
+- la nuit, le manu ne propose plus ni défi, ni nouveauté, ni rappel de sauvegarde, et ne vient plus demander de lui-même comment ça va ;
+- **rien n'est jamais verrouillé** : toucher le manu endormi le réveille, avec un menu de nuit (respirer, dire comment je me sens, trop de stress, bonne nuit, aide). C'est voulu : la nuit est aussi le moment où la détresse est la plus forte.
+
 ## Te tere (le voyage)
 
 Le fil conducteur de l'appli : une lune, quatre étapes d'environ une semaine, calées sur la phase de la lune.
@@ -184,6 +208,8 @@ Une carte du ciel simplifiée avec onze repères nommés en reo tahiti : Matari�
 Sources des noms : All Skies Encyclopaedia (page « Tahiti ») et une présentation de J.-C. Teriierooiterai (UCLA, 2015). Les noms varient selon les îles et les auteurs (Sirius : Taʻurua-faupapa ou Taʻurua-nui-i-te-amo-ʻaha ; Scorpion : hameçon de Māui ou de Tafaʻi). À faire valider localement, de même que : Sirius comme ʻaveiʻa de Tahiti, les noms de nuits de lune cités (Tireo, Hotu, Māraʻi, Mutu) et la légende de Pīpiri mā.
 
 ## Lier son cœur à un ami (optionnel)
+
+**Depuis la version 47 : un seul code suffit.** Dès que l'un entre le code de l'autre, les deux cœurs sont liés ; il n'y a plus de demande à accepter. La personne dont le code a été utilisé est prévenue par son manu (« X a lié son cœur au tien avec ton code ») avec un bouton **Je ne veux pas · bloquer**. « Couper et bloquer » retire le lien et empêche cette personne de se relier ; la liste des personnes bloquées permet de débloquer. **Changer son code garde les cœurs déjà liés** (ils reçoivent le nouveau code automatiquement) et retire l'accès à tous les autres. Le numéro de version s'affiche en bas du menu. *(Les paragraphes ci-dessous décrivent l'ancien fonctionnement avec demande.)*
 
 Le partage des couleurs demande un tout petit serveur. Version gratuite avec Firebase :
 
@@ -246,6 +272,36 @@ Tout tient dans `index.html` (pas de serveur, pas de compte). Les données reste
 - Versions pa'umotu, marquisienne, australe.
 - Petites histoires à choix ('a'amu) pour apprendre à reconnaître les émotions chez les autres.
 - Mode école / groupe de jeunes, en lien avec le label « École en santé ».
+
+## Le partage du tupuna manu (version 52)
+
+Au dernier stade (Tupuna manu), le manu peut partager avec un cœur lié ce que son utilisateur a appris lui-même. On le trouve dans « Mon cœur » → un·e ami·e → « Un signe ».
+
+- **Porter un mot** : une émotion déjà nommée par l'utilisateur. Seul le mot voyage, jamais ce qui a été écrit.
+- **Partager un calme** : le nom d'un exercice qui l'aide (respirer, trop de stress, la feuille sur la rivière, les trois coquillages). L'ami·e peut l'essayer ou non.
+- **Se poser ensemble** : les deux manu restent un moment côte à côte. Aucun effet sur la croissance.
+
+Principes : un seul partage par semaine ; aucun compteur, aucun classement, aucun titre ; l'ami·e n'a rien à répondre (un bouton « Dire māuruuru » existe, sans obligation) ; le manu qui partage ne voit rien de l'état de l'autre. Les textes rappellent que les deux manu sont **égaux** et n'ont simplement pas le même âge. Aucune nouvelle donnée ni règle Firebase : cela passe par les visites existantes (`g` = `parau`, `hau` ou `maru`).
+
+À faire valider par un locuteur : les mots *parau*, *hau*, *marumaru*, *tupuna* dans cet usage.
+
+## Limites du cercle (version 51)
+
+- **10 cœurs liés au plus** par personne. Au-delà, il faut couper un lien pour en ajouter un ; quelqu'un qui tente de se lier à un cercle complet est prévenu.
+- **2 personnes de confiance** au plus par personne (déjà en place).
+- **Personne ne peut être la personne de confiance de plus de 3 ami·e·s** : à la quatrième étoile, le refus est automatique et le manu de l'expéditeur dit « X porte déjà beaucoup. Choisis quelqu'un d'autre, et pense aussi à un adulte. »
+- À la première personne de confiance choisie, le manu rappelle une fois qu'il est bon d'avoir aussi un adulte parmi elles.
+
+Ces nombres sont un choix de conception, à ajuster avec un·e psychologue (constantes `MAX_LINKS` et `MAX_TRUSTED_BY` dans `index.html`).
+
+## Protections intégrées (versions 49 et 50)
+
+Aucun code ne peut empêcher quelqu'un de modifier une copie : ces protections défendent l'appli officielle et ses utilisateurs.
+
+- **Adresse officielle** : hors de `brian-1844.github.io/manu-ora`, l'appli affiche un bandeau rouge « Copie non officielle » avec le lien vers la vraie adresse, et ne se connecte pas à la base des cœurs. (Si le site change d'adresse un jour, modifier la constante `OFFICIAL` dans `index.html`.)
+- **Filtre des prénoms** : le prénom est le seul texte libre vu par les autres. Les mots sexuels, violents, racistes, sexistes ou homophobes (environ 140 termes en français, en anglais et quelques-uns en reo tahiti), les liens et les numéros de téléphone sont refusés, à l'envoi comme à la réception. La liste tahitienne est très courte : à compléter avec un locuteur (constantes `BAD_ANY` et `BAD_WORD` dans `index.html`).
+- **Interrupteur d'urgence** : dans la console Firebase, créer la clé `status` à la racine de la base. `{"msg":"…"}` affiche un message une fois à chacun ; `{"min":50}` invite à recharger si la version est plus ancienne ; `{"stop":true,"msg":"…"}` met l'appli officielle en pause (l'écran d'aide reste accessible). Supprimer `status` pour reprendre. Seule la console peut écrire cette clé : **recoller `firebase-regles.json`** pour l'activer.
+- **À faire soi-même** : activer la validation en deux étapes sur GitHub et sur le compte Google de Firebase. C'est la protection la plus importante.
 
 ## Avant un partage public
 

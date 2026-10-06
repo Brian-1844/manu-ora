@@ -109,6 +109,10 @@
           ".validate": false
         }
       }
+    },
+    "status": {
+      ".read": true,
+      ".write": false
     }
   }
 }
