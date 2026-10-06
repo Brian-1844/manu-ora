@@ -283,6 +283,16 @@ Dans « Mon cœur », le bouton « Couper et bloquer » devient **« Poser une l
 
 Un rappel et un accès à l'aide si l'ami·e menace, fait peur ou force. Aucune règle Firebase à changer. Textes à faire relire par un·e psychologue.
 
+## Manu meli : les abeilles et le miel (version 75)
+
+- **Les abeilles viennent** quand deux fleurs différentes (tiare, ʻaute, tīpaniē, vānira) poussent en même temps dans le faʻaʻapu. Avant cela, la carte affiche « ???? » avec un indice.
+- **La ruche** a trois rayons. Chaque jour où les deux fleurs sont là et où l'on ouvre le faʻaʻapu, un rayon se remplit. Sans fleurs, les abeilles repartent mais la ruche garde ce qu'elle a : rien ne se perd.
+- **Le miel** : ruche pleine = un pot au coffre, puis elle recommence. C'est un ingrédient.
+- **Recettes** : *Lait de coco au miel* (1 coco + 1 miel, aura 2 jours) et une recette secrète avec la vānira (aura 4 jours, 160 plumes).
+- Message porté : la patience, et le travail fait à plusieurs (« aucune abeille ne l'a fait seule »).
+
+Mot à faire valider : *manu meli* (abeille).
+
 ## « Quelqu'un m'a fait du mal » (version 73)
 
 Un parcours pour les victimes de violence. Accès : Menu → Grandir avec les autres ; l'écran d'aide ; et « La pierre » quand la réponse est « ça continue » ou « c'est grave ».

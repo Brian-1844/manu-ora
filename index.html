@@ -406,6 +406,10 @@ body.quiet .app{display:none}
 @keyframes loveBob{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-4px) scale(1.08)}}
 @media (prefers-reduced-motion:reduce){.lovemark{animation:none}}
 .chips{display:flex;flex-wrap:wrap;gap:8px}.chips button{border:1.5px solid var(--line,#cfd8d6);background:transparent;color:inherit;border-radius:999px;padding:10px 14px;min-height:44px;font:inherit;font-weight:700;cursor:pointer}.chips button.on{background:var(--btn);color:var(--btn-ink,#fff);border-color:var(--btn)}
+.bees{position:relative;height:34px;margin:2px 0 6px}.bee{position:absolute;top:8px;width:22px;height:16px;animation:beeFly 5s ease-in-out infinite}.bee svg{width:100%;height:100%;overflow:visible}.bee .bw,.pepe .bw{transform-origin:11px 6px;animation:pepeFlap .12s linear infinite alternate}
+@keyframes beeFly{0%{transform:translate(0,0)}25%{transform:translate(46px,-7px)}50%{transform:translate(96px,5px)}75%{transform:translate(48px,9px)}100%{transform:translate(0,0)}}
+@media (prefers-reduced-motion:reduce){.bee,.bee .bw{animation:none}}
+.rayons{display:flex;gap:6px;margin:6px 0}.rayons span{width:26px;height:24px;clip-path:polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%);background:var(--line,#d7e6e6)}.rayons span.on{background:#F2B632}
 .pepes{position:absolute;inset:0;pointer-events:none;overflow:visible}
 .pepe{position:absolute;left:50%;top:30%;width:22px;height:18px;margin:-9px 0 0 -11px;animation:pepeFly var(--d,7s) ease-in-out infinite;animation-delay:var(--dl,0s)}
 .pepe svg{width:100%;height:100%;overflow:visible;filter:drop-shadow(0 1px 2px rgba(0,0,0,.25))}
@@ -1200,7 +1204,7 @@ function openCrisis(){
 
 /* ---------- quiet mode, colour ring, heart, friends ---------- */
 /* ---------- protections : adresse officielle, filtre des prénoms partagés, interrupteur dʼurgence ---------- */
-const APP_V=74;
+const APP_V=76;
 const BAD_ANY=['putain', 'salope', 'salaud', 'connard', 'connasse', 'encule', 'niquer', 'nique ta', 'couille', 'porno', 'pedoph', 'pedale', 'gouine', 'tarlouze', 'tantouze', 'travelo', 'bougnoul', 'negro', 'youpin', 'bicot', 'bamboula', 'chinetoque', 'sale noir', 'sale arabe', 'sale juif', 'sale blanc', 'sale pd', 'batard', 'pouffiasse', 'petasse', 'trainee', 'branleur', 'branlette', 'sodom', 'violeur', 'viole toi', 'tue toi', 'va mourir', 'creve', 'suicide', 'pendez', 'egorg', 'nazi', 'hitler', 'sieg heil', 'kkk', 'fuck', 'motherf', 'bitch', 'pussy', 'whore', 'nigg', 'faggot', 'rapist', 'blowjob', 'handjob', 'cumshot', 'dildo', 'jerk off', 'wanker', 'bastard', 'asshole', 'arsehole', 'dickhead', 'cocksuck', 'tranny', 'shemale', 'chink', 'wetback', 'towelhead', 'sand nig', 'white power', 'kill you', 'kill yourself', 'go die', 'kys', 'titoi', 'ohure'];
 const BAD_WORD=['pute', 'ntm', 'fdp', 'tg', 'bite', 'chatte', 'sexe', 'sex', 'sexy', 'porn', 'viol', 'viols', 'pd', 'pede', 'tapette', 'negre', 'merde', 'suce', 'cul', 'con', 'conne', 'cons', 'nazi', 'zob', 'teub', 'nichon', 'nichons', 'seins', 'penis', 'vagin', 'anus', 'gode', 'shit', 'dick', 'cock', 'cunt', 'slut', 'slag', 'fag', 'fags', 'rape', 'kill', 'hoe', 'thot', 'twat', 'cum', 'tits', 'boobs', 'anal', 'nude', 'nudes', 'dyke', 'homo', 'paki', 'spic', 'kike', 'coon', 'gook', 'ure', 'raho', 'retard', 'retarded'];
 function cleanName(s){ s=String(s||'').replace(/[<>]/g,'').replace(/\s+/g,' ').trim().slice(0,20); if(!s) return '';
@@ -1530,7 +1534,7 @@ function giveFruit(i,code){ const pl=garden.plots[i]; if(!pl||!SYNC_URL) return;
     .catch(()=>toast('Pas de connexion, réessaie plus tard')); }
 function openGarden(){
   const keepY=(!$('#sheet').hidden && $('#plots')) ? sheetInner.scrollTop : 0;
-  try{ vanTick(); }catch(e){} try{ pepeFlowers(); }catch(e){} const seedsLine=Object.keys(PLANTS).map(k=>(k==='vanira'&&!vanOpen())?`<span class="feather" style="opacity:.7">???? · plante secrète</span>`:`<span class="feather">${PLANTS[k].name} ×${garden.seeds[k]||0}</span>`).join('');
+  try{ vanTick(); }catch(e){} try{ pepeFlowers(); }catch(e){} try{ hiveTick(); }catch(e){} const seedsLine=Object.keys(PLANTS).map(k=>(k==='vanira'&&!vanOpen())?`<span class="feather" style="opacity:.7">???? · plante secrète</span>`:`<span class="feather">${PLANTS[k].name} ×${garden.seeds[k]||0}</span>`).join('');
   const mut=friends.filter(f=>isMutual(f.code));
   const plots=garden.plots.map((pl,i)=>{ if(pl && !PLANTS[pl.p]) pl=null; const st=pl?plotStage(pl):0; let body;
     if(!pl){ if(GSEL&&GSEL.i===i){ const av=Object.keys(PLANTS).filter(k=>(garden.seeds[k]||0)>0); body = av.length ? av.map(k=>`<button class="btn sm" data-seed="${k}">${PLANTS[k].name} · ${PLANTS[k].days} j${(RAAU[k]||FIB[k])?' · '+(RAAU[k]||FIB[k]).short:''}</button>`).join('') : '<span class="small muted">Plus de graines. Une journée complète en donne une.</span>'; } else body=`<button class="btn sm ghost" data-plant="${i}">Planter</button>`; }
@@ -1544,6 +1548,7 @@ function openGarden(){
     <div class="plots" id="plots">${plots}</div>
     ${vanCard()}
     ${raauCard()}
+    ${hiveCard()}
     ${fibCard()}
     ${poeCard()}
     ${pepeCard()}
@@ -1552,7 +1557,7 @@ function openGarden(){
     <p class="small muted">Offrir un fruit donne ses plumes et une graine à ton ami·e, et te rend une graine. Tu gagnes aussi une graine à chaque journée complète, et une graine de haʻari tous les 7 jours.</p>`);
   sheetInner.scrollTop=keepY;
   $('#sx').onclick=()=>{ GSEL=null; MSEL=false; closeSheet(); };
-  $('#toChest').onclick=()=>{ GSEL=null; openChest(); };
+  $('#toChest').onclick=()=>{ GSEL=null; openChest(); }; { const hb=$('#hiveGet'); if(hb) hb.onclick=hiveHarvest; }
   sheetInner.querySelectorAll('[data-sgopen]').forEach(b=>{ b.onclick=()=>openSharedGarden(b.dataset.sgopen); });
   $('#plots').addEventListener('click', e=>{ const t=e.target.closest('button'); if(!t) return; const d=t.dataset;
     if(d.plant!==undefined){ GSEL={i:+d.plant}; openGarden(); }
@@ -1640,7 +1645,7 @@ if(garden.monoi){ garden.mac={id:'monoi',t:garden.monoi.t}; garden.monoi=null; }
 if(garden.mac===undefined) garden.mac=null;
 store.set('garden',garden);
 let MIX={}, CSEL=null;
-const ingName = k => k==='haari' ? 'coco' : k==='poe' ? 'perle' : (k==='vanira' && !vanOpen()) ? '????' : PLANTS[k].name;
+const ingName = k => k==='haari' ? 'coco' : k==='poe' ? 'perle' : k==='meli' ? 'miel' : (k==='vanira' && !vanOpen()) ? '????' : PLANTS[k].name;
 const needTxt = n => ING.filter(k=>n[k]).map(k=>n[k]+' '+ingName(k)).join(' + ');
 function matchRecipe(){ return Object.keys(ITEMS).find(id=>ING.every(k=>(MIX[k]||0)===(ITEMS[id].need[k]||0))); }
 function macState(){ const m=garden.mac; if(!m||!ITEMS[m.id]) return 0; return (Date.now()-m.t)>=ITEMS[m.id].days*864e5 ? 2 : 1; }
@@ -2480,7 +2485,7 @@ function raauCard(){ return `<div class="card flat"><div class="eyebrow">Raʻau 
 function raauUse(i){ const pl=garden.plots[i]; if(!pl || !RAAU[pl.p] || plotStage(pl)!==3) return; const R=RAAU[pl.p]; gotAdd(pl.p); garden.plots[i]=null; GSEL=null; saveGarden();
   store.set('shine',{until:Date.now()+R.days*864e5, color:R.aura}); applyShine(); closeSheet(); say(R.line); toast(R.days>1?'Aura pendant '+R.days+' jours':'Aura jusquʼà demain');
   if(R.calm) setTimeout(()=>{ if(visitFree()) openBreath(null); },3200); }
-function raauFx(id){ try{ fibFx(id); }catch(e){} try{ if(ITEMS[id] && Object.keys(ITEMS[id].need||{}).length>=3) pepeCall('anu'); }catch(e){} if(id==='nonojus'){ let n=0; garden.plots.forEach(pl=>{ if(pl && PLANTS[pl.p] && plotStage(pl)<3 && pl.p!=='nono'){ pl.t-=864e5; n++; } }); saveGarden(); setTimeout(()=>{ say('Pouah, cʼest amer ! Mais ça remet debout.'+(n?' Tout le faʻaʻapu en profite : un jour de gagné.':'')); },900); }
+function raauFx(id){ try{ fibFx(id); }catch(e){} try{ hiveFx(id); }catch(e){} try{ if(ITEMS[id] && Object.keys(ITEMS[id].need||{}).length>=3) pepeCall('anu'); }catch(e){} if(id==='nonojus'){ let n=0; garden.plots.forEach(pl=>{ if(pl && PLANTS[pl.p] && plotStage(pl)<3 && pl.p!=='nono'){ pl.t-=864e5; n++; } }); saveGarden(); setTimeout(()=>{ say('Pouah, cʼest amer ! Mais ça remet debout.'+(n?' Tout le faʻaʻapu en profite : un jour de gagné.':'')); },900); }
   else if(id==='tamanuhuile'){ store.set('shine',{until:Date.now()+3*864e5, color:ITEMS[id].aura}); applyShine(); setTimeout(()=>{ say('De lʼhuile de tāmanu sur mes plumes : je me sens protégé pour trois jours. Cʼest pour la peau, jamais pour la bouche.'); },900); } }
 
 /* ---------- pepe : les papillons qui suivent le manu ---------- */
@@ -2492,9 +2497,9 @@ const PEPE={ hau:{n:'Pepe bleu', c:'#4FB6E8', c2:'#BFE9FF', how:'Il vient quand 
 function pepeSVG(k){ const P=PEPE[k]; return `<svg viewBox="0 0 22 18" aria-hidden="true"><g class="pw"><path d="M11 9 C7 0 0 0 1 6 C1.5 9 6 10 11 9Z" fill="${P.c}"/><path d="M11 9 C15 0 22 0 21 6 C20.5 9 16 10 11 9Z" fill="${P.c}"/><path d="M11 9 C6 10 2 13 5 16 C8 18 10 13 11 9Z" fill="${P.c2}"/><path d="M11 9 C16 10 20 13 17 16 C14 18 12 13 11 9Z" fill="${P.c2}"/><circle cx="5" cy="5" r="1.3" fill="${P.c2}"/><circle cx="17" cy="5" r="1.3" fill="${P.c2}"/></g><path d="M11 4.5 V14" stroke="#3A2A1C" stroke-width="1.6" stroke-linecap="round"/><path d="M11 4.5 l-2 -3 M11 4.5 l2 -3" stroke="#3A2A1C" stroke-width=".7" fill="none" stroke-linecap="round"/></svg>`; }
 function pepeNow(){ const m=store.get('pepe',{}), t=Date.now(); return Object.keys(PEPE).filter(k=>m && m[k]>t); }
 function pepeRender(){ let box=birdEl.querySelector('.pepes'); if(!box){ box=document.createElement('div'); box.className='pepes'; birdEl.appendChild(box); }
-  const act=pepeNow(); const key=act.join(','); if(box.dataset.k===key) return; box.dataset.k=key;
+  const act=pepeNow(); let bee=false; try{ bee=!!(garden.hive && garden.hive.seen && hiveFlowers().length>=2); }catch(e){} const key=act.join(',')+(bee?'+bee':''); if(box.dataset.k===key) return; box.dataset.k=key;
   box.innerHTML=act.map((k,i)=>{ const a=i*1.9, r=(x,y)=>`${Math.round(x)}px,${Math.round(y)}px`; const pts=[[-46+i*8,-30-i*6],[30-i*5,-52+i*4],[52-i*6,-8-i*8],[-18+i*10,-58+i*5]];
-    return `<div class="pepe" style="--d:${6+i*1.3}s;--dl:${-i*1.7}s;--x1:${pts[0][0]}px;--y1:${pts[0][1]}px;--x2:${pts[1][0]}px;--y2:${pts[1][1]}px;--x3:${pts[2][0]}px;--y3:${pts[2][1]}px;--x4:${pts[3][0]}px;--y4:${pts[3][1]}px">${pepeSVG(k)}</div>`; }).join(''); }
+    return `<div class="pepe" style="--d:${6+i*1.3}s;--dl:${-i*1.7}s;--x1:${pts[0][0]}px;--y1:${pts[0][1]}px;--x2:${pts[1][0]}px;--y2:${pts[1][1]}px;--x3:${pts[2][0]}px;--y3:${pts[2][1]}px;--x4:${pts[3][0]}px;--y4:${pts[3][1]}px">${pepeSVG(k)}</div>`; }).join('') + (bee?`<div class="pepe" style="width:18px;height:13px;--d:4.6s;--dl:-1.2s;--x1:38px;--y1:-22px;--x2:-30px;--y2:-40px;--x3:-50px;--y3:-6px;--x4:10px;--y4:-50px">${beeSVG()}</div>`:''); }
 function pepeCall(k){ if(!PEPE[k]) return false; const m=store.get('pepe',{}), t=Date.now(); if(m[k]>t) return false; m[k]=t+864e5; store.set('pepe',m);
   const seen=store.get('pepeSeen',[]); const first=!seen.includes(k); if(first){ seen.push(k); store.set('pepeSeen',seen); }
   if(k==='hau'){ garden.plots.forEach(pl=>{ if(pl && PLANTS[pl.p] && plotStage(pl)<3) pl.t-=432e5; }); saveGarden(); }
@@ -2765,6 +2770,30 @@ function hurtStep(){ const quick=`<button class="btn sm ghost" data-hu="quit" st
   sheetInner.querySelectorAll('[data-who]').forEach(b=>{ b.onclick=()=>{ HU.who=b.dataset.who; hurtStep(); }; });
   sheetInner.querySelectorAll('[data-hu]').forEach(b=>{ b.onclick=()=>{ const k=b.dataset.hu; HU={};
     if(k==='quit'){ closeSheet(); } else if(k==='aide'){ closeSheet(); openCrisis(); } else if(k==='coeur'){ openHeart(); } else if(k==='souffle'){ closeSheet(); openBreath(null); } else { HU={w:''}; hurtStep(); } }; }); }
+
+/* ---------- manu meli : les abeilles et le miel ---------- */
+if(!ING.includes('meli')) ING.splice(ING.length-1,0,'meli'); if(typeof garden.store.meli!=='number') garden.store.meli=0;
+if(!garden.hive || typeof garden.hive!=='object') garden.hive={n:0, day:'', seen:false}; store.set('garden',garden);
+Object.assign(ITEMS,{
+  laitmeli:{name:'Lait de coco au miel', un:'un lait de coco au miel', worth:75, aura:'#F2C94C', mood:'la douceur', need:{haari:1,meli:1}, days:0, hint:'Le coco, adouci par ce que donnent les abeilles.'},
+  melivanira:{name:'Miel à la vānira', un:'un pot de miel à la vānira', worth:160, aura:'#E0A93A', mood:'la patience récompensée', need:{meli:1,vanira:1}, days:0, hint:'Les deux choses les plus longues à obtenir, ensemble.', secret:true}});
+const HIVE_FL=['tiare','aute','tipanie','vanira'];
+function hiveFlowers(){ const s=[]; garden.plots.forEach(pl=>{ if(pl && HIVE_FL.includes(pl.p) && !s.includes(pl.p)) s.push(pl.p); }); return s; }
+function hiveTick(){ const H=garden.hive, fl=hiveFlowers(), k=dayKey(Date.now()); if(fl.length<2) return; let ch=false;
+  if(!H.seen){ H.seen=true; ch=true; setTimeout(()=>toast('Des manu meli, les abeilles, sont venues : regarde la ruche dans ton faʻaʻapu'),700); }
+  if(H.day!==k && H.n<3){ H.day=k; H.n++; ch=true; if(H.n===3) setTimeout(()=>toast('La ruche est pleine : tu peux récolter le miel'),1600); }
+  if(ch) saveGarden(); try{ pepeRender(); }catch(e){} }
+function beeSVG(){ return '<svg viewBox="0 0 22 16" aria-hidden="true"><g class="bw"><ellipse cx="9" cy="4" rx="5" ry="3.2" fill="#fff" opacity=".85" stroke="#B9C7CC" stroke-width=".5"/><ellipse cx="14" cy="4" rx="4.4" ry="2.8" fill="#fff" opacity=".7" stroke="#B9C7CC" stroke-width=".5"/></g><ellipse cx="11" cy="10" rx="7" ry="4.6" fill="#F2B632"/><path d="M8 5.9 v8.2 M11.5 5.5 v9 M15 6.2 v7.6" stroke="#3A2A1C" stroke-width="1.7"/><circle cx="4.6" cy="10" r="2.6" fill="#3A2A1C"/><circle cx="3.8" cy="9.3" r=".6" fill="#fff"/><path d="M18 10 l3 0" stroke="#3A2A1C" stroke-width="1" stroke-linecap="round"/></svg>'; }
+function hiveCard(){ const H=garden.hive, fl=hiveFlowers(), here=fl.length>=2;
+  if(!H.seen) return `<div class="card flat"><div class="eyebrow">???? · des visiteuses</div><p class="small muted">On dit que de petites ouvrières viennent quand <b>deux fleurs différentes</b> poussent en même temps dans le faʻaʻapu.</p></div>`;
+  return `<div class="card flat"><div class="eyebrow">Manu meli · la ruche</div>${here?`<div class="bees"><span class="bee" style="left:6%">${beeSVG()}</span><span class="bee" style="left:38%;animation-delay:-1.7s;animation-duration:6.2s">${beeSVG()}</span><span class="bee" style="left:62%;animation-delay:-3.1s;animation-duration:4.4s">${beeSVG()}</span></div>`:''}
+    <p class="small muted">${here?'Les abeilles butinent tes fleurs, et lʼune dʼelles suit '+esc(cfg.name)+'. Chaque jour où deux fleurs différentes poussent ici, elles remplissent un rayon.':'Les abeilles sont reparties : il leur faut deux fleurs différentes en même temps. La ruche garde ce quʼelle a.'}</p>
+    <div class="rayons" aria-label="${H.n} rayon${H.n>1?'s':''} sur 3">${[0,1,2].map(i=>`<span class="${i<H.n?'on':''}"></span>`).join('')}</div>
+    ${H.n>=3?`<button class="btn primary" id="hiveGet">Récolter le miel</button><p class="small muted">Tu prends un pot, et tu laisses le reste aux abeilles pour quʼelles recommencent.</p>`:`<p class="small muted">${H.n} rayon${H.n>1?'s':''} sur 3. Le miel ne se presse pas : une ruche, cʼest beaucoup de petits voyages mis ensemble.</p>`}
+    <p class="small muted">Tu as ${garden.store.meli||0} pot${(garden.store.meli||0)>1?'s':''} de miel au coffre. Les abeilles ne savent pas marier la vānira : celle-là, cʼest à la main.</p></div>`; }
+function hiveHarvest(){ const H=garden.hive; if(H.n<3) return; H.n=0; H.day=dayKey(Date.now()); garden.store.meli=(garden.store.meli||0)+1; saveGarden(); openGarden(); toast('Un pot de miel au coffre'); if(visitFree()) say('Du miel ! Des milliers de petits voyages, et aucune abeille ne lʼa fait seule.'); }
+function hiveFx(id){ if(id==='laitmeli'){ store.set('shine',{until:Date.now()+2*864e5, color:ITEMS[id].aura}); applyShine(); setTimeout(()=>{ say('Du lait de coco au miel… Cʼest doux. Je rayonne deux jours.'); },900); }
+  else if(id==='melivanira'){ store.set('shine',{until:Date.now()+4*864e5, color:ITEMS[id].aura}); applyShine(); try{ duoBurst(); }catch(e){} setTimeout(()=>{ say('Miel et vānira : tout ce qui demande du temps, dans un seul pot. Je rayonne quatre jours.'); },900); } }
 
 /* ---------- install button ---------- */
 const CAN_INSTALL = !!document.querySelector('link[rel="manifest"]');
