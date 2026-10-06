@@ -889,28 +889,32 @@ const TUNES=[
   {id:'toere', n:'Pehe tōʻere', s:'le tambour de bois appelle, le ukulele répond', how:'quand ton manu sait voler (3e stade)', ok:()=>growStage()>=3, beat:.16, steps:8, bright:true, pat:[[2,0],[3,1],[6,0],[7,1]], drum:{hi:[0,3,6],lo:[2,5,7],pahu:[0,4]},
    bars:[['C',[]],['C',[]],['C',[[0,'E5'],[3,'G5'],[6,'E5']]],['G7',[[0,'D5'],[3,'F5'],[6,'D5']]],['C',[[0,'G5'],[3,'C6'],[6,'G5']]],['G7',[[0,'B5'],[3,'G5'],[6,'F5']]],['C',[[0,'E5'],[3,'G5'],[6,'C6']]],['C',[[0,'C5']]]]},
   {id:'himenepo', n:'Hīmene pō', s:'une berceuse à trois temps, pour le soir', how:'5 étoiles apprises dans Te raʻi', ok:()=>skyKnown.length>=5, beat:.3, steps:6, soft:true, pat:[[0,0],[2,1],[4,1]],
-   bars:[['C',[[0,'E5'],[2,'G5'],[4,'E5']]],['Am',[[0,'C5'],[4,'E5']]],['F',[[0,'F5'],[2,'A5'],[4,'F5']]],['G7',[[0,'D5'],[4,'B4']]],['C',[[0,'G5'],[2,'E5'],[4,'C5']]],['Am',[[0,'A4'],[4,'C5']]],['F',[[0,'F5'],[2,'E5'],[4,'D5']]],['C',[[0,'C5']]]]}];
+   bars:[['C',[[0,'E5'],[2,'G5'],[4,'E5']]],['Am',[[0,'C5'],[4,'E5']]],['F',[[0,'F5'],[2,'A5'],[4,'F5']]],['G7',[[0,'D5'],[4,'B4']]],['C',[[0,'G5'],[2,'E5'],[4,'C5']]],['Am',[[0,'A4'],[4,'C5']]],['F',[[0,'F5'],[2,'E5'],[4,'D5']]],['C',[[0,'C5']]]]},
+  {id:'himpiti', duo:true, n:'Hīmene piti', s:'deux voix qui se tiennent, lʼune au-dessus de lʼautre', how:'à jouer à deux avec un cœur lié : chacun envoie lʼair à lʼautre', ok:()=>duoOk('himpiti'), beat:.3, steps:8, soft:true, pat:[[0,0],[2,0],[4,0],[5,1],[6,0]],
+   bars:[['C',[[0,'E5'],[2,'G5'],[4,'E5'],[6,'D5']],[[0,'C5'],[2,'E5'],[4,'C5'],[6,'B4']]],['F',[[0,'F5'],[2,'A5'],[4,'F5']],[[0,'A4'],[2,'C5'],[4,'A4']]],['G7',[[0,'D5'],[2,'F5'],[4,'G5'],[6,'F5']],[[0,'B4'],[2,'D5'],[4,'B4'],[6,'D5']]],['C',[[0,'E5'],[4,'G5']],[[0,'C5'],[4,'E5']]],['Am',[[0,'C5'],[2,'E5'],[4,'A5'],[6,'G5']],[[0,'A4'],[2,'C5'],[4,'E5'],[6,'E5']]],['F',[[0,'A5'],[2,'G5'],[4,'F5']],[[0,'F5'],[2,'E5'],[4,'C5']]],['G7',[[0,'D5'],[2,'F5'],[4,'D5'],[6,'B4']],[[0,'B4'],[2,'D5'],[4,'B4'],[6,'G4']]],['C',[[0,'C5']],[[0,'E5']]]]},
+  {id:'toepiti', duo:true, n:'Pehe tōʻere piti', s:'lʼun appelle, lʼautre répond, puis les deux ensemble', how:'à jouer à deux avec un cœur lié : chacun envoie lʼair à lʼautre', ok:()=>duoOk('toepiti'), beat:.16, steps:8, bright:true, pat:[[2,0],[3,1],[6,0],[7,1]], drum:{hi:[0,3,6],lo:[2,5,7],pahu:[0,4]},
+   bars:[['C',[[0,'E5'],[3,'G5'],[6,'E5']],[]],['C',[],[[0,'E5'],[3,'G5'],[6,'C6']]],['G7',[[0,'D5'],[3,'F5'],[6,'D5']],[]],['G7',[],[[0,'D5'],[3,'F5'],[6,'B5']]],['F',[[0,'A5'],[3,'F5'],[6,'A5']],[]],['C',[],[[0,'G5'],[3,'E5'],[6,'G5']]],['G7',[[0,'B5'],[3,'G5'],[6,'F5']],[[0,'D5'],[3,'B4'],[6,'D5']]],['C',[[0,'C6'],[3,'G5'],[6,'E5']],[[0,'E5'],[3,'C5'],[6,'C5']]],['C',[[0,'C5']],[[0,'G5']]]]}];
 function drumHit(t,kind){ if(kind==='pahu'){ const o=AC.createOscillator(), g=AC.createGain(); o.type='sine'; o.frequency.setValueAtTime(130,t); o.frequency.exponentialRampToValueAtTime(55,t+.16); g.gain.setValueAtTime(.0001,t); g.gain.linearRampToValueAtTime(.3,t+.005); g.gain.exponentialRampToValueAtTime(.0001,t+.28); o.connect(g); g.connect(AC.destination); o.start(t); o.stop(t+.3); return; }
   const o=AC.createOscillator(), g=AC.createGain(), f=AC.createBiquadFilter(); o.type='square'; o.frequency.value=kind==='hi'?1040:760; f.type='bandpass'; f.frequency.value=kind==='hi'?1500:1050; f.Q.value=7; g.gain.setValueAtTime(.0001,t); g.gain.linearRampToValueAtTime(.2,t+.002); g.gain.exponentialRampToValueAtTime(.0001,t+.07); o.connect(f); f.connect(g); g.connect(AC.destination); o.start(t); o.stop(t+.09); }
-function playUke(id){
+function playUke(id,opt){ opt=opt||{};
   if(UKE.on) return;
-  const T=TUNES.find(x=>x.id===(id||store.get('ukeTune','matamua'))) || TUNES[0]; const tune=T.ok()?T:TUNES[0];
+  const T=TUNES.find(x=>x.id===(id||store.get('ukeTune','matamua'))) || TUNES[0]; const tune=(T.ok()||opt.force)?T:TUNES[0];
   try{ AC = AC || new (window.AudioContext||window.webkitAudioContext)(); if(AC.state==='suspended') AC.resume(); }catch(e){ toast('Le son ne marche pas sur cet appareil.'); return; }
   UKE.on=true; clearTimeout(PET.endT); setState('play'); say(tune.id==='matamua'?'Écoute ça…':tune.n+'…');
   const beat=tune.beat, t0=AC.currentTime+.15, sv=tune.soft?.7:1;
   const strum=(notes,t,up,v)=>{ (up?[...notes].reverse():notes).forEach((f,i)=>{ pluck(f,t+i*(tune.bright?.011:.018),v,tune.bright?.5:.9); if(tune.bright) pluck(f*2,t+i*.011,v*.35,.3); }); };
   tune.bars.forEach(([c,mel],b)=>{ const t=t0+b*tune.steps*beat;
     tune.pat.forEach(([k,up])=>strum(CHD[c],t+k*beat,up,(up?.06:.09)*sv*((tune.acc&&tune.acc.includes(k))?1.5:1)));
-    mel.forEach(([k,n])=>pluck(NT[n],t+k*beat,.13,tune.soft?1.1:.7));
+    (opt.voice===2?[]:mel).forEach(([k,n])=>pluck(NT[n],t+k*beat,.13,tune.soft?1.1:.7)); const m2=tune.bars[b][2]; if(m2 && opt.voice!==1) m2.forEach(([k,n])=>{ pluck(NT[n]/2,t+k*beat+.012,.1,tune.soft?1.2:.8); pluck(NT[n],t+k*beat+.012,.035,.5); });
     if(tune.drum){ tune.drum.hi.forEach(k=>drumHit(t+k*beat,'hi')); tune.drum.lo.forEach(k=>drumHit(t+k*beat,'lo')); tune.drum.pahu.forEach(k=>drumHit(t+k*beat,'pahu')); } });
   const total=tune.bars.length*tune.steps*beat, tEnd=t0+total; strum(CHD.C,tEnd,0,.09); pluck(NT.C5,tEnd,.14,1.6); pluck(NT.E5,tEnd+.12,.1,1.6);
-  UKE.iv=setInterval(noteFx,380);
-  setTimeout(()=>{ clearInterval(UKE.iv); UKE.on=false; if(B.state==='play') settle(2); say('ʻOaʻoa ! Tu as souri ?');
+  const two=tune.duo && !opt.voice; UKE.iv=setInterval(()=>{ noteFx(); if(two){ setTimeout(noteFx,190); if(!RM) petal(B.x+BW/2+(Math.random()*90-45), B.y+10); } }, 380);
+  setTimeout(()=>{ clearInterval(UKE.iv); UKE.on=false; if(B.state==='play') settle(2); if(opt.after){ opt.after(); return; } say(two?'À deux, cʼest plus beau.':'ʻOaʻoa ! Tu as souri ?');
     if(Date.now()-UKE.lastAward>600000){ UKE.lastAward=Date.now(); award('uke'); } }, (total+1.6)*1000);
 }
 function openUke(){ const cur=store.get('ukeTune','matamua');
   openSheet(`<div class="head"><div><div class="eyebrow">Ukulele</div><h2>Quel air ?</h2></div><button class="x" id="sx" aria-label="Fermer">×</button></div>
-    <div class="stack" id="ukeList">${TUNES.map(t=>{ const ok=t.ok(); return `<button class="pans ${ok&&cur===t.id?'good':''}" data-uke="${t.id}" ${ok?'':'aria-disabled="true" style="opacity:.6"'}><b>${ok?'♪':'🔒'} ${t.n}</b><span class="small">${t.s}</span>${ok?'':`<span class="small muted">À débloquer : ${t.how}</span>`}</button>`; }).join('')}</div>
+    <div class="stack" id="ukeList">${TUNES.map(t=>{ const ok=t.ok(); return `<button class="pans ${ok&&cur===t.id?'good':''}" data-uke="${t.id}" ${ok?'':'aria-disabled="true" style="opacity:.6"'}><b>${ok?(t.duo?'♪♪':'♪'):'🔒'} ${t.n}</b><span class="small">${t.s}</span>${ok?'':`<span class="small muted">À débloquer : ${t.how}</span>`}</button>`; }).join('')}</div>
     <p class="small muted">Les airs se débloquent en prenant soin de toi, pas avec des plumes. Ce sont des airs écrits pour Manu Ora, dans lʼesprit des musiques du fenua.</p>`);
   $('#sx').onclick=closeSheet;
   $('#ukeList').addEventListener('click', e=>{ const b=e.target.closest('[data-uke]'); if(!b) return; const t=TUNES.find(x=>x.id===b.dataset.uke); if(!t.ok()){ toast('Pas encore : '+t.how); return; } store.set('ukeTune',t.id); closeSheet(); playUke(t.id); }); }
@@ -1176,7 +1180,7 @@ function openCrisis(){
 
 /* ---------- quiet mode, colour ring, heart, friends ---------- */
 /* ---------- protections : adresse officielle, filtre des prénoms partagés, interrupteur dʼurgence ---------- */
-const APP_V=52;
+const APP_V=53;
 const BAD_ANY=['putain', 'salope', 'salaud', 'connard', 'connasse', 'encule', 'niquer', 'nique ta', 'couille', 'porno', 'pedoph', 'pedale', 'gouine', 'tarlouze', 'tantouze', 'travelo', 'bougnoul', 'negro', 'youpin', 'bicot', 'bamboula', 'chinetoque', 'sale noir', 'sale arabe', 'sale juif', 'sale blanc', 'sale pd', 'batard', 'pouffiasse', 'petasse', 'trainee', 'branleur', 'branlette', 'sodom', 'violeur', 'viole toi', 'tue toi', 'va mourir', 'creve', 'suicide', 'pendez', 'egorg', 'nazi', 'hitler', 'sieg heil', 'kkk', 'fuck', 'motherf', 'bitch', 'pussy', 'whore', 'nigg', 'faggot', 'rapist', 'blowjob', 'handjob', 'cumshot', 'dildo', 'jerk off', 'wanker', 'bastard', 'asshole', 'arsehole', 'dickhead', 'cocksuck', 'tranny', 'shemale', 'chink', 'wetback', 'towelhead', 'sand nig', 'white power', 'kill you', 'kill yourself', 'go die', 'kys', 'titoi', 'ohure'];
 const BAD_WORD=['pute', 'ntm', 'fdp', 'tg', 'bite', 'chatte', 'sexe', 'sex', 'sexy', 'porn', 'viol', 'viols', 'pd', 'pede', 'tapette', 'negre', 'merde', 'suce', 'cul', 'con', 'conne', 'cons', 'nazi', 'zob', 'teub', 'nichon', 'nichons', 'seins', 'penis', 'vagin', 'anus', 'gode', 'shit', 'dick', 'cock', 'cunt', 'slut', 'slag', 'fag', 'fags', 'rape', 'kill', 'hoe', 'thot', 'twat', 'cum', 'tits', 'boobs', 'anal', 'nude', 'nudes', 'dyke', 'homo', 'paki', 'spic', 'kike', 'coon', 'gook', 'ure', 'raho', 'retard', 'retarded'];
 function cleanName(s){ s=String(s||'').replace(/[<>]/g,'').replace(/\s+/g,' ').trim().slice(0,20); if(!s) return '';
@@ -1209,7 +1213,7 @@ function setQuiet(on){ QUIET=on; store.set('quiet',on); document.body.classList.
 function sayHTML(html, ms){ bubbleEl.innerHTML=html; bubbleEl.classList.add('show'); placeBubble(); clearTimeout(say.t); say.t=setTimeout(()=>bubbleEl.classList.remove('show'), ms||6000); }
 function miniMenu(){ if(lateNow()){ sayHTML(`Tu nʼarrives pas à dormir ? Je suis là.<div class="mini"><button data-m="breathe">Respirer</button><button data-m="check">Dire comment je me sens</button><button data-m="stress">Trop de stress</button><button data-m="bed:sleep">Bonne nuit</button><button data-m="help">Aide</button></div>`, 15000); return; } sayHTML(`${esc(randomLine())}<div class="mini"><button data-m="stress">Trop de stress</button><button data-m="check">Faire le point</button><button data-m="place">Lieux</button><button data-m="tere">Te tere</button><button data-m="breathe">Respirer</button><button data-m="uke">Ukulele</button><button data-m="heart">Mon cœur</button><button data-m="garden">Faʻaʻapu</button><button data-m="chest">Coffre</button><button data-m="sky">Te raʻi</button>${has('x:dance')?'<button data-m="dance">Danser</button>':''}${has('x:flip')?'<button data-m="flip">Salto</button>':''}${QUIET?'<button data-m="app">Tout Manu Ora</button>':'<button data-m="quiet">Mode veille</button>'}</div>`, 9000); }
 bubbleEl.addEventListener('click', e=>{ const b=e.target.closest('[data-m]'); if(!b) return; e.stopPropagation(); bubbleEl.classList.remove('show'); const m=b.dataset.m;
-  if(m.indexOf('door:')===0){ openDoor(m.slice(5)); return; } if(m==='later') return; if(m.indexOf('blk:')===0){ const i=friends.findIndex(f=>f.code===m.slice(4)); if(i>=0) cutLink(i); return; } if(m.indexOf('thx:')===0){ const f=friends.find(x=>x.code===m.slice(4)); if(f) sendGesture(f.code,'salut',f.name||fmtCode(f.code)); return; } if(m.indexOf('try:')===0){ tupTry(m.slice(4)); return; } if(m==='bed:sleep'){ bedSleep(); return; } if(m==='bed:talk'){ bedTalk(); return; } if(m==='help'){ openCrisis(); return; } if(m.indexOf('sg:')===0){ openSharedGarden(m.slice(3)); return; }
+  if(m.indexOf('door:')===0){ openDoor(m.slice(5)); return; } if(m==='later') return; if(m.indexOf('blk:')===0){ const i=friends.findIndex(f=>f.code===m.slice(4)); if(i>=0) cutLink(i); return; } if(m.indexOf('thx:')===0){ const f=friends.find(x=>x.code===m.slice(4)); if(f) sendGesture(f.code,'salut',f.name||fmtCode(f.code)); return; } if(m.indexOf('duo:')===0){ duoBtn(m.split(':')); return; } if(m.indexOf('try:')===0){ tupTry(m.slice(4)); return; } if(m==='bed:sleep'){ bedSleep(); return; } if(m==='bed:talk'){ bedTalk(); return; } if(m==='help'){ openCrisis(); return; } if(m.indexOf('sg:')===0){ openSharedGarden(m.slice(3)); return; }
   if(m==='stress') openStress(true); else if(m==='place') openPlace(); else if(m==='tere') openTere(); else if(m==='garden') openGarden(); else if(m==='chest') openChest(); else if(m==='sky') openSky(); else if(m==='dance'||m==='flip') playAnim(m); else if(m==='breathe') openBreath(null); else if(m==='check') openCheckin(); else if(m==='uke') openUke(); else if(m==='heart') openHeart(); else if(m==='app') setQuiet(false); else if(m==='quiet') setQuiet(true); else if(m==='pet') say('Glisse ton doigt sur mes plumes, tout doucement.'); });
 
 /* colour ring */
@@ -1334,8 +1338,8 @@ function isMutual(code){ const d=FR[code]; return !!(d && d!=='err' && Array.isA
 function sendGesture(code,g,name){ if(!SYNC_URL) return; fetch(`${SYNC_URL}/visits/${code}/${myCode}.json`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({g, t:Date.now(), name:share.name||''})})
   .then(r=>{ toast(r.ok?'Signe envoyé':'Envoi impossible, réessaie plus tard'); if(r.ok){ say('Je file voir '+(name||'ton ami·e')+' !'); setTimeout(()=>flyAway(name),900); } }).catch(()=>toast('Pas de connexion, réessaie plus tard')); }
 function openGesture(i){ const f=friends[i]; if(!f) return; const nm=f.name||fmtCode(f.code);
-  openSheet(`<div class="head"><div><div class="eyebrow">Rencontre des manu</div><h2>Un signe pour ${esc(nm)}</h2></div><button class="x" id="sx" aria-label="Fermer">×</button></div><p class="small muted">Ton manu ira le porter. ${esc(nm)} le verra à sa prochaine ouverture de Manu Ora.</p><div class="row" id="gests">${Object.keys(GEST).filter(k=>GEST[k].l).map(k=>`<button class="btn" data-g="${k}">${GEST[k].l}</button>`).join('')}</div>${tupCard(nm)}<button class="btn ghost" id="gBack">Retour à mon cœur</button>`);
-  $('#sx').onclick=closeSheet; $('#gBack').onclick=openHeart; tupWire(f,nm);
+  openSheet(`<div class="head"><div><div class="eyebrow">Rencontre des manu</div><h2>Un signe pour ${esc(nm)}</h2></div><button class="x" id="sx" aria-label="Fermer">×</button></div><p class="small muted">Ton manu ira le porter. ${esc(nm)} le verra à sa prochaine ouverture de Manu Ora.</p><div class="row" id="gests">${Object.keys(GEST).filter(k=>GEST[k].l).map(k=>`<button class="btn" data-g="${k}">${GEST[k].l}</button>`).join('')}</div>${duoCard(f,nm)}${tupCard(nm)}<button class="btn ghost" id="gBack">Retour à mon cœur</button>`);
+  $('#sx').onclick=closeSheet; $('#gBack').onclick=openHeart; tupWire(f,nm); duoWire(f,nm);
   $('#gests').addEventListener('click', e=>{ const b=e.target.closest('[data-g]'); if(!b) return; closeSheet(); sendGesture(f.code,b.dataset.g,nm); }); }
 async function pollVisits(){ if(!SYNC_URL) return;
   try{ const r=await fetch(`${SYNC_URL}/visits/${myCode}.json`); if(!r.ok) return; const d=await r.json(); if(!d || typeof d!=='object') return;
@@ -1348,7 +1352,8 @@ async function pollVisits(){ if(!SYNC_URL) return;
     if(fresh){ renderFriends(); fetchFriends().then(renderFriends); const show=()=>{ if(!visitFree()){ setTimeout(show,8000); return; } sayHTML(`<b>${esc(fresh.name||fmtCode(fresh.code))}</b> a lié son cœur au tien avec ton code.<div class="mini"><button data-m="heart">Voir</button><button data-m="blk:${fresh.code}">Je ne veux pas · bloquer</button></div>`, 30000); }; show(); }
     friends.forEach(f=>{ const v=d[f.code]; if(!v || typeof v.t!=='number' || v.t<=(seenV[f.code]||0)) return;
       if(v.g==='etoile' && !stars[f.code] && Object.keys(stars).length>=MAX_TRUSTED_BY){ seenV[f.code]=v.t; store.set('seenV',seenV); fetch(`${SYNC_URL}/visits/${f.code}/${myCode}.json`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({g:'etoileNon', p:'plein', t:Date.now(), name:share.name||''})}).catch(()=>{}); return; }
-      if(v.g==='etoile0'){ delete stars[f.code]; store.set('stars',stars); renderStars(); seenV[f.code]=v.t; store.set('seenV',seenV); }
+      if(v.g==='umeteNon'){ umDrop(f.code); seenV[f.code]=v.t; store.set('seenV',seenV); }
+      else if(v.g==='etoile0'){ delete stars[f.code]; store.set('stars',stars); renderStars(); seenV[f.code]=v.t; store.set('seenV',seenV); }
       else if(v.g==='etoileNon'){ if(f.ama){ f.ama=false; store.set('friends',friends); renderFriends(); if(visitFree()) say(v.p==='plein' ? (f.name||'Ton ami·e')+' porte déjà beaucoup : dʼautres comptent sur lui ou sur elle. Choisis quelquʼun dʼautre, et pense aussi à un adulte.' : (f.name||'Ton ami·e')+' ne peut pas être ta personne de confiance en ce moment. Choisis quelquʼun dʼautre, et pense aussi à un adulte.'); } seenV[f.code]=v.t; store.set('seenV',seenV); } });
     friends.forEach(f=>{ const v=d[f.code]; if(v && typeof v.t==='number' && typeof v.g==='string' && Object.prototype.hasOwnProperty.call(GEST,v.g) && v.t>(seenV[f.code]||0) && !VIS.queue.some(q=>q.from===f.code&&q.t===v.t))
       VIS.queue.push({from:f.code, g:v.g, p:(typeof v.p==='string'?v.p:''), t:v.t, name:f.name||cleanName(v.name)||'ton ami·e'}); });
@@ -1366,7 +1371,7 @@ function playVisit(v, look, done){ clearTimeout(PET.endT); B.onArrive=null; B.af
   requestAnimationFrame(()=>requestAnimationFrame(()=>{ el.style.transition='transform 1.5s ease-in-out'; el.style.transform=`translate(${tx}px,${ty}px)`; }));
   const who=esc(v.name), old=Date.now()-v.t>3*60000, when=new Date(v.t).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}); let iv=null;
   setTimeout(()=>{ el.classList.remove('flying'); const d=FR[v.from]; const ents=(d&&d!=='err'&&d.day===dayKey(Date.now())&&Array.isArray(d.entries))?d.entries:[];
-    sayHTML(`<span style="display:flex;gap:8px;align-items:center">${heartSVG(ents,'vh',30)}<span>Le manu de <b>${who}</b> ${(v.g==='don'&&starGift(v.p))?`tʼoffre lʼétoile ${starGift(v.p).o.ty} : « ${starGift(v.p).msg} »`:(v.g==='don'&&ITEMS[v.p])?`tʼoffre ${ITEMS[v.p].un}. Ton manu rayonne !`:(v.g==='don'&&PLANTS[v.p])?`tʼoffre ${PLANTS[v.p].un} de son faʻaʻapu.`:(tupLine(v)||GEST[v.g].t)}${old?`<span class="cta">Il est passé à ${when}.</span>`:''}</span></span>`, 6000);
+    sayHTML(`<span style="display:flex;gap:8px;align-items:center">${heartSVG(ents,'vh',30)}<span>Le manu de <b>${who}</b> ${(v.g==='don'&&starGift(v.p))?`tʼoffre lʼétoile ${starGift(v.p).o.ty} : « ${starGift(v.p).msg} »`:(v.g==='don'&&ITEMS[v.p])?`tʼoffre ${ITEMS[v.p].un}. Ton manu rayonne !`:(v.g==='don'&&PLANTS[v.p])?`tʼoffre ${PLANTS[v.p].un} de son faʻaʻapu.`:(tupLine(v)||duoLine(v)||GEST[v.g].t)}${old?`<span class="cta">Il est passé à ${when}.</span>`:''}</span></span>`, 6000);
     const mx=(B.x+tx)/2+BW/2, my=B.y+20;
     if(v.g==='salut'){ el.classList.add('pecking'); birdEl.classList.add('pecking'); setTimeout(()=>{ el.classList.remove('pecking'); birdEl.classList.remove('pecking'); },1100); }
     else if(v.g==='calin'){ el.style.transition='transform .5s ease'; el.style.transform=`translate(${tx+(left?-22:22)}px,${ty}px)`; for(let i=0;i<7;i++) setTimeout(()=>petal(mx,my),i*220); }
@@ -1374,6 +1379,9 @@ function playVisit(v, look, done){ clearTimeout(PET.endT); B.onArrive=null; B.af
     else if(v.g==='aide'){ setTimeout(()=>openAid(v),1800); }
     else if(v.g==='etoile'){ for(let i=0;i<6;i++) setTimeout(()=>{ const s=document.createElement('div'); s.className='petal'; s.innerHTML=`<svg viewBox="0 0 20 20"><polygon points="${starPts(10,10,8)}" fill="#F2C94C"/></svg>`; s.style.transform=`translate(${mx-9+(Math.random()*50-25)}px,${my-20}px)`; $('#birdlayer').appendChild(s); setTimeout(()=>s.remove(),1500); },i*200); stars[v.from]=v.name; store.set('stars',stars); setTimeout(renderStars,1400); }
     else if(v.g==='don'){ for(let i=0;i<8;i++) setTimeout(()=>petal(mx+(Math.random()*50-25),my-10),i*180); const P=PLANTS[v.p]; if(P){ feathers+=P.worth; store.set('feathers',feathers); addSeed(v.p); renderFeathers(); setTimeout(()=>toast(`+${P.worth} plumes et 1 graine de ${P.name}`),1500); } else if(ITEMS[v.p]){ setShine(ITEMS[v.p].aura); setTimeout(()=>toast('Aura jusquʼà demain : '+ITEMS[v.p].mood),1500); } else if(starGift(v.p)){ const sid=starGift(v.p).o.id; if(!skyGifts.includes(sid)){ skyGifts.push(sid); store.set('skyGifts',skyGifts); } setShine('#DCE8FF'); renderNight(); } }
+    else if(v.g==='duo'){ duoGotAdd(v.from,v.p); el.classList.add('playing'); iv=setInterval(()=>{ noteFx(); if(!RM) petal(mx+(Math.random()*80-40),my-10); },380); setTimeout(()=>duoAfter(v),9200); }
+    else if(v.g==='umete'){ umArrive(v); for(let i=0;i<5;i++) setTimeout(()=>petal(mx+(Math.random()*50-25),my-10),i*260); setTimeout(()=>umAfter(v),9200); }
+    else if(v.g==='umeteOk'){ umDone(v); for(let i=0;i<10;i++) setTimeout(()=>petal(mx+(Math.random()*70-35),my-10),i*180); }
     else if(TUP_G.includes(v.g)){ for(let i=0;i<6;i++) setTimeout(()=>petal(mx+(Math.random()*50-25),my-10),i*260); if(v.g!=='maru') setTimeout(()=>tupAfter(v),9200); }
     else { el.classList.add('playing'); iv=setInterval(noteFx,380); }
   },1600);
@@ -1619,18 +1627,19 @@ function openChest(){
     <div class="card flat"><div class="eyebrow">Mes récoltes</div><div style="display:flex;flex-wrap:wrap;gap:6px">${stock}</div></div>
     <div class="card"><div style="display:flex;gap:10px;align-items:center"><div style="width:60px;flex:none">${calabashSVG(st||(ING.some(k=>MIX[k])?1:0))}</div><div><div class="eyebrow">Atelier</div><h3>La calebasse</h3></div></div>
       <p class="small muted">Choisis les quantités, puis mélange. Le dosage compte : un autre mélange donne autre chose.</p>${mixRows}${have.length?'<button class="btn primary" data-ch="mix">Mélanger</button>':''}${mac}</div>
+    ${umCard(mut)}
     <div class="card"><div class="eyebrow">Mes créations</div><p class="small muted">Utilisée ou offerte, chaque création donne au manu une aura de couleur pendant un jour.</p><div class="stack">${made}</div></div>
     <div class="card flat"><div class="eyebrow">Carnet de recettes</div>${book}</div>
     <button class="btn ghost" data-ch="garden">Aller au faʻaʻapu</button></div>`);
   sheetInner.scrollTop=keepY;
-  $('#sx').onclick=()=>{ CSEL=null; closeSheet(); };
+  $('#sx').onclick=()=>{ CSEL=null; closeSheet(); }; umWire();
   $('#chestBox').addEventListener('click', e=>{ const t=e.target.closest('button'); if(!t) return; const d=t.dataset;
     if(d.inc){ if((MIX[d.inc]||0)<(garden.store[d.inc]||0)){ MIX[d.inc]=(MIX[d.inc]||0)+1; openChest(); } }
     else if(d.dec){ if((MIX[d.dec]||0)>0){ MIX[d.dec]--; openChest(); } }
     else if(d.ch==='mix') mixNow();
     else if(d.ch==='bottle'){ if(macState()===2){ const id=garden.mac.id; const first=!garden.known.includes(id); garden.mac=null; garden.items[id]=(garden.items[id]||0)+1; learn(id); saveGarden(); chestBadge(); openChest(); toast((first&&ITEMS[id].secret?'Recette secrète découverte : ':'En flacon : ')+ITEMS[id].name+' !'); } }
     else if(d.ch==='garden'){ CSEL=null; openGarden(); }
-    else if(d.use){ const id=d.use, it=ITEMS[id]; if(it.soil){ CSEL=null; openGarden(); toast('Touche « Compost » sur une plante qui pousse'); return; } if(garden.items[id]>0){ garden.items[id]--; saveGarden(); chestBadge(); setShine(it.aura); if(it.care) openSelfCare(); else { closeSheet(); say(`${it.name} ! Je rayonne : ${it.mood}.`); } } }
+    else if(d.use){ const id=d.use, it=ITEMS[id]; if(it.soil){ CSEL=null; openGarden(); toast('Touche « Compost » sur une plante qui pousse'); return; } if(garden.items[id]>0){ garden.items[id]--; saveGarden(); chestBadge(); setShine(it.aura); if(it.care) openSelfCare(); else { closeSheet(); say(`${it.name} ! Je rayonne : ${it.mood}.`); if(it.duo) duoBurst(); } } }
     else if(d.igive){ CSEL=d.igive; openChest(); }
     else if(d.isell){ const id=d.isell; if(garden.items[id]>0){ garden.items[id]--; feathers+=ITEMS[id].worth; store.set('feathers',feathers); saveGarden(); chestBadge(); renderFeathers(); openChest(); toast('+'+ITEMS[id].worth+' plumes'); } }
     else if(d.ito && CSEL){ giveItem(CSEL,d.ito); } });
@@ -2322,6 +2331,67 @@ function tupAfter(v){ if(!visitFree() || bubbleEl.classList.contains('show')){ s
   else if(v.g==='hau' && Object.prototype.hasOwnProperty.call(TUP_HAU,v.p)){ const h=TUP_HAU[v.p];
     sayHTML(`<b>${esc(h.n)}</b> : ${esc(h.d)}. Cʼest ce qui aide ${who}. À toi de voir si ça te parle, maintenant ou un autre jour.${eq}<div class="mini"><button data-m="try:${v.p}">Essayer</button>${thx}</div>`, 30000); } }
 function tupTry(k){ bubbleEl.classList.remove('show'); if(k==='souffle') openBreath(null); else if(k==='stress') openStress(true); else if(k==='feuille'||k==='pupu'){ const p=(k==='feuille')?'vai':'tai'; if(cfg.night==='on'){ cfg.night='auto'; store.set('cfg',cfg); renderNight(); } setPlace(p); PL={i:0}; placeAct(); } }
+
+/* ---------- à deux : ukulele et calebasse partagés ---------- */
+GEST.duo={l:'', t:'vient jouer du ukulele avec le tien.'}; GEST.umete={l:'', t:'tʼapporte une calebasse à finir à deux.'}; GEST.umeteOk={l:'', t:'te dit māuruuru.'};
+const DUO_T=['himpiti','toepiti'];
+function duoMap(k){ const m=store.get(k,{}); return (m && typeof m==='object') ? m : {}; }
+function duoOk(id){ const s=duoMap('duoSent'), g=duoMap('duoGot'); return Object.keys(g).some(c=>(g[c]||[]).includes(id) && (s[c]||[]).includes(id)); }
+function duoMark(k,code,id){ if(!DUO_T.includes(id)) return; const m=duoMap(k); m[code]=m[code]||[]; if(!m[code].includes(id)) m[code].push(id); store.set(k,m); }
+function duoGotAdd(code,id){ duoMark('duoGot',code,id); }
+function duoBurst(){ if(RM) return; for(let i=0;i<14;i++) setTimeout(()=>petal(B.x+BW/2+(Math.random()*120-60), B.y+(Math.random()*30-10)), i*140); }
+function duoCard(f,nm){ const s=duoMap('duoSent')[f.code]||[], g=duoMap('duoGot')[f.code]||[];
+  return `<div class="card flat"><div class="eyebrow">À deux · ukulele</div><p class="small">Ces airs ont deux voix. Ton manu joue la sienne chez ${esc(nm)}, et quand ${esc(nm)} te répond avec le même air, vous le gardez tous les deux, en entier.</p><div class="row" id="duoRow">${DUO_T.map(id=>{ const t=TUNES.find(x=>x.id===id); const st=duoOk(id)?'à vous deux':(s.includes(id)&&!g.includes(id))?'envoyé, en attente':(g.includes(id)&&!s.includes(id))?'reçu : à toi de répondre':''; return `<button class="btn" data-duo="${id}">${t.n}${st?`<br><span class="small" style="font-weight:400">${st}</span>`:''}</button>`; }).join('')}</div></div>`; }
+function duoWire(f,nm){ const r=$('#duoRow'); if(!r) return; r.addEventListener('click', e=>{ const b=e.target.closest('[data-duo]'); if(!b) return; closeSheet(); duoSend(f.code,b.dataset.duo,nm); }); }
+function duoSend(code,id,name){ if(!SYNC_URL || !DUO_T.includes(id)) return; const had=duoOk(id);
+  fetch(`${SYNC_URL}/visits/${code}/${myCode}.json`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({g:'duo', p:id, t:Date.now(), name:share.name||''})})
+  .then(r=>{ if(!r.ok){ toast('Envoi impossible, réessaie plus tard'); return; } duoMark('duoSent',code,id); const now=duoOk(id); const T=TUNES.find(x=>x.id===id);
+    if(now && !had){ const seen=store.get('ukeSeen',['matamua']); if(!seen.includes(id)){ seen.push(id); store.set('ukeSeen',seen); } toast('Air à deux gagné, pour vous deux : '+T.n); }
+    else toast('Ta voix est partie');
+    const go=()=>{ say(now&&!had ? 'On lʼa joué tous les deux : cet air est à nous, maintenant. Je vais le dire à '+(name||'ton ami·e')+' !' : 'Je vais jouer ma voix chez '+(name||'ton ami·e')+'.'); setTimeout(()=>flyAway(name),1200); };
+    if(visitFree()) playUke(id,{force:true, voice:(now?0:1), after:go}); else go(); }).catch(()=>toast('Pas de connexion, réessaie plus tard')); }
+function duoLine(v){ if(v.g==='duo'){ const t=TUNES.find(x=>x.id===v.p && x.duo); return t ? `vient jouer sa voix de <b>${esc(t.n)}</b> avec le tien.` : null; }
+  if(v.g==='umete'){ const q=umParse(v.p); return q ? `a commencé <b>${esc(ITEMS[q.id].name)}</b> dans la calebasse à deux. Il manque ta part.` : null; }
+  if(v.g==='umeteOk'){ const o=umMap('umOut')[v.from]; return (ITEMS[v.p] && ITEMS[v.p].duo) ? ((o&&o.id===v.p) ? `a ajouté sa part : <b>${esc(ITEMS[v.p].name)}</b> est prêt, un pour chacun !` : `a fini ${esc(ITEMS[v.p].un)}.`) : null; }
+  return null; }
+function duoAfter(v){ const t=TUNES.find(x=>x.id===v.p && x.duo); if(!t) return; if(!visitFree() || bubbleEl.classList.contains('show')){ setTimeout(()=>duoAfter(v),5000); return; }
+  const mine=(duoMap('duoSent')[v.from]||[]).includes(t.id);
+  if(mine){ const seen=store.get('ukeSeen',['matamua']); if(!seen.includes(t.id)){ seen.push(t.id); store.set('ukeSeen',seen); }
+    sayHTML(`${esc(v.name)} a répondu : <b>${esc(t.n)}</b> est à vous deux maintenant. Tu le retrouves dans le ukulele, avec les deux voix.<div class="mini"><button data-m="duo:play:${t.id}:0">Écouter à deux voix</button></div>`, 30000); }
+  else sayHTML(`${esc(v.name)} a joué sa voix de <b>${esc(t.n)}</b>. Il manque la tienne : si tu réponds, lʼair sera à vous deux.<div class="mini"><button data-m="duo:play:${t.id}:1">Écouter sa voix</button><button data-m="duo:ans:${v.from}:${t.id}">Répondre en jouant</button></div>`, 30000); }
+function duoBtn(a){ bubbleEl.classList.remove('show'); if(a[1]==='play'){ playUke(a[2],{force:true, voice:(a[3]==='1'?1:0)}); } else if(a[1]==='ans'){ const f=friends.find(x=>x.code===a[2]); if(f) duoSend(f.code,a[3],f.name||fmtCode(f.code)); } }
+
+Object.assign(ITEMS,{
+  poepiti:{name:'Poʻe à deux', un:'un poʻe fait à deux', worth:60, aura:'#F5B94A', mood:'le partage (ʻōpere)', need:{}, days:0, shared:true, duo:{a:{meia:2}, b:{haari:1,taro:1}}, hint:'calebasse à deux : 2 banane dʼun côté, 1 coco + 1 taro de lʼautre.'},
+  heipiti:{name:'Hei à quatre mains', un:'un hei tressé à quatre mains', worth:60, aura:'#F28CB1', mood:'lʼamitié (auhoaraʻa)', need:{}, days:0, shared:true, duo:{a:{tiare:3}, b:{tipanie:3}}, hint:'calebasse à deux : 3 tiare dʼun côté, 3 tīpaniē de lʼautre.'},
+  paipiti:{name:'Jus des deux vallées', un:'un jus des deux vallées', worth:70, aura:'rainbow', mood:'la joie dʼêtre ensemble', need:{}, days:0, shared:true, duo:{a:{painapo:1,anani:1}, b:{vi:1,iita:1}}, hint:'calebasse à deux : 1 ananas + 1 orange dʼun côté, 1 mangue + 1 papaye de lʼautre.'}});
+const UM_IDS=['poepiti','heipiti','paipiti']; let UMSEL=null;
+function umMap(k){ const m=store.get(k,{}); return (m && typeof m==='object') ? m : {}; }
+function umParse(p){ const a=String(p||'').split(':'); return (UM_IDS.includes(a[0]) && (a[1]==='a'||a[1]==='b')) ? {id:a[0], part:a[1]} : null; }
+function umHas(n){ return Object.keys(n).every(k=>(garden.store[k]||0)>=n[k]); }
+function umTake(n,sign){ Object.keys(n).forEach(k=>{ garden.store[k]=(garden.store[k]||0)+sign*n[k]; }); saveGarden(); }
+function umDrop(code){ try{ const m=umMap('umIn'); if(m[code]){ delete m[code]; store.set('umIn',m); } }catch(e){} }
+function umArrive(v){ const q=umParse(v.p); if(!q) return; const m=umMap('umIn'); m[v.from]={id:q.id, part:q.part, t:v.t}; store.set('umIn',m); }
+function umAfter(v){ const q=umParse(v.p); if(!q) return; if(!visitFree() || bubbleEl.classList.contains('show')){ setTimeout(()=>umAfter(v),5000); return; } const other=q.part==='a'?'b':'a';
+  sayHTML(`${esc(v.name)} a mis sa part pour <b>${esc(ITEMS[q.id].name)}</b>. La tienne : ${esc(needTxt(ITEMS[q.id].duo[other]))}. Quand tu lʼajoutes, vous en recevez chacun un. Rien ne presse.<div class="mini"><button data-m="chest">Ouvrir le coffre</button></div>`, 30000); }
+function umDone(v){ const o=umMap('umOut'); const p=o[v.from]; if(!p || p.id!==v.p || !ITEMS[v.p] || !ITEMS[v.p].duo) return; delete o[v.from]; store.set('umOut',o); garden.items[v.p]=(garden.items[v.p]||0)+1; learn(v.p); saveGarden(); chestBadge(); setTimeout(()=>toast('Dans ton coffre : '+ITEMS[v.p].name),1500); }
+function umCard(mut){ const inn=umMap('umIn'), out=umMap('umOut'); let h='';
+  Object.keys(inn).forEach(c=>{ const f=friends.find(x=>x.code===c), q=inn[c]; if(!f || !ITEMS[q.id]) return; const need=ITEMS[q.id].duo[q.part==='a'?'b':'a'];
+    h+=`<div class="note"><b>${esc(f.name||fmtCode(c))}</b> a mis sa part pour <b>${ITEMS[q.id].name}</b>.<br>Ta part : ${needTxt(need)}.</div><div class="row"><button class="btn sm primary" data-umadd="${c}">Ajouter ma part</button><button class="btn sm" data-umno="${c}">Pas cette fois</button></div>`; });
+  Object.keys(out).forEach(c=>{ const f=friends.find(x=>x.code===c), q=out[c]; if(!ITEMS[q.id]) return;
+    h+=`<div class="note">Ta part pour <b>${ITEMS[q.id].name}</b> attend chez <b>${esc(f?(f.name||fmtCode(c)):fmtCode(c))}</b>.</div><div class="row"><button class="btn sm" data-umback="${c}">Reprendre ma part</button></div>`; });
+  let start='';
+  if(!mut.length) start='<p class="small muted">Pour commencer une recette à deux, il faut un cœur lié dans les deux sens.</p>';
+  else if(!UMSEL || !mut.some(f=>f.code===UMSEL)) start='<span class="small muted">Commencer avec :</span><div class="row">'+mut.map(f=>`<button class="btn sm" data-umf="${f.code}" ${out[f.code]?'disabled':''}>${esc(f.name||fmtCode(f.code))}</button>`).join('')+'</div>';
+  else start=`<span class="small muted">Quʼest-ce que tu apportes ? Lʼautre part sera pour ${esc((mut.find(f=>f.code===UMSEL).name)||fmtCode(UMSEL))}.</span>`+UM_IDS.map(id=>`<div class="hrow" style="grid-template-columns:1fr"><span><b>${ITEMS[id].name}</b></span><div class="row">${['a','b'].map(p=>`<button class="btn sm ${umHas(ITEMS[id].duo[p])?'primary':''}" data-ump="${id}:${p}">${needTxt(ITEMS[id].duo[p])}</button>`).join('')}</div></div>`).join('')+'<button class="btn sm ghost" data-umf="">Retour</button>';
+  return `<div class="card" id="umBox"><div style="display:flex;gap:10px;align-items:center"><div style="width:60px;flex:none;display:flex"><div style="width:38px;margin-right:-16px">${calabashSVG(1)}</div><div style="width:38px">${calabashSVG(1)}</div></div><div><div class="eyebrow">Atelier partagé</div><h3>La calebasse à deux</h3></div></div><p class="small muted">Chacun met la moitié des ingrédients, quand il veut. Dès que les deux parts y sont, vous recevez chacun la même création. Elles nʼexistent quʼici.</p>${h}${start}</div>`; }
+function umWire(){ const box=$('#umBox'); if(!box) return; box.addEventListener('click', e=>{ const t=e.target.closest('button'); if(!t) return; const d=t.dataset; e.stopPropagation();
+  if(d.umf!==undefined){ UMSEL=d.umf||null; openChest(); }
+  else if(d.ump){ const q=umParse(d.ump), code=UMSEL; if(!q||!code) return; const need=ITEMS[q.id].duo[q.part]; if(!umHas(need)){ toast('Il te manque : '+needTxt(need)); return; } umPut(code,'umete',d.ump,()=>{ umTake(need,-1); const o=umMap('umOut'); o[code]={id:q.id, part:q.part, t:Date.now()}; store.set('umOut',o); UMSEL=null; toast('Ta part est dans la calebasse'); closeSheet(); flyAwayTo(code); }); }
+  else if(d.umadd){ const code=d.umadd, q=umMap('umIn')[code]; if(!q) return; const need=ITEMS[q.id].duo[q.part==='a'?'b':'a']; if(!umHas(need)){ toast('Il te manque : '+needTxt(need)+'. Rien ne presse.'); return; } umPut(code,'umeteOk',q.id,()=>{ umTake(need,-1); umDrop(code); garden.items[q.id]=(garden.items[q.id]||0)+1; learn(q.id); saveGarden(); chestBadge(); toast('Fait à deux : '+ITEMS[q.id].name+' ! Un pour toi, un pour ton ami·e.'); closeSheet(); duoBurst(); flyAwayTo(code); }); }
+  else if(d.umno){ umDrop(d.umno); openChest(); }
+  else if(d.umback){ const code=d.umback, o=umMap('umOut'), q=o[code]; if(!q) return; umTake(ITEMS[q.id].duo[q.part],1); delete o[code]; store.set('umOut',o); umPut(code,'umeteNon','',()=>{}); toast('Ta part est revenue dans ton coffre'); openChest(); } }); }
+function umPut(code,g,p,ok){ if(!SYNC_URL){ toast('Les liens ne marchent pas ici.'); return; } fetch(`${SYNC_URL}/visits/${code}/${myCode}.json`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({g, p:String(p).slice(0,12), t:Date.now(), name:share.name||''})}).then(r=>{ if(!r.ok){ toast('Envoi impossible, réessaie plus tard'); return; } ok(); }).catch(()=>toast('Pas de connexion, réessaie plus tard')); }
 
 /* ---------- install button ---------- */
 const CAN_INSTALL = !!document.querySelector('link[rel="manifest"]');

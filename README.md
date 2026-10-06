@@ -273,6 +273,16 @@ Tout tient dans `index.html` (pas de serveur, pas de compte). Les données reste
 - Petites histoires à choix ('a'amu) pour apprendre à reconnaître les émotions chez les autres.
 - Mode école / groupe de jeunes, en lien avec le label « École en santé ».
 
+## À deux : ukulele et calebasse partagés (version 53)
+
+Deux choses qui ne se font qu'avec un cœur lié. Personne n'a besoin d'être connecté en même temps : le manu fait l'aller-retour.
+
+**Ukulele à deux** (« Mon cœur » → un·e ami·e → « Un signe »). Deux airs à deux voix : *Hīmene piti* (deux voix superposées) et *Pehe tōʻere piti* (appel et réponse, puis ensemble). On envoie sa voix ; quand l'ami·e répond avec le même air, l'air est débloqué **pour les deux**, avec ses deux voix, plus de notes et des pétales. Il reste ensuite dans la liste du ukulele (marqué ♪♪).
+
+**Calebasse à deux** (Coffre et atelier). Trois créations qui n'existent que là : *Poʻe à deux*, *Hei à quatre mains*, *Jus des deux vallées*. L'un met une moitié des ingrédients, l'autre la seconde, quand il veut. Dès que les deux parts y sont, **chacun reçoit la même création**. Tant que l'autre n'a pas complété, on peut « Reprendre ma part » : rien n'est jamais perdu. Une seule calebasse en attente par ami·e.
+
+Aucune nouvelle donnée ni règle Firebase (visites `duo`, `umete`, `umeteOk`, `umeteNon`). Limite connue : il n'y a qu'un message en attente par ami·e, donc un autre signe envoyé avant que l'ami·e ait ouvert l'appli remplace la calebasse ou l'air en attente (on peut alors reprendre sa part, ou renvoyer l'air).
+
 ## Le partage du tupuna manu (version 52)
 
 Au dernier stade (Tupuna manu), le manu peut partager avec un cœur lié ce que son utilisateur a appris lui-même. On le trouve dans « Mon cœur » → un·e ami·e → « Un signe ».
