@@ -150,6 +150,19 @@ Le partage des couleurs demande un tout petit serveur. Version gratuite avec Fir
 
 Ensuite, dans l'appli : cœur → « Cœurs liés » → cocher « Partager », donner son code à l'ami, et entrer le sien. Seules les couleurs du jour sont partagées (jamais les notes), sous un code aléatoire sans nom ni téléphone. C'est un prototype : pour une vraie mise en service, prévoir des règles d'accès plus strictes.
 
+**Le manu porte lui-même les signes.** Quand on envoie un salut, un câlin ou un cadeau, le manu s'envole et quitte l'écran. Un petit message indique chez qui il est parti. Il revient tout seul après une à deux minutes ; on peut aussi toucher le message pour le rappeler tout de suite.
+
+## Sauvegarde
+
+Les données vivent dans le navigateur du téléphone. Si le navigateur est vidé, réinitialisé ou remplacé, elles disparaissent. Dans **Confidentialité › Sauvegarde** :
+
+- **Enregistrer une sauvegarde** télécharge un fichier `manu-ora-sauvegarde-AAAA-MM-JJ.json` (cœur, notes, plumes, jardin, coffre, étoiles, apparence du manu, code et cœurs liés).
+- **Restaurer une sauvegarde** relit ce fichier, sur le même appareil ou sur un autre. Le lien est aussi proposé sur l'écran de bienvenue.
+- **Rappel** : quand la dernière sauvegarde a plus d'une semaine, un bouton « Sauvegarder ma progression » apparaît en haut de l'écran. Un appui enregistre le fichier ; la croix repousse le rappel de trois jours. Le rythme se règle dans Confidentialité : chaque semaine, chaque mois ou jamais.
+- Une sauvegarde entièrement automatique n'est pas possible dans un navigateur de téléphone : il faut toujours un appui de la personne.
+
+Le fichier n'est pas chiffré : il contient les notes personnelles. Ne pas restaurer la même sauvegarde sur deux appareils utilisés en même temps (ils auraient le même code de cœur).
+
 ## Lancer le site
 
 Tout tient dans `index.html` (pas de serveur, pas de compte). Les données restent dans le téléphone (localStorage).

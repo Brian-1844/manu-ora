@@ -306,6 +306,12 @@ body.quiet .app{display:none}
 .tstep.cur{border-color:var(--lagoon);box-shadow:inset 0 0 0 1.5px var(--lagoon)}
 .tstep.ok i{color:var(--fern)}
 .tchoice{text-align:left;justify-content:flex-start;font-family:var(--body);font-weight:700;font-size:.95rem;line-height:1.35}
+.awaypill{position:fixed;left:50%;transform:translateX(-50%);top:calc(64px + env(safe-area-inset-top,0px));z-index:30;border:0;border-radius:999px;padding:9px 16px;font:inherit;font-size:13px;font-weight:700;color:#fff;background:rgba(11,28,37,.78);box-shadow:0 4px 14px rgba(0,0,0,.18);max-width:calc(100vw - 32px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
+.bkpill{display:flex;padding:0;cursor:default;background:var(--teal,#1AA3B1)}
+.bkpill button{border:0;background:none;color:#fff;font:inherit;font-weight:700;padding:10px 6px 10px 16px;cursor:pointer}
+.bkpill .bkx{padding:10px 14px 10px 8px;font-size:17px;line-height:1;opacity:.85}
+.bksel{font:inherit;font-size:14px;padding:5px 8px;border-radius:10px;border:1px solid rgba(0,0,0,.18);background:#fff}
+.awaypill small{font-weight:400;opacity:.85}
 .installfloat{position:absolute;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));white-space:nowrap}
 .qfeather span:empty{display:none}
 .bird.shiny svg{filter:drop-shadow(0 0 7px var(--aura,#FFD66E)) drop-shadow(0 0 3px var(--aura,#FFD66E)) drop-shadow(0 6px 6px rgba(0,0,0,.18))}
@@ -686,10 +692,11 @@ const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const birdEl = $('#bird'), flipEl = $('#birdFlip'), bubbleEl = $('#bubble');
 const B = {x:60, y:0, dir:1, state:'idle', t:1.5, from:null, to:null, dur:1, p:0, perched:false};
 const BW=96, BH=88;
+const AWAY={on:false,gone:false,t:null,name:'',pill:null};
 function groundY(){ const tabs=document.querySelector('.tabs').getBoundingClientRect(); return tabs.top - BH + 16; }
 function perchPoints(){ const w=innerWidth, hdr=document.querySelector('.top').getBoundingClientRect(); return [{x:Math.max(8,w-BW-14), y:hdr.bottom-8}, {x:8, y:hdr.bottom-8}]; }
 function place(){ birdEl.style.transform=`translate(${B.x}px,${B.y}px)`; flipEl.style.transform=`scaleX(${B.dir})`; placeBubble(); }
-function setState(s){ B.state=s; birdEl.classList.remove('sleeping'); birdEl.classList.toggle('walking', s==='walk'); birdEl.classList.toggle('flying', s==='fly'||s==='drag'); birdEl.classList.toggle('petted', s==='pet'); birdEl.classList.toggle('playing', s==='play'); }
+function setState(s){ if(AWAY.on&&AWAY.gone) endAway(s); B.state=s; birdEl.classList.remove('sleeping'); birdEl.classList.toggle('walking', s==='walk'); birdEl.classList.toggle('flying', s==='fly'||s==='drag'); birdEl.classList.toggle('petted', s==='pet'); birdEl.classList.toggle('playing', s==='play'); }
 function idle(sec){ setState('idle'); B.t = sec || (2+Math.random()*4); }
 function startWalk(){ const w=innerWidth; B.to={x: 10+Math.random()*(w-BW-20), y:groundY()}; B.dir = B.to.x>B.x?1:-1; setState('walk'); }
 function startFly(target){ B.from={x:B.x,y:B.y}; B.to=target; B.dir = target.x>B.x?1:-1; B.p=0; const d=Math.hypot(target.x-B.x,target.y-B.y); B.dur=Math.max(.9, d/260); setState('fly'); }
@@ -1169,7 +1176,7 @@ function myLook(){ const o={body:cfg.body, belly:cfg.belly, tattoo:cfg.tattoo, a
 function isMutualKnown(code){ return FR[code]===undefined || isMutual(code); }
 function isMutual(code){ const d=FR[code]; return !!(d && d!=='err' && Array.isArray(d.links) && d.links.includes(myCode)); }
 function sendGesture(code,g,name){ if(!SYNC_URL) return; fetch(`${SYNC_URL}/visits/${code}/${myCode}.json`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({g, t:Date.now(), name:share.name||''})})
-  .then(r=>{ toast(r.ok?'Signe envoyé':'Envoi impossible, réessaie plus tard'); if(r.ok) say('Je file voir '+(name||'ton ami·e')+' !'); }).catch(()=>toast('Pas de connexion, réessaie plus tard')); }
+  .then(r=>{ toast(r.ok?'Signe envoyé':'Envoi impossible, réessaie plus tard'); if(r.ok){ say('Je file voir '+(name||'ton ami·e')+' !'); setTimeout(()=>flyAway(name),900); } }).catch(()=>toast('Pas de connexion, réessaie plus tard')); }
 function openGesture(i){ const f=friends[i]; if(!f) return; const nm=f.name||fmtCode(f.code);
   openSheet(`<div class="head"><div><div class="eyebrow">Rencontre des manu</div><h2>Un signe pour ${esc(nm)}</h2></div><button class="x" id="sx" aria-label="Fermer">×</button></div><p class="small muted">Ton manu ira le porter. ${esc(nm)} le verra à sa prochaine ouverture de Manu Ora.</p><div class="row" id="gests">${Object.keys(GEST).filter(k=>GEST[k].l).map(k=>`<button class="btn" data-g="${k}">${GEST[k].l}</button>`).join('')}</div><button class="btn ghost" id="gBack">Retour à mon cœur</button>`);
   $('#sx').onclick=closeSheet; $('#gBack').onclick=openHeart;
@@ -1184,7 +1191,7 @@ async function pollVisits(){ if(!SYNC_URL) return;
     friends.forEach(f=>{ const v=d[f.code]; if(v && typeof v.t==='number' && typeof v.g==='string' && Object.prototype.hasOwnProperty.call(GEST,v.g) && v.t>(seenV[f.code]||0) && !VIS.queue.some(q=>q.from===f.code&&q.t===v.t))
       VIS.queue.push({from:f.code, g:v.g, p:(typeof v.p==='string'?v.p:''), t:v.t, name:f.name||String(v.name||'').slice(0,20)||'ton ami·e'}); });
     runVisits(); }catch(e){} }
-function visitFree(){ return !VIS.busy && !RING.open && !UKE.on && !PET.active && B.state!=='drag' && B.state!=='fly' && $('#sheet').hidden && $('#crisis').hidden && $('#breath').hidden; }
+function visitFree(){ return !VIS.busy && !RING.open && !UKE.on && !PET.active && !AWAY.on && B.state!=='drag' && B.state!=='fly' && $('#sheet').hidden && $('#crisis').hidden && $('#breath').hidden; }
 async function runVisits(){ if(!VIS.queue.length) return; if(!visitFree()){ setTimeout(runVisits,4000); return; }
   const v=VIS.queue.shift(); VIS.busy=true; let look=null;
   try{ const r=await fetch(`${SYNC_URL}/hearts/${v.from}.json`); if(r.ok){ const d=await r.json(); FR[v.from]=d; look=d&&d.cfg; } }catch(e){}
@@ -1245,7 +1252,7 @@ function plantSVG(p,stage){
   return `<svg viewBox="0 0 60 70" aria-hidden="true">${soil}${b}</svg>`; }
 function giveFruit(i,code){ const pl=garden.plots[i]; if(!pl||!SYNC_URL) return;
   fetch(`${SYNC_URL}/visits/${code}/${myCode}.json`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({g:'don', p:pl.p, t:Date.now(), name:share.name||''})})
-    .then(r=>{ if(!r.ok){ toast('Envoi impossible, réessaie plus tard'); return; } garden.plots[i]=null; addSeed(pl.p); GSEL=null; saveGarden(); openGarden(); toast('Offert ! Tu reçois une graine en retour.'); })
+    .then(r=>{ if(!r.ok){ toast('Envoi impossible, réessaie plus tard'); return; } garden.plots[i]=null; addSeed(pl.p); GSEL=null; saveGarden(); openGarden(); toast('Offert ! Tu reçois une graine en retour.'); flyAwayTo(code); })
     .catch(()=>toast('Pas de connexion, réessaie plus tard')); }
 function openGarden(){
   const keepY=(!$('#sheet').hidden && $('#plots')) ? sheetInner.scrollTop : 0;
@@ -1303,7 +1310,7 @@ function openSelfCare(){ openSheet(`<div class="head"><div><div class="eyebrow">
   $('#sx').onclick=closeSheet; $('#careOk').onclick=()=>{ closeSheet(); award('monoi'); say('Māuruuru. Tu sens bon la tiare !'); }; }
 function giveBottle(code){ if(!SYNC_URL||garden.bottles<1) return;
   fetch(`${SYNC_URL}/visits/${code}/${myCode}.json`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({g:'don', p:'monoi', t:Date.now(), name:share.name||''})})
-    .then(r=>{ if(!r.ok){ toast('Envoi impossible, réessaie plus tard'); return; } garden.bottles--; MSEL=false; addSeed('tiare'); saveGarden(); openGarden(); toast('Monoï offert ! Tu reçois une graine de tiare.'); })
+    .then(r=>{ if(!r.ok){ toast('Envoi impossible, réessaie plus tard'); return; } garden.bottles--; MSEL=false; addSeed('tiare'); saveGarden(); openGarden(); toast('Monoï offert ! Tu reçois une graine de tiare.'); flyAwayTo(code); })
     .catch(()=>toast('Pas de connexion, réessaie plus tard')); }
 function monoiClick(e){ const t=e.target.closest('button'); if(!t) return; const d=t.dataset, S=garden.store;
   if(d.mo==='start'){ if(S.tiare>=3&&S.haari>=1&&!garden.monoi){ S.tiare-=3; S.haari-=1; garden.monoi={t:Date.now()}; saveGarden(); openGarden(); toast('Macération lancée : prêt dans 3 jours'); } }
@@ -1348,7 +1355,7 @@ function mixNow(){ const total=ING.reduce((a,k)=>a+(MIX[k]||0),0); if(!total){ t
   else { garden.items[id]=(garden.items[id]||0)+1; const first=!garden.known.includes(id); learn(id); saveGarden(); chestBadge(); openChest(); toast((first&&it.secret?'Recette secrète découverte : ':'Tu as fait : ')+it.name+' !'); } }
 function giveItem(id,code){ if(!SYNC_URL||!(garden.items[id]>0)) return;
   fetch(`${SYNC_URL}/visits/${code}/${myCode}.json`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({g:'don', p:id, t:Date.now(), name:share.name||''})})
-    .then(r=>{ if(!r.ok){ toast('Envoi impossible, réessaie plus tard'); return; } garden.items[id]--; CSEL=null; saveGarden(); chestBadge(); openChest(); toast('Offert ! Son manu va rayonner.'); })
+    .then(r=>{ if(!r.ok){ toast('Envoi impossible, réessaie plus tard'); return; } garden.items[id]--; CSEL=null; saveGarden(); chestBadge(); openChest(); toast('Offert ! Son manu va rayonner.'); flyAwayTo(code); })
     .catch(()=>toast('Pas de connexion, réessaie plus tard')); }
 function openChest(){
   const keepY=(!$('#sheet').hidden && $('#chestBox')) ? sheetInner.scrollTop : 0;
@@ -1486,7 +1493,7 @@ const STAR_MSG=['Je pense à toi.','Merci dʼêtre là.','Courage, je suis avec 
 function starGift(p){ const m=/^s(\d)?_([a-z]+)$/.exec(typeof p==='string'?p:''); if(!m) return null; const o=SKY.find(x=>x.id===m[2]); return o ? {o, msg:STAR_MSG[+(m[1]||0)]||STAR_MSG[0]} : null; }
 function giveStar(id,code){ if(!SYNC_URL) return;
   fetch(`${SYNC_URL}/visits/${code}/${myCode}.json`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({g:'don', p:'s'+(SKYST.msg||0)+'_'+id, t:Date.now(), name:share.name||''})})
-    .then(r=>{ SKYST.give=false; SKYST.msg=undefined; if(!$('#sheet').hidden && $('#skyBox')) openSky(); toast(r.ok?'Étoile offerte ! Elle brillera dans son ciel.':'Envoi impossible, réessaie plus tard'); })
+    .then(r=>{ SKYST.give=false; SKYST.msg=undefined; if(!$('#sheet').hidden && $('#skyBox')) openSky(); toast(r.ok?'Étoile offerte ! Elle brillera dans son ciel.':'Envoi impossible, réessaie plus tard'); if(r.ok) flyAwayTo(code); })
     .catch(()=>toast('Pas de connexion, réessaie plus tard')); }
 function starGiveHTML(o){ if(!SYNC_URL) return ''; if(!skyKnown.includes(o.id)) return '<p class="small muted">Trouve-la du premier coup dans le jeu : elle sʼallumera dans ton ciel et tu pourras lʼoffrir.</p>';
   if(!SKYST.give) return '<button class="btn sm" data-skyb="give">Offrir cette étoile à un·e ami·e</button>';
@@ -1623,20 +1630,67 @@ function openPrivacy(){
     <div class="card flat"><h3>Ce qui est partagé, seulement si tu lies ton cœur</h3><p class="small">Le prénom ou surnom que tu écris, les couleurs de ta journée, lʼapparence de ton manu, les codes de tes ami·e·s lié·e·s, et les signes ou cadeaux que tu envoies. Ces informations sont rangées sous un code au hasard, sur un service de Google (Firebase) situé aux États-Unis.</p></div>
     <div class="card flat"><h3>Ce qui nʼest jamais envoyé</h3><p class="small">Ce que tu écris dans tes notes ou ton plan, ton numéro de téléphone, ta position. Il nʼy a ni publicité ni compte à créer. Les polices dʼécriture sont chargées depuis Google Fonts.</p></div>
     <div class="card flat"><h3>Si tu as moins de 15 ans</h3><p class="small">Montre Manu Ora à un parent ou à un adulte de confiance avant de lier ton cœur à quelquʼun, et ne lie ton cœur quʼà des personnes que tu connais vraiment.</p></div>
+    <div class="card flat"><h3>Sauvegarde</h3><p class="small">Si le navigateur est vidé ou réinitialisé, ou si tu changes de téléphone, tout ce qui est ici disparaît. Enregistre de temps en temps un fichier de sauvegarde : il te permet de tout retrouver, sur ce téléphone ou sur un autre. Ce fichier contient ton cœur et tes notes : garde-le pour toi.</p><p class="small muted" id="bkInfo"></p><p class="small">Me le rappeler : <select id="bkEvery" class="bksel"><option value="7">chaque semaine</option><option value="30">chaque mois</option><option value="0">jamais</option></select></p><div class="row"><button class="btn" id="bkSave">Enregistrer une sauvegarde</button><button class="btn ghost" data-restore>Restaurer une sauvegarde</button></div></div>
     <div class="card flat"><h3>Effacer</h3><p class="small">« Changer mon code » (dans Cœurs liés) supprime ce qui était partagé sous lʼancien code. Le bouton ci-dessous efface tout : ce qui est partagé et ce qui est sur ce téléphone. Cʼest définitif.</p><button class="btn ghost" id="wipeBtn">Tout effacer</button></div>
     <p class="small muted">Manu Ora nʼest pas un soin médical et ne remplace pas un professionnel de santé. Version dʼessai.</p>`);
   $('#sx').onclick=closeSheet;
+  $('#bkSave').onclick=saveBackup; bkInfo(); $('#bkEvery').value=String(store.get('bkEvery',7)); $('#bkEvery').onchange=e=>{ store.set('bkEvery',Number(e.target.value)); toast('Rappel enregistré'); };
   const wb=$('#wipeBtn'); wb.onclick=()=>{ if(wb.dataset.sure!=='1'){ wb.dataset.sure='1'; wb.textContent='Confirmer : tout effacer définitivement'; wb.classList.remove('ghost'); wb.classList.add('coral'); return; } wipeAll(); }; }
 function openWelcome(){
   openSheet(`<div class="head"><div><div class="eyebrow">ʻIa ora na</div><h2>Bienvenue dans Manu Ora</h2></div></div>
     <div style="display:flex;gap:10px;align-items:center"><div style="width:72px;flex:none">${birdSVG(cfg,'wl')}</div><p>Voici ton manu. Il tʼaide à mettre des mots et des couleurs sur ce que tu ressens, un peu chaque jour.</p></div>
     <div class="card flat" style="border-color:var(--coral)"><p class="small"><b>Manu Ora nʼest pas un soin médical.</b> Il ne remplace ni un médecin, ni un psychologue, ni une personne à qui parler. Si tu vas très mal, le bouton <b>Aide</b> donne des numéros à appeler.</p></div>
     <div class="card flat"><p class="small"><b>Tes données restent sur ton téléphone.</b> Rien nʼest partagé tant que tu ne lies pas ton cœur à un·e ami·e. <button class="linkbtn" data-priv>Lire la page Confidentialité</button></p></div>
+    <p class="small"><button class="linkbtn" data-restore>Jʼai déjà une sauvegarde à restaurer</button></p>
     <p class="small muted">Version dʼessai : il peut rester des erreurs.</p>
     <button class="btn primary" id="welOk">Jʼai compris</button>`);
   $('#welOk').onclick=()=>{ store.set('welcomed',true); closeSheet(); }; }
 document.addEventListener('click', e=>{ const b=e.target.closest('[data-priv]'); if(b){ e.preventDefault(); store.set('welcomed',true); openPrivacy(); } });
 if(!store.get('welcomed',false)) setTimeout(()=>{ if($('#sheet').hidden && !RING.open) openWelcome(); },900);
+
+/* ---------- le manu part porter un signe, puis revient ---------- */
+function flyAwayTo(code){ const f=friends.find(x=>x.code===code); flyAway((f&&f.name)||'ton ami·e'); }
+function flyAway(name){ if(RM||AWAY.on||VIS.busy||RING.open||UKE.on||PET.active||B.state==='drag') return;
+  AWAY.on=true; AWAY.gone=false; AWAY.name=name||'ton ami·e'; clearTimeout(PET.endT); B.asking=false; B.afterIdle=null; B.perched=false;
+  const left=B.x+BW/2<innerWidth/2; startFly({x:left?-BW*1.6:innerWidth+BW*.6, y:Math.max(-BH,B.y-180)});
+  B.onArrive=()=>{ if(B.x>-BW && B.x<innerWidth){ AWAY.on=false; return; }
+    B.state='away'; birdEl.classList.remove('flying','walking','sleeping'); birdEl.style.visibility='hidden'; bubbleEl.classList.remove('show'); AWAY.gone=true;
+    const p=document.createElement('button'); p.className='awaypill'; p.innerHTML='Ton manu est parti voir '+esc(AWAY.name)+' <small>· touche pour le rappeler</small>'; p.onclick=()=>comeBack(true); document.body.appendChild(p); AWAY.pill=p;
+    AWAY.t=setTimeout(comeBack, 90000+Math.random()*60000); }; }
+function endAway(s){ clearTimeout(AWAY.t); AWAY.on=false; AWAY.gone=false; birdEl.style.visibility=''; if(AWAY.pill){ AWAY.pill.remove(); AWAY.pill=null; }
+  if(s!=='fly'){ const hm=QUIET?homePoint():{x:B.x<0?20:innerWidth-BW-20, y:groundY()}; B.x=hm.x; B.y=hm.y; } }
+function comeBack(called){ if(!AWAY.on||!AWAY.gone) return; const nm=AWAY.name;
+  if(QUIET) goHome(); else { B.perched=false; startFly({x:B.x<0?24:innerWidth-BW-24, y:groundY()}); }
+  const prev=B.onArrive; B.onArrive=()=>{ if(prev) prev(); say(called?'Me revoilà ! Ton signe est déposé chez '+nm+'.':'Me revoilà ! Jʼai déposé ton signe chez '+nm+'.'); }; }
+
+/* ---------- sauvegarde dans un fichier ---------- */
+try{ if(navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(()=>{}); }catch(e){}
+function backupData(){ const d={}; try{ Object.keys(localStorage).filter(k=>k.indexOf('manuora.')===0).forEach(k=>{ d[k.slice(8)]=localStorage.getItem(k); }); }catch(e){} return {app:'manu-ora', v:1, date:new Date().toISOString(), data:d}; }
+function bkInfo(){ const el=$('#bkInfo'); if(!el) return; const t=store.get('lastBackup',0); el.textContent = t ? 'Dernière sauvegarde : '+new Date(t).toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'})+'.' : 'Aucune sauvegarde pour lʼinstant.'; }
+function saveBackup(){ const prev=store.get('lastBackup',0); store.set('lastBackup',Date.now());
+  try{ const blob=new Blob([JSON.stringify(backupData())],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='manu-ora-sauvegarde-'+new Date().toISOString().slice(0,10)+'.json'; document.body.appendChild(a); a.click(); setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); },1500);
+    toast('Sauvegarde enregistrée dans tes téléchargements'); bkInfo(); const bp=document.querySelector('.bkpill'); if(bp) bp.remove(); }
+  catch(e){ store.set('lastBackup',prev); toast('Sauvegarde impossible sur cet appareil'); } }
+function applyBackup(b){ if(!b || b.app!=='manu-ora' || !b.data || typeof b.data!=='object') return false; const ks=Object.keys(b.data).filter(k=>/^[\w.-]{1,40}$/.test(k) && typeof b.data[k]==='string'); if(!ks.length) return false;
+  try{ ks.forEach(k=>JSON.parse(b.data[k])); }catch(e){ return false; }
+  Object.keys(localStorage).filter(k=>k.indexOf('manuora.')===0).forEach(k=>localStorage.removeItem(k)); ks.forEach(k=>localStorage.setItem('manuora.'+k,b.data[k])); return true; }
+function restoreBackup(){ const inp=document.createElement('input'); inp.type='file'; inp.accept='.json,application/json,text/plain';
+  inp.onchange=()=>{ const f=inp.files&&inp.files[0]; if(!f) return; if(f.size>4e6){ toast('Ce fichier nʼest pas une sauvegarde Manu Ora'); return; }
+    const rd=new FileReader(); rd.onerror=()=>toast('Lecture du fichier impossible');
+    rd.onload=()=>{ let b=null; try{ b=JSON.parse(rd.result); }catch(e){} if(!b || b.app!=='manu-ora' || !b.data){ toast('Ce fichier nʼest pas une sauvegarde Manu Ora'); return; }
+      const when=b.date?new Date(b.date).toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'}):'date inconnue';
+      if(!confirm('Restaurer la sauvegarde du '+when+' ?\n\nElle remplacera ce qui se trouve sur cet appareil.')) return;
+      let ok=false; try{ ok=applyBackup(b); }catch(e){} if(!ok){ toast('Sauvegarde illisible, rien nʼa été changé'); return; }
+      toast('Sauvegarde restaurée'); setTimeout(()=>location.reload(),900); };
+    rd.readAsText(f); };
+  inp.click(); }
+document.addEventListener('click', e=>{ if(e.target.closest && e.target.closest('[data-restore]')) restoreBackup(); });
+function bkDue(){ const per=store.get('bkEvery',7); if(!per) return false; const now=Date.now(); return log.length>=3 && now-store.get('lastBackup',0)>per*864e5 && now-store.get('bkNag',0)>3*864e5; }
+function bkRemind(){ if(document.querySelector('.bkpill') || !bkDue() || AWAY.on || RING.open || !$('#sheet').hidden || !$('#crisis').hidden || !$('#breath').hidden) return;
+  const p=document.createElement('div'); p.className='awaypill bkpill'; p.innerHTML='<button class="bkgo">Sauvegarder ma progression</button><button class="bkx" aria-label="Plus tard">×</button>'; document.body.appendChild(p);
+  p.querySelector('.bkgo').onclick=()=>{ p.remove(); saveBackup(); };
+  p.querySelector('.bkx').onclick=()=>{ p.remove(); store.set('bkNag',Date.now()); toast('Dʼaccord, je te le redirai dans quelques jours'); }; }
+setTimeout(bkRemind,20000); setInterval(bkRemind,10*60000);
 
 /* ---------- install button ---------- */
 const CAN_INSTALL = !!document.querySelector('link[rel="manifest"]');
