@@ -273,6 +273,102 @@ Tout tient dans `index.html` (pas de serveur, pas de compte). Les données reste
 - Petites histoires à choix ('a'amu) pour apprendre à reconnaître les émotions chez les autres.
 - Mode école / groupe de jeunes, en lien avec le label « École en santé ».
 
+## Poser une limite avant de couper (version 68)
+
+Dans « Mon cœur », le bouton « Couper et bloquer » devient **« Poser une limite »**, avec trois degrés :
+
+1. **Le lui dire** : le manu porte une phrase toute faite (« Tu m'envoies trop de signes », « Quelque chose m'a blessé·e », « Tu as répété ce que je t'avais confié »). Pas de texte libre, une seule par jour et par ami·e, pour que ce ne soit jamais un moyen de harceler. L'ami·e lit un message sans reproche humiliant (« ce n'est pas un rejet de toi, c'est une limite ») et peut répondre par un « Pardon » ou « D'accord ».
+2. **Faire une pause de 7 jours** : ses signes ne s'affichent plus (sauf demande d'aide, pardon, étoile de confiance) ; le lien reste ; l'ami·e est prévenu·e.
+3. **Couper et bloquer**, comme avant.
+
+Un rappel et un accès à l'aide si l'ami·e menace, fait peur ou force. Aucune règle Firebase à changer. Textes à faire relire par un·e psychologue.
+
+## « Quelqu'un m'a fait du mal » (version 73)
+
+Un parcours pour les victimes de violence. Accès : Menu → Grandir avec les autres ; l'écran d'aide ; et « La pierre » quand la réponse est « ça continue » ou « c'est grave ».
+
+- **Quatre phrases d'abord** : « Je te crois. Ce n'est pas ta faute. Tu as bien fait de venir ici. Tu n'es pas seul·e. »
+- **Aucun détail demandé.** Une seule question : maintenant / ça continue / c'est du passé / un·e ami·e me l'a confié.
+- **Maintenant** : se mettre à l'abri près d'autres personnes, appeler (les numéros de l'appli), sans avoir à juger si c'est « assez grave ».
+- **Ça continue** : choisir un adulte qui peut agir, trois phrases toutes prêtes, « si le premier n'écoute pas, dis-le à un autre », et quoi faire si c'est en ligne (ne plus répondre, ne rien payer, garder des captures).
+- **Du passé** : les réactions normales après une violence, un exercice d'ancrage (5-4-3-2-1), et l'encouragement à voir un professionnel.
+- **Un·e ami·e me l'a confié** : croire, ne pas promettre le secret, aller voir un adulte ensemble.
+
+**Sécurité sur le téléphone** : un bouton « Fermer vite » sur chaque écran ; **rien n'est écrit, rien n'est enregistré, rien n'est dans la sauvegarde, rien n'est envoyé** ; pas de récompense ni de rappel ensuite ; pas d'alerte automatique ; aucune mention du pardon.
+
+**À ne pas diffuser avant** : vérification des numéros d'aide pour la Polynésie française, et relecture de chaque phrase par un·e professionnel·le de la protection de l'enfance ou de l'aide aux victimes.
+
+## Mon cœur bat / mon cœur brisé : un espace privé (version 71)
+
+**Comment on y entre** (toujours parce que l'utilisateur le dit, jamais deviné) :
+- par l'anneau des émotions : après un *here*, le manu demande une fois « C'est pour qui ? » (famille, ami·e, quelqu'un qui fait battre mon cœur, je le garde pour moi) ; pas plus d'une fois tous les trois jours, et plus du tout pendant un mois si l'on répond « je le garde pour moi » ;
+- par le Menu → Grandir avec les autres → Le cœur qui bat (deux boutons : « Mon cœur bat pour quelqu'un », « J'ai le cœur brisé ») ;
+- le cœur brisé s'ouvre aussi depuis l'espace « mon cœur bat » (« C'est fini, et ça fait mal »), ou quand on nomme *ʻoto* ou *moʻemoʻe* alors que l'espace est ouvert.
+
+**Confidentialité** : l'état reste sur le téléphone. Il n'est jamais envoyé aux cœurs liés ni affiché sur le manu en visite ; un petit cœur flotte seulement près du manu de l'utilisateur. Le « message de minuit » est exclu du fichier de sauvegarde. À noter : la couleur *here* de la journée, elle, fait partie du cœur partagé comme toute émotion.
+
+**Mon cœur bat** : « Qu'y a-t-il dans mon cœur ? » (démêler les émotions), « Ma vie autour » (sommeil, ami·e·s, école, ce que j'aime), « Le message de minuit » (écrit ici, gardé jusqu'au lendemain, puis copié ou jeté), « J'y pense tout le temps » (regarder son profil sans arrêt, sans reproche). Après deux semaines, le manu demande une fois si c'est toujours là.
+
+**Mon cœur brisé** : « Ce qui fait mal aujourd'hui » (manque, colère, honte, jalousie, vide, tout), « Ce que je garde », « Prendre de la distance » (un engagement de trois jours, puis le manu demande comment ça s'est passé ; « j'ai tenu » et « pas tout à fait » sont accueillis pareil), « Ma vie autour », « Le message de minuit ». Tous les deux jours : « Comment va ton cœur ? ». Si « très mal » après deux semaines, renvoi vers un adulte de confiance ; l'aide est toujours à un geste.
+
+On ferme l'espace d'un geste. **Textes à faire relire par un·e psychologue.**
+
+## Carnet de recettes à découvrir (version 67)
+
+Seules deux recettes sont connues au départ : le **hei de tiare** et le **compost**. Les autres apparaissent en « ??? » avec un indice, et seulement quand on a récolté au moins un de leurs ingrédients (les autres sont comptées en bas du carnet, sans détail). Après trois mélanges ratés, chaque indice est complété par la liste des ingrédients, sans les quantités. Recevoir une création en cadeau apprend sa recette. Un essai raté ne coûte toujours rien. Les recettes de la calebasse à deux restent visibles (les deux amis doivent savoir quoi apporter). Les utilisateurs existants gardent les recettes qu'ils ont déjà faites.
+
+Note : le tableau des recettes de ce README sert au concepteur, pas aux utilisateurs.
+
+## Grandir avec les autres : réparer, pardonner, être amoureux·se (version 64)
+
+Nouvelle entrée du Menu, trois parcours courts. Rien de ce qui est écrit n'est conservé.
+
+- **La contrariété** (version 69, tolérance à la frustration) : ce qui a contrarié (un non, un échec, un changement, une attente, quelqu'un qui ne fait pas comme on veut, une injustice) ; à quel point ça bout ; **tenir dix secondes** pendant que la vague passe (un petit compte à rebours : on apprend à ne pas agir à chaud) ; « est-ce que j'y peux quelque chose ? » ; puis trois conseils selon la situation. Phrase à garder : « Je suis déçu·e, pas en danger. »
+- **Réparer** (responsabilité) : dire ce qu'on a fait sans « mais » ; ce qu'on ressent et ce que l'autre a pu ressentir ; choisir un geste (demander pardon, réparer, faire quelque chose, demander « qu'est-ce qui t'aiderait ? », ou « pas encore »). Message central : se sentir mal de ce qu'on a *fait* n'est pas *être* mauvais.
+- **La pierre** (pardon) : une question de sécurité d'abord. Si « ça continue » ou « c'est grave », l'appli dit que la question n'est pas le pardon, que ce n'est pas sa faute, et renvoie vers un adulte et l'écran d'aide. Sinon : pardonner n'est ni oublier, ni approuver, ni redevenir ami ; trois réponses également respectées (« pas prêt·e », « lui en parler », « poser la pierre »).
+- **Le cœur qui bat** (être amoureux·se) : six situations (y penser tout le temps, oser le dire, le non ou la rupture, ne pas aimer en retour, la jalousie, la pression). Formulé sans supposer qui on aime. La fiche « pression » rappelle le droit de dire non, de ne pas envoyer de photo de son corps, et qu'avec un adulte ou quelqu'un de bien plus âgé ce n'est pas une histoire d'amour ; aide à un geste.
+- **Le corps et le désir** (version 70) : une septième fiche de « Le cœur qui bat », qui ne s'ouvre que si l'utilisateur la choisit lui-même, puis confirme « J'ai 12 ans ou plus » (réponse non conservée). Six phrases simples, sans image ni détail : le corps change à son rythme ; le désir est une émotion, ni honteuse ni obligatoire ; le corps appartient à chacun ; le consentement (un vrai oui, qui peut redevenir un non) ; la réciprocité ; l'intimité. Renvoi vers un adulte, l'infirmier·e scolaire, un médecin, et vers l'aide. Les plus jeunes voient une version courte centrée sur « ton corps est à toi ». **Ne pas diffuser avant relecture par un·e professionnel·le de l'éducation à la santé, et avant d'en avoir parlé aux partenaires (écoles, parents).**
+- **Signe « Pardon »** entre cœurs liés : l'ami·e peut répondre « C'est pardonné », plus tard, ou pas du tout ; aucune relance.
+- Version 66 : quand un pardon est accordé, un **arc-en-ciel** traverse l'écran des deux côtés (chez celui qui pardonne au moment où il répond, chez l'autre quand le manu rapporte la réponse), et aussi quand on pardonne au manu.
+- Un sixième papillon, le **pepe blanc**, vient après « Réparer » ou « La pierre », quelle que soit la réponse choisie.
+
+**Relecture indispensable par un·e psychologue** avant diffusion : ce sont les textes les plus sensibles de l'appli (violences, consentement, chagrin). Version 65 : **le manu se trompe aussi**. Au plus une fois tous les trois jours, il avoue une petite bêtise (il a marché sur une pousse, mangé un fruit du coffre, été ronchon), demande pardon et répare. L'utilisateur ne perd jamais rien (la pousse gagne même une demi-journée, le fruit est remplacé avec une graine). Deux réponses possibles, toutes deux bien accueillies : « C'est pardonné » ou « Ça m'a embêté·e ».
+
+## Tressages à porter, perle, collier et bracelet (version 62)
+
+**Tressages** (calebasse) :
+- **Taupoʻo**, chapeau tressé (2 fara + 1 tiare) : le manu le porte 3 jours ; les plantes en cours gagnent un jour.
+- Version 63 : le chapeau se décore d'une fleur au choix, visible dessus. **À l'ʻaute** (2 fara + 1 ʻaute) : +8 plumes. **Au tīpaniē** (2 fara + 1 tīpaniē) : aura 3 jours et le pepe des fleurs vient.
+- **ʻEte**, panier tressé (2 fara + 1 coco) : donne deux graines.
+
+**Poe, la perle noire.** On ne la plante pas : la plage en offre une tous les **5 jours différents** où l'on a fait l'activité des trois coquillages, le jour où l'on en remplit bien trois. Elle va au coffre. L'indice est donné dans le faʻaʻapu, sans le chiffre.
+
+**Deux recettes secrètes** avec une perle et un tressage :
+- **Collier de perle** (1 perle + 1 fara) : porté 7 jours, aura 7 jours.
+- **Bracelet de perle** (1 perle + 1 vavai) : porté 7 jours à la patte, +10 plumes, et le pepe rose vient.
+
+Ce sont les créations les plus précieuses (300 plumes). Les cœurs liés voient chapeau, collier et bracelet sur le manu (trois indicateurs ajoutés à l'apparence publiée, sans changement des règles Firebase). Mots à faire valider : *taupoʻo*, *ʻete*, *poe*.
+
+## Tissage et teinture : pāreu, tīfaifai, pēʻue (version 60)
+
+Trois plantes à fibres et à teinture (graines dans le tirage des journées complètes ; une graine de coton offerte à la mise à jour) :
+
+| Plante | Sert à | Condition pour planter | Durée |
+|---|---|---|---|
+| **vavai** (coton) | le tissu | aucune | 4 j |
+| **fara** (pandanus) | le tressage | décor de la plage | 6 j |
+| **rēʻa** (curcuma) | la teinture jaune | décor de la rivière | 5 j |
+
+La teinture rouge vient de la fleur d'ʻaute, déjà présente. Dans la calebasse :
+
+- **Pāreu rouge** (2 vavai + 2 ʻaute) et **Pāreu jaune** (2 vavai + 1 rēʻa) : le manu **porte le pāreu pendant 3 jours** (visible sur lui). Une troisième couleur est une recette secrète.
+- **Pēʻue**, natte tressée (3 fara) : aura 2 jours.
+- **Tīfaifai** (4 vavai + 2 ʻaute + 2 rēʻa) : la création la plus précieuse (180 plumes), aura arc-en-ciel 7 jours. Comme toute création, il peut s'offrir à un cœur lié.
+
+Depuis la version 61, les cœurs liés voient aussi le pāreu : sur le manu qui leur rend visite et dans la liste des cœurs (deux couleurs ajoutées à l'apparence publiée, sans changement des règles Firebase).
+
+Simplifications assumées, à faire valider par une personne de culture : le pāreu et le tīfaifai sont en coton (le pandanus sert à la natte) ; les teintures réelles sont plus variées (rēʻa pour le jaune, mati pour le rouge…) ; la fleur d'ʻaute comme teinture rouge est un raccourci de jeu.
+
 ## Les pepe, papillons qui suivent le manu (version 59)
 
 Cinq papillons viennent voler autour du manu pendant un jour, chacun pour une raison, avec un petit cadeau. La liste (et les « ???? » pas encore vus) est en bas du faʻaʻapu.
