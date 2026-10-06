@@ -396,6 +396,14 @@ body.quiet .app{display:none}
 #crisis{z-index:95}
 .pausescreen{position:fixed;inset:0;z-index:80;background:rgba(6,20,28,.92);display:grid;place-items:center;padding:20px}
 .pausebox{background:var(--bg);color:var(--fg);border-radius:22px;padding:22px;max-width:420px;display:flex;flex-direction:column;gap:10px}
+.pepes{position:absolute;inset:0;pointer-events:none;overflow:visible}
+.pepe{position:absolute;left:50%;top:30%;width:22px;height:18px;margin:-9px 0 0 -11px;animation:pepeFly var(--d,7s) ease-in-out infinite;animation-delay:var(--dl,0s)}
+.pepe svg{width:100%;height:100%;overflow:visible;filter:drop-shadow(0 1px 2px rgba(0,0,0,.25))}
+.pepe .pw{transform-origin:11px 9px;animation:pepeFlap .32s ease-in-out infinite alternate}
+@keyframes pepeFlap{from{transform:scaleX(1)}to{transform:scaleX(.25)}}
+@keyframes pepeFly{0%{transform:translate(var(--x1),var(--y1)) rotate(-8deg)}25%{transform:translate(var(--x2),var(--y2)) rotate(10deg)}50%{transform:translate(var(--x3),var(--y3)) rotate(-6deg)}75%{transform:translate(var(--x4),var(--y4)) rotate(8deg)}100%{transform:translate(var(--x1),var(--y1)) rotate(-8deg)}}
+@media (prefers-reduced-motion:reduce){.pepe,.pepe .pw{animation:none}.pepe{transform:translate(var(--x1),var(--y1))}}
+.pepeRow{display:flex;gap:10px;align-items:center;margin:8px 0}.pepeRow .pi{width:34px;height:28px;flex:none}.pepeRow .pi svg{width:100%;height:100%}
 .installfloat{display:flex;align-items:center;padding:0}
 .installfloat[hidden]{display:none}
 .installfloat button{border:0;background:none;font:inherit;color:inherit;padding:6px 4px 6px 12px;cursor:pointer}
@@ -887,7 +895,7 @@ const TUNES=[
   {id:'paumotu', n:'Tāʻiri pāʻumotu', s:'la frappe rapide des atolls', how:'6 émotions différentes nommées', ok:()=>wordColors().length>=6, beat:.15, steps:8, bright:true, pat:[[0,0],[1,1],[2,0],[3,0],[4,1],[5,0],[6,0],[7,1]], acc:[0,3,6],
    bars:[['C',[[0,'G5'],[3,'E5'],[6,'G5']]],['C',[[0,'C6'],[3,'G5'],[6,'E5']]],['F',[[0,'A5'],[3,'F5'],[6,'A5']]],['C',[[0,'G5'],[6,'E5']]],['G7',[[0,'B5'],[3,'G5'],[6,'F5']]],['G7',[[0,'D5'],[3,'F5'],[6,'B5']]],['C',[[0,'C6'],[3,'G5'],[6,'E5']]],['C',[[0,'C5']]],['F',[[0,'A5'],[3,'C6'],[6,'A5']]],['C',[[0,'G5'],[3,'E5'],[6,'G5']]],['G7',[[0,'F5'],[3,'D5'],[6,'B4']]],['C',[[0,'C5'],[3,'E5'],[6,'C6']]]]},
   {id:'toere', n:'Pehe tōʻere', s:'le tambour de bois appelle, le ukulele répond', how:'quand ton manu sait voler (3e stade)', ok:()=>growStage()>=3, beat:.16, steps:8, bright:true, pat:[[2,0],[3,1],[6,0],[7,1]], drum:{hi:[0,3,6],lo:[2,5,7],pahu:[0,4]},
-   bars:[['C',[]],['C',[]],['C',[[0,'E5'],[3,'G5'],[6,'E5']]],['G7',[[0,'D5'],[3,'F5'],[6,'D5']]],['C',[[0,'G5'],[3,'C6'],[6,'G5']]],['G7',[[0,'B5'],[3,'G5'],[6,'F5']]],['C',[[0,'E5'],[3,'G5'],[6,'C6']]],['C',[[0,'C5']]]]},
+   bars:[['C',[[0,'C5'],[6,'G5']]],['C',[[0,'E5'],[3,'G5'],[6,'E5']]],['G7',[[0,'D5'],[3,'F5'],[6,'D5']]],['C',[[0,'G5'],[3,'C6'],[6,'G5']]],['G7',[[0,'B5'],[3,'G5'],[6,'F5']]],['C',[[0,'E5'],[3,'G5'],[6,'C6']]],['C',[[0,'C5']]]]},
   {id:'himenepo', n:'Hīmene pō', s:'une berceuse à trois temps, pour le soir', how:'5 étoiles apprises dans Te raʻi', ok:()=>skyKnown.length>=5, beat:.3, steps:6, soft:true, pat:[[0,0],[2,1],[4,1]],
    bars:[['C',[[0,'E5'],[2,'G5'],[4,'E5']]],['Am',[[0,'C5'],[4,'E5']]],['F',[[0,'F5'],[2,'A5'],[4,'F5']]],['G7',[[0,'D5'],[4,'B4']]],['C',[[0,'G5'],[2,'E5'],[4,'C5']]],['Am',[[0,'A4'],[4,'C5']]],['F',[[0,'F5'],[2,'E5'],[4,'D5']]],['C',[[0,'C5']]]]},
   {id:'himpiti', duo:true, n:'Hīmene piti', s:'deux voix qui se tiennent, lʼune au-dessus de lʼautre', how:'à jouer à deux avec un cœur lié : chacun envoie lʼair à lʼautre', ok:()=>duoOk('himpiti'), beat:.3, steps:8, soft:true, pat:[[0,0],[2,0],[4,0],[5,1],[6,0]],
@@ -895,13 +903,14 @@ const TUNES=[
   {id:'toepiti', duo:true, n:'Pehe tōʻere piti', s:'lʼun appelle, lʼautre répond, puis les deux ensemble', how:'à jouer à deux avec un cœur lié : chacun envoie lʼair à lʼautre', ok:()=>duoOk('toepiti'), beat:.16, steps:8, bright:true, pat:[[2,0],[3,1],[6,0],[7,1]], drum:{hi:[0,3,6],lo:[2,5,7],pahu:[0,4]},
    bars:[['C',[[0,'E5'],[3,'G5'],[6,'E5']],[]],['C',[],[[0,'E5'],[3,'G5'],[6,'C6']]],['G7',[[0,'D5'],[3,'F5'],[6,'D5']],[]],['G7',[],[[0,'D5'],[3,'F5'],[6,'B5']]],['F',[[0,'A5'],[3,'F5'],[6,'A5']],[]],['C',[],[[0,'G5'],[3,'E5'],[6,'G5']]],['G7',[[0,'B5'],[3,'G5'],[6,'F5']],[[0,'D5'],[3,'B4'],[6,'D5']]],['C',[[0,'C6'],[3,'G5'],[6,'E5']],[[0,'E5'],[3,'C5'],[6,'C5']]],['C',[[0,'C5']],[[0,'G5']]]]}];
 function drumHit(t,kind){ if(kind==='pahu'){ const o=AC.createOscillator(), g=AC.createGain(); o.type='sine'; o.frequency.setValueAtTime(130,t); o.frequency.exponentialRampToValueAtTime(55,t+.16); g.gain.setValueAtTime(.0001,t); g.gain.linearRampToValueAtTime(.3,t+.005); g.gain.exponentialRampToValueAtTime(.0001,t+.28); o.connect(g); g.connect(AC.destination); o.start(t); o.stop(t+.3); return; }
-  const o=AC.createOscillator(), g=AC.createGain(), f=AC.createBiquadFilter(); o.type='square'; o.frequency.value=kind==='hi'?1040:760; f.type='bandpass'; f.frequency.value=kind==='hi'?1500:1050; f.Q.value=7; g.gain.setValueAtTime(.0001,t); g.gain.linearRampToValueAtTime(.2,t+.002); g.gain.exponentialRampToValueAtTime(.0001,t+.07); o.connect(f); f.connect(g); g.connect(AC.destination); o.start(t); o.stop(t+.09); }
+  const o=AC.createOscillator(), g=AC.createGain(), f=AC.createBiquadFilter(); o.type='square'; o.frequency.value=kind==='hi'?1040:760; f.type='bandpass'; f.frequency.value=kind==='hi'?1500:1050; f.Q.value=7; g.gain.setValueAtTime(.0001,t); g.gain.linearRampToValueAtTime(.34,t+.002); g.gain.exponentialRampToValueAtTime(.0001,t+.07); o.connect(f); f.connect(g); g.connect(AC.destination); o.start(t); o.stop(t+.09); }
 function playUke(id,opt){ opt=opt||{};
   if(UKE.on) return;
   const T=TUNES.find(x=>x.id===(id||store.get('ukeTune','matamua'))) || TUNES[0]; const tune=(T.ok()||opt.force)?T:TUNES[0];
-  try{ AC = AC || new (window.AudioContext||window.webkitAudioContext)(); if(AC.state==='suspended') AC.resume(); }catch(e){ toast('Le son ne marche pas sur cet appareil.'); return; }
+  try{ AC = AC || new (window.AudioContext||window.webkitAudioContext)(); }catch(e){ toast('Le son ne marche pas sur cet appareil.'); return; }
+  if(AC.state!=='running' && !opt._r){ if(UKE.wait) return; UKE.wait=true; let done=false; const go=()=>{ if(done) return; done=true; UKE.wait=false; playUke(id,Object.assign({},opt,{_r:true})); }; try{ AC.resume().then(go,go); }catch(e){} setTimeout(go,700); return; }
   UKE.on=true; clearTimeout(PET.endT); setState('play'); say(tune.id==='matamua'?'Écoute ça…':tune.n+'…');
-  const beat=tune.beat, t0=AC.currentTime+.15, sv=tune.soft?.7:1;
+  const beat=tune.beat, t0=AC.currentTime+.06, sv=tune.soft?.7:1;
   const strum=(notes,t,up,v)=>{ (up?[...notes].reverse():notes).forEach((f,i)=>{ pluck(f,t+i*(tune.bright?.011:.018),v,tune.bright?.5:.9); if(tune.bright) pluck(f*2,t+i*.011,v*.35,.3); }); };
   tune.bars.forEach(([c,mel],b)=>{ const t=t0+b*tune.steps*beat;
     tune.pat.forEach(([k,up])=>strum(CHD[c],t+k*beat,up,(up?.06:.09)*sv*((tune.acc&&tune.acc.includes(k))?1.5:1)));
@@ -1152,7 +1161,7 @@ function openBreath(a){
   txt.textContent='Pose les pieds au sol. On commence.'; cnt.textContent=''; sea.classList.remove('in','out');
   breathTimer=setTimeout(run, 1800);
 }
-function closeBreath(done){ clearTimeout(breathTimer); $('#breath').hidden=true; if(done){ award('breathe'); } if(cur) step3(); }
+function closeBreath(done){ clearTimeout(breathTimer); $('#breath').hidden=true; if(done){ award('breathe'); try{ pepeCall('hau'); }catch(e){} } if(cur) step3(); }
 $('#breathStop').onclick=()=>closeBreath(false);
 
 /* ---------- crisis / safety mode ---------- */
@@ -1180,7 +1189,7 @@ function openCrisis(){
 
 /* ---------- quiet mode, colour ring, heart, friends ---------- */
 /* ---------- protections : adresse officielle, filtre des prénoms partagés, interrupteur dʼurgence ---------- */
-const APP_V=53;
+const APP_V=59;
 const BAD_ANY=['putain', 'salope', 'salaud', 'connard', 'connasse', 'encule', 'niquer', 'nique ta', 'couille', 'porno', 'pedoph', 'pedale', 'gouine', 'tarlouze', 'tantouze', 'travelo', 'bougnoul', 'negro', 'youpin', 'bicot', 'bamboula', 'chinetoque', 'sale noir', 'sale arabe', 'sale juif', 'sale blanc', 'sale pd', 'batard', 'pouffiasse', 'petasse', 'trainee', 'branleur', 'branlette', 'sodom', 'violeur', 'viole toi', 'tue toi', 'va mourir', 'creve', 'suicide', 'pendez', 'egorg', 'nazi', 'hitler', 'sieg heil', 'kkk', 'fuck', 'motherf', 'bitch', 'pussy', 'whore', 'nigg', 'faggot', 'rapist', 'blowjob', 'handjob', 'cumshot', 'dildo', 'jerk off', 'wanker', 'bastard', 'asshole', 'arsehole', 'dickhead', 'cocksuck', 'tranny', 'shemale', 'chink', 'wetback', 'towelhead', 'sand nig', 'white power', 'kill you', 'kill yourself', 'go die', 'kys', 'titoi', 'ohure'];
 const BAD_WORD=['pute', 'ntm', 'fdp', 'tg', 'bite', 'chatte', 'sexe', 'sex', 'sexy', 'porn', 'viol', 'viols', 'pd', 'pede', 'tapette', 'negre', 'merde', 'suce', 'cul', 'con', 'conne', 'cons', 'nazi', 'zob', 'teub', 'nichon', 'nichons', 'seins', 'penis', 'vagin', 'anus', 'gode', 'shit', 'dick', 'cock', 'cunt', 'slut', 'slag', 'fag', 'fags', 'rape', 'kill', 'hoe', 'thot', 'twat', 'cum', 'tits', 'boobs', 'anal', 'nude', 'nudes', 'dyke', 'homo', 'paki', 'spic', 'kike', 'coon', 'gook', 'ure', 'raho', 'retard', 'retarded'];
 function cleanName(s){ s=String(s||'').replace(/[<>]/g,'').replace(/\s+/g,' ').trim().slice(0,20); if(!s) return '';
@@ -1336,7 +1345,7 @@ function myLook(){ const o={body:cfg.body, belly:cfg.belly, tattoo:cfg.tattoo, a
 function isMutualKnown(code){ return FR[code]===undefined || isMutual(code); }
 function isMutual(code){ const d=FR[code]; return !!(d && d!=='err' && Array.isArray(d.links) && d.links.includes(myCode)); }
 function sendGesture(code,g,name){ if(!SYNC_URL) return; fetch(`${SYNC_URL}/visits/${code}/${myCode}.json`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({g, t:Date.now(), name:share.name||''})})
-  .then(r=>{ toast(r.ok?'Signe envoyé':'Envoi impossible, réessaie plus tard'); if(r.ok){ say('Je file voir '+(name||'ton ami·e')+' !'); setTimeout(()=>flyAway(name),900); } }).catch(()=>toast('Pas de connexion, réessaie plus tard')); }
+  .then(r=>{ toast(r.ok?'Signe envoyé':'Envoi impossible, réessaie plus tard'); if(r.ok){ try{ pepeCall('here'); }catch(e){} say('Je file voir '+(name||'ton ami·e')+' !'); setTimeout(()=>flyAway(name),900); } }).catch(()=>toast('Pas de connexion, réessaie plus tard')); }
 function openGesture(i){ const f=friends[i]; if(!f) return; const nm=f.name||fmtCode(f.code);
   openSheet(`<div class="head"><div><div class="eyebrow">Rencontre des manu</div><h2>Un signe pour ${esc(nm)}</h2></div><button class="x" id="sx" aria-label="Fermer">×</button></div><p class="small muted">Ton manu ira le porter. ${esc(nm)} le verra à sa prochaine ouverture de Manu Ora.</p><div class="row" id="gests">${Object.keys(GEST).filter(k=>GEST[k].l).map(k=>`<button class="btn" data-g="${k}">${GEST[k].l}</button>`).join('')}</div>${duoCard(f,nm)}${tupCard(nm)}<button class="btn ghost" id="gBack">Retour à mon cœur</button>`);
   $('#sx').onclick=closeSheet; $('#gBack').onclick=openHeart; tupWire(f,nm); duoWire(f,nm);
@@ -1401,9 +1410,9 @@ let garden=store.get('garden',null);
 if(!garden || !Array.isArray(garden.plots) || !garden.seeds){ garden={plots:[null,null,null,null,null,null], seeds:{tiare:2,aute:1,meia:0,vi:0,uru:0}}; store.set('garden',garden); }
 let GSEL=null;
 function saveGarden(){ store.set('garden',garden); gardenBadge(); }
-function addSeed(kind){ const pool=['tiare','tiare','tiare','aute','aute','tipanie','tipanie','meia','meia','painapo','painapo','iita','iita','taro','taro','vi','anani','uru','vanira']; const k=(kind&&PLANTS[kind])?kind:pool[Math.floor(Math.random()*pool.length)]; garden.seeds[k]=(garden.seeds[k]||0)+1; saveGarden(); return k; }
-function plotStage(pl){ const f=(Date.now()-pl.t)/(PLANTS[pl.p].days*864e5); return f>=1?3:f>=.6?2:f>=.2?1:0; }
-function plotLeft(pl){ const ms=pl.t+PLANTS[pl.p].days*864e5-Date.now(); if(ms<=0) return 'Mûr !'; const h=Math.ceil(ms/36e5); return h>=24 ? `Mûr dans ${Math.floor(h/24)} j ${h%24} h` : `Mûr dans ${h} h`; }
+function addSeed(kind){ const pool=['tiare','tiare','tiare','aute','aute','tipanie','tipanie','meia','meia','painapo','painapo','iita','iita','taro','taro','vi','anani','uru','vanira']; if(!garden.van){ const i=pool.indexOf('vanira'); if(i>=0) pool.splice(i,1); } const k=(kind&&PLANTS[kind])?kind:pool[Math.floor(Math.random()*pool.length)]; garden.seeds[k]=(garden.seeds[k]||0)+1; saveGarden(); return k; }
+function plotStage(pl){ const f=(Date.now()-pl.t)/(PLANTS[pl.p].days*864e5); if(pl.p==='vanira' && !pl.m && f>=.6) return 2; return f>=1?3:f>=.6?2:f>=.2?1:0; }
+function plotLeft(pl){ if(vanWaits(pl)) return 'La fleur est ouverte'; const ms=pl.t+PLANTS[pl.p].days*864e5-Date.now(); if(ms<=0) return 'Mûr !'; const h=Math.ceil(ms/36e5); return h>=24 ? `Mûr dans ${Math.floor(h/24)} j ${h%24} h` : `Mûr dans ${h} h`; }
 function gardenBadge(){ const n=garden.plots.filter(pl=>pl&&PLANTS[pl.p]&&plotStage(pl)===3).length; const el=$('#qgardenN'); if(el) el.textContent=n?String(n):''; try{ renderQuietPills(); }catch(e){} const hc=$('#gardenHome'); if(hc) hc.textContent = n ? `${n} récolte${n>1?'s':''} prête${n>1?'s':''} !` : 'Plante une graine et reviens la voir pousser.'; }
 function plantSVG(p,stage){
   const R=(a)=>a*Math.PI/180, f1=n=>(+n).toFixed(1);
@@ -1470,6 +1479,16 @@ function plantSVG(p,stage){
     vanira:fr=>{ let s='<path d="M58 110 V26 h4 V110Z" fill="#9A7748"/><path d="M59 108 V28" stroke="#C4A070" stroke-width="1"/><path d="M60 108 C48 98 72 90 60 80 C48 70 72 62 60 52 C50 44 68 38 62 28" stroke="#4E9A52" stroke-width="2.6" fill="none" stroke-linecap="round"/>';
       [[50,98,-70],[70,89,70],[50,76,-70],[70,66,70],[51,54,-68],[69,44,68],[56,32,-40]].forEach((q,i)=>{ s+=leaf(q[0]+ (i%2?-4:4),q[1],17,5.5,q[2],i%2?G.l:G.m); });
       if(fr){ s+='<path d="M64 50 q8 -2 12 -6" stroke="#4E9A52" stroke-width="1.6" fill="none"/>'+petals(79,42,5,2.8,5.6,4.2,'#EEF4B8','#B9C76A',0)+'<circle cx="79" cy="42" r="2.6" fill="#F4E27A"/>'; s+='<path d="M56 64 q-8 0 -12 4" stroke="#4E9A52" stroke-width="2" fill="none" stroke-linecap="round"/>'; [0,1,2,3,4].forEach(i=>{ s+=`<path d="M${44-i*.4+i*1.6} ${68+(i%2)} q${-4+i*1.6} 12 ${-3+i*1.7} 25" stroke="${i%2?'#4A2E1C':'#63402A'}" stroke-width="2.6" fill="none" stroke-linecap="round"/>`; }); } return s; }
+    ,nono:fr=>{ let s='<path d="M60 110 Q58 92 60 70" stroke="#7A5A34" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M60 92 Q46 86 38 74 M60 86 Q74 80 84 70" stroke="#7A5A34" stroke-width="2.6" fill="none" stroke-linecap="round"/>';
+      [[38,76,-48,26,10],[84,72,50,26,10],[60,72,-14,28,11],[60,72,22,26,10],[44,88,-78,22,9],[78,86,80,22,9],[60,60,0,24,10]].forEach((q,i)=>{ s+=leaf(q[0],q[1],q[3],q[4],q[2],i%2?'#2F8A50':'#256F40'); });
+      if(fr) [[48,74,-10],[72,70,12],[60,84,0]].forEach(q=>{ s+=`<g transform="rotate(${q[2]} ${q[0]} ${q[1]})"><ellipse cx="${q[0]}" cy="${q[1]}" rx="6.2" ry="8.4" fill="#DDE6B4" stroke="#9BAA62" stroke-width=".8"/>${[[-2,-4],[2,-3],[-3,0],[1,1],[3,4],[-1,5],[0,-6]].map(d=>`<circle cx="${q[0]+d[0]}" cy="${q[1]+d[1]}" r=".9" fill="#8A9A52"/>`).join('')}<ellipse cx="${q[0]-2}" cy="${q[1]-3}" rx="1.8" ry="2.6" fill="#fff" opacity=".4"/></g>`; });
+      return s; },
+    metua:fr=>{ const frond=(x,h,r,c)=>{ let g=`<g transform="translate(60 108) rotate(${r})"><path d="M0 0 Q${x} ${-h*.5} 0 ${-h}" stroke="#2A6B3A" stroke-width="1.8" fill="none" stroke-linecap="round"/>`; const n=Math.floor(h/7); for(let i=1;i<=n;i++){ const y=-i*(h/(n+1)), w=(7+h*.09)*Math.sin(Math.PI*(i/(n+1))*.9+.25), ox=x*Math.sin(Math.PI*i/(n+1))*.5; g+=`<ellipse cx="${f1(ox-w*.55)}" cy="${f1(y)}" rx="${f1(w*.6)}" ry="2.6" transform="rotate(-18 ${f1(ox)} ${f1(y)})" fill="${c}"/><ellipse cx="${f1(ox+w*.55)}" cy="${f1(y)}" rx="${f1(w*.6)}" ry="2.6" transform="rotate(18 ${f1(ox)} ${f1(y)})" fill="${c}"/>${fr&&i%2?`<circle cx="${f1(ox-w*.5)}" cy="${f1(y)}" r=".8" fill="#C98B3C"/><circle cx="${f1(ox+w*.5)}" cy="${f1(y)}" r=".8" fill="#C98B3C"/>`:''}`; } return g+`<ellipse cx="0" cy="${-h}" rx="2.4" ry="5" fill="${c}"/></g>`; };
+      let s=frond(8,54,-52,'#2F8A50')+frond(-8,54,52,'#256F40')+frond(6,68,-22,'#3C9958')+frond(-6,68,24,'#2F8A50')+frond(0,76,0,'#5DB36E');
+      if(fr) s+='<path d="M60 108 q-3 -14 3 -20 q5 -3 4 3 q-1 3 -4 1" stroke="#8FD08A" stroke-width="2" fill="none" stroke-linecap="round"/>'; return s; },
+    tamanu:fr=>{ let s=trunk(60,12,62,3)+'<path d="M61 78 Q48 70 40 60 M62 72 Q76 64 82 54" stroke="#6B4423" stroke-width="3" fill="none" stroke-linecap="round"/>'+canopy(62,42,36,['#17512F','#1F6B3F','#3F9A5A']);
+      [[40,50,-60],[84,46,58],[60,22,0],[48,30,-28],[76,30,30]].forEach(q=>{ s+=leaf(q[0],q[1],13,5,q[2],'#2F8A50'); });
+      if(fr){ [[46,40],[72,34],[60,52],[82,52]].forEach(q=>{ s+=petals(q[0],q[1],4,1.8,3,2.6,'#FFFDF6','#E2D6B8',45)+`<circle cx="${q[0]}" cy="${q[1]}" r="1.5" fill="#F4D35E"/>`; }); [[52,64],[70,62],[38,58]].forEach(q=>{ s+=`<path d="M${q[0]} ${q[1]-8} v4" stroke="#5E7A2E" stroke-width="1"/>`+fruit(q[0],q[1],4.6,4.6,'#9DBB55','#5E7A2E'); }); } return s; }
   };
   let b='';
   if(p && D[p]){
@@ -1481,22 +1500,25 @@ function plantSVG(p,stage){
   return `<svg viewBox="0 0 120 126" aria-hidden="true">${defs}${soil}${b}</svg>`; }
 function giveFruit(i,code){ const pl=garden.plots[i]; if(!pl||!SYNC_URL) return;
   fetch(`${SYNC_URL}/visits/${code}/${myCode}.json`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({g:'don', p:pl.p, t:Date.now(), name:share.name||''})})
-    .then(r=>{ if(!r.ok){ toast('Envoi impossible, réessaie plus tard'); return; } garden.plots[i]=null; addSeed(pl.p); GSEL=null; saveGarden(); openGarden(); toast('Offert ! Tu reçois une graine en retour.'); flyAwayTo(code); })
+    .then(r=>{ if(!r.ok){ toast('Envoi impossible, réessaie plus tard'); return; } gotAdd(pl.p); garden.plots[i]=null; addSeed(pl.p); GSEL=null; saveGarden(); openGarden(); toast('Offert ! Tu reçois une graine en retour.'); flyAwayTo(code); })
     .catch(()=>toast('Pas de connexion, réessaie plus tard')); }
 function openGarden(){
   const keepY=(!$('#sheet').hidden && $('#plots')) ? sheetInner.scrollTop : 0;
-  const seedsLine=Object.keys(PLANTS).map(k=>`<span class="feather">${PLANTS[k].name} ×${garden.seeds[k]||0}</span>`).join('');
+  try{ vanTick(); }catch(e){} try{ pepeFlowers(); }catch(e){} const seedsLine=Object.keys(PLANTS).map(k=>(k==='vanira'&&!vanOpen())?`<span class="feather" style="opacity:.7">???? · plante secrète</span>`:`<span class="feather">${PLANTS[k].name} ×${garden.seeds[k]||0}</span>`).join('');
   const mut=friends.filter(f=>isMutual(f.code));
   const plots=garden.plots.map((pl,i)=>{ if(pl && !PLANTS[pl.p]) pl=null; const st=pl?plotStage(pl):0; let body;
-    if(!pl){ if(GSEL&&GSEL.i===i){ const av=Object.keys(PLANTS).filter(k=>(garden.seeds[k]||0)>0); body = av.length ? av.map(k=>`<button class="btn sm" data-seed="${k}">${PLANTS[k].name} · ${PLANTS[k].days} j</button>`).join('') : '<span class="small muted">Plus de graines. Une journée complète en donne une.</span>'; } else body=`<button class="btn sm ghost" data-plant="${i}">Planter</button>`; }
-    else if(st<3) body=`<b>${PLANTS[pl.p].name}</b><span class="small muted">${plotLeft(pl)}</span>${(garden.items.compost||0)>0?`<button class="btn sm" data-comp="${i}">Compost · −1 j</button>`:''}`;
+    if(!pl){ if(GSEL&&GSEL.i===i){ const av=Object.keys(PLANTS).filter(k=>(garden.seeds[k]||0)>0); body = av.length ? av.map(k=>`<button class="btn sm" data-seed="${k}">${PLANTS[k].name} · ${PLANTS[k].days} j${RAAU[k]?' · '+RAAU[k].short:''}</button>`).join('') : '<span class="small muted">Plus de graines. Une journée complète en donne une.</span>'; } else body=`<button class="btn sm ghost" data-plant="${i}">Planter</button>`; }
+    else if(st<3) body=`<b>${PLANTS[pl.p].name}</b><span class="small muted">${plotLeft(pl)}</span>${vanWaits(pl)?`<button class="btn sm primary" data-wed="${i}">Marier la fleur</button>`:((garden.items.compost||0)>0 && pl.p!=='nono')?`<button class="btn sm" data-comp="${i}">Compost · −1 j</button>`:''}`;
     else if(GSEL&&GSEL.i===i&&GSEL.give) body = mut.length ? '<span class="small muted">Pour qui ?</span>'+mut.map(f=>`<button class="btn sm primary" data-to="${f.code}">${esc(f.name||fmtCode(f.code))}</button>`).join('') : '<span class="small muted">Lie dʼabord ton cœur à un·e ami·e.</span>';
-    else body=`<b>${PLANTS[pl.p].name}</b><span class="small" style="color:var(--fern);font-weight:700">Mûr !</span><button class="btn sm primary" data-give="${i}">Offrir</button><button class="btn sm" data-sell="${i}">Échanger · ${PLANTS[pl.p].worth} plumes</button><button class="btn sm ghost" data-keep="${i}">Mettre au coffre</button>`;
+    else body=`<b>${PLANTS[pl.p].name}</b><span class="small" style="color:var(--fern);font-weight:700">Mûr !</span><button class="btn sm primary" data-give="${i}">Offrir</button><button class="btn sm" data-sell="${i}">Échanger · ${PLANTS[pl.p].worth} plumes</button>${pl.p==='metua'?`<button class="btn sm ghost" data-raau="${i}">Garder près du manu</button>`:`<button class="btn sm ghost" data-keep="${i}">Mettre au coffre</button>`}`;
     return `<div class="plot">${plantSVG(pl?pl.p:null,st)}${body}</div>`; }).join('');
   openSheet(`<div class="head"><div><div class="eyebrow">Le jardin de ${esc(cfg.name)}</div><h2>Faʻaʻapu</h2></div><button class="x" id="sx" aria-label="Fermer">×</button></div>
     <div style="display:flex;gap:10px;align-items:center"><div style="width:58px;flex:none">${birdSVG(cfg,'gd')}</div><p class="small muted">Plante, laisse le temps faire, puis récolte. Rien ne meurt ici : si tu tʼabsentes, tes fruits tʼattendent.</p></div>
     <div class="card flat"><div class="eyebrow">Mes graines</div><div style="display:flex;flex-wrap:wrap;gap:6px">${seedsLine}</div></div>
     <div class="plots" id="plots">${plots}</div>
+    ${vanCard()}
+    ${raauCard()}
+    ${pepeCard()}
     <div class="card"><div class="eyebrow">Coffre et atelier</div><p class="small muted">Mets tes récoltes au coffre, puis mélange-les : hei de fleurs, salade de fruits, monoï, compost… Certaines recettes sont secrètes.</p><button class="btn" id="toChest">Ouvrir le coffre</button></div>
     ${SYNC_URL?`<div class="card flat"><div class="eyebrow">Faʻaʻapu partagé</div><p class="small muted">Un champ à deux avec un cœur lié : des plantes qui ne poussent que là, seulement les jours où vous arrosez tous les deux, et une récolte partagée à parts égales.</p>${mut.length?`<div class="row">${mut.map(f=>`<button class="btn sm" data-sgopen="${f.code}">Avec ${esc(f.name||fmtCode(f.code))}</button>`).join('')}</div>`:'<span class="small muted">Lie dʼabord ton cœur à un·e ami·e (et quʼil ou elle lie le sien).</span>'}</div>`:''}
     <p class="small muted">Offrir un fruit donne ses plumes et une graine à ton ami·e, et te rend une graine. Tu gagnes aussi une graine à chaque journée complète, et une graine de haʻari tous les 7 jours.</p>`);
@@ -1506,10 +1528,12 @@ function openGarden(){
   sheetInner.querySelectorAll('[data-sgopen]').forEach(b=>{ b.onclick=()=>openSharedGarden(b.dataset.sgopen); });
   $('#plots').addEventListener('click', e=>{ const t=e.target.closest('button'); if(!t) return; const d=t.dataset;
     if(d.plant!==undefined){ GSEL={i:+d.plant}; openGarden(); }
-    else if(d.seed && GSEL){ const k=d.seed; if(PLANTS[k] && (garden.seeds[k]||0)>0 && !garden.plots[GSEL.i]){ garden.seeds[k]--; garden.plots[GSEL.i]={p:k,t:Date.now()}; GSEL=null; saveGarden(); openGarden(); toast('Planté : '+PLANTS[k].name+', mûr dans '+PLANTS[k].days+' j'); } }
-    else if(d.sell!==undefined){ const i=+d.sell, pl=garden.plots[i]; if(pl && plotStage(pl)===3){ const w=PLANTS[pl.p].worth; feathers+=w; store.set('feathers',feathers); garden.plots[i]=null; GSEL=null; saveGarden(); renderFeathers(); openGarden(); toast('+'+w+' plumes'); } }
+    else if(d.seed && GSEL){ const k=d.seed; const why=raauWhy(k); if(why){ toast(why); return; } if(PLANTS[k] && (garden.seeds[k]||0)>0 && !garden.plots[GSEL.i]){ garden.seeds[k]--; garden.plots[GSEL.i]={p:k,t:Date.now()}; GSEL=null; saveGarden(); openGarden(); toast('Planté : '+PLANTS[k].name+', mûr dans '+PLANTS[k].days+' j'); } }
+    else if(d.sell!==undefined){ const i=+d.sell, pl=garden.plots[i]; if(pl && plotStage(pl)===3){ gotAdd(pl.p); const w=PLANTS[pl.p].worth; feathers+=w; store.set('feathers',feathers); garden.plots[i]=null; GSEL=null; saveGarden(); renderFeathers(); openGarden(); toast('+'+w+' plumes'); } }
+    else if(d.wed!==undefined){ vanWed(+d.wed); }
+    else if(d.raau!==undefined){ raauUse(+d.raau); }
     else if(d.comp!==undefined){ const i=+d.comp, pl=garden.plots[i]; if(pl && plotStage(pl)<3 && (garden.items.compost||0)>0){ garden.items.compost--; pl.t-=864e5; saveGarden(); chestBadge(); openGarden(); toast(plotStage(pl)===3?'Compost : déjà mûre !':'Compost : mûre un jour plus tôt'); } }
-    else if(d.keep!==undefined){ const i=+d.keep, pl=garden.plots[i]; if(pl && plotStage(pl)===3){ garden.store[pl.p]=(garden.store[pl.p]||0)+1; garden.plots[i]=null; GSEL=null; if(pl.p==='haari') addSeed('haari'); saveGarden(); openGarden(); toast(pl.p==='haari'?'1 coco au coffre, et une noix à replanter':'Au coffre : 1 '+PLANTS[pl.p].name); } }
+    else if(d.keep!==undefined){ const i=+d.keep, pl=garden.plots[i]; if(pl && plotStage(pl)===3){ gotAdd(pl.p); garden.store[pl.p]=(garden.store[pl.p]||0)+1; garden.plots[i]=null; GSEL=null; if(pl.p==='haari') addSeed('haari'); saveGarden(); openGarden(); toast(pl.p==='haari'?'1 coco au coffre, et une noix à replanter':'Au coffre : 1 '+PLANTS[pl.p].name); } }
     else if(d.give!==undefined){ GSEL={i:+d.give, give:true}; openGarden(); }
     else if(d.to && GSEL){ giveFruit(GSEL.i, d.to); } });
   if(SYNC_URL && friends.length && !openGarden.loaded){ openGarden.loaded=true; fetchFriends().then(()=>{ if(!$('#sheet').hidden && $('#plots')) openGarden(); }); } }
@@ -1588,7 +1612,7 @@ if(garden.monoi){ garden.mac={id:'monoi',t:garden.monoi.t}; garden.monoi=null; }
 if(garden.mac===undefined) garden.mac=null;
 store.set('garden',garden);
 let MIX={}, CSEL=null;
-const ingName = k => k==='haari' ? 'coco' : PLANTS[k].name;
+const ingName = k => k==='haari' ? 'coco' : (k==='vanira' && !vanOpen()) ? '????' : PLANTS[k].name;
 const needTxt = n => ING.filter(k=>n[k]).map(k=>n[k]+' '+ingName(k)).join(' + ');
 function matchRecipe(){ return Object.keys(ITEMS).find(id=>ING.every(k=>(MIX[k]||0)===(ITEMS[id].need[k]||0))); }
 function macState(){ const m=garden.mac; if(!m||!ITEMS[m.id]) return 0; return (Date.now()-m.t)>=ITEMS[m.id].days*864e5 ? 2 : 1; }
@@ -1639,7 +1663,7 @@ function openChest(){
     else if(d.ch==='mix') mixNow();
     else if(d.ch==='bottle'){ if(macState()===2){ const id=garden.mac.id; const first=!garden.known.includes(id); garden.mac=null; garden.items[id]=(garden.items[id]||0)+1; learn(id); saveGarden(); chestBadge(); openChest(); toast((first&&ITEMS[id].secret?'Recette secrète découverte : ':'En flacon : ')+ITEMS[id].name+' !'); } }
     else if(d.ch==='garden'){ CSEL=null; openGarden(); }
-    else if(d.use){ const id=d.use, it=ITEMS[id]; if(it.soil){ CSEL=null; openGarden(); toast('Touche « Compost » sur une plante qui pousse'); return; } if(garden.items[id]>0){ garden.items[id]--; saveGarden(); chestBadge(); setShine(it.aura); if(it.care) openSelfCare(); else { closeSheet(); say(`${it.name} ! Je rayonne : ${it.mood}.`); if(it.duo) duoBurst(); } } }
+    else if(d.use){ const id=d.use, it=ITEMS[id]; if(it.soil){ CSEL=null; openGarden(); toast('Touche « Compost » sur une plante qui pousse'); return; } if(garden.items[id]>0){ garden.items[id]--; saveGarden(); chestBadge(); setShine(it.aura); raauFx(id); if(it.care) openSelfCare(); else { closeSheet(); say(`${it.name} ! Je rayonne : ${it.mood}.`); if(it.duo) duoBurst(); } } }
     else if(d.igive){ CSEL=d.igive; openChest(); }
     else if(d.isell){ const id=d.isell; if(garden.items[id]>0){ garden.items[id]--; feathers+=ITEMS[id].worth; store.set('feathers',feathers); saveGarden(); chestBadge(); renderFeathers(); openChest(); toast('+'+ITEMS[id].worth+' plumes'); } }
     else if(d.ito && CSEL){ giveItem(CSEL,d.ito); } });
@@ -2095,8 +2119,8 @@ function placeAct(){ let h='';
     if(curPlace==='vai'){ PL.v=v; PL.t=($('#plTxt').value||'').trim(); opt.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b)); }
     else if(curPlace==='oire'){ PL.pick=+v; placeAct(); }
     else if(curPlace==='haapii'){ if(!PL.k){ PL.k=v; placeAct(); } else if(PL.k==='dispute'){ PL.e=v; placeAct(); } else opt.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b)); } });
-  if(nx) nx.onclick=()=>{ if(curPlace==='vai'){ PL.t=($('#plTxt').value||'').trim().slice(0,60); if(!PL.v) PL.v='sais'; PL.i=1; placeAct(); }
-    else if(curPlace==='tai'){ const t=[...document.querySelectorAll('.plSh')].map(x=>x.value.trim().slice(0,60)).filter(Boolean); if(!t.length){ toast('Écris au moins une bonne chose, même petite'); return; } shells.push({d:dayKey(Date.now()),t}); shells=shells.slice(-30); store.set('shells',shells); PL.i=1; placeAct(); } };
+  if(nx) nx.onclick=()=>{ if(curPlace==='vai'){ PL.t=($('#plTxt').value||'').trim().slice(0,60); if(!PL.v) PL.v='sais'; PL.i=1; placeAct(); raauFind('vai'); }
+    else if(curPlace==='tai'){ const t=[...document.querySelectorAll('.plSh')].map(x=>x.value.trim().slice(0,60)).filter(Boolean); if(!t.length){ toast('Écris au moins une bonne chose, même petite'); return; } shells.push({d:dayKey(Date.now()),t}); shells=shells.slice(-30); store.set('shells',shells); PL.i=1; placeAct(); raauFind('tai'); } };
   if($('#plAmi')) $('#plAmi').onclick=()=>openHeart();
   if($('#plHelp')) $('#plHelp').onclick=()=>{ closeSheet(); openCrisis(); };
   if(en) en.onclick=()=>{ if(curPlace==='vai') placeDone('net','La rivière sʼen occupe. Tu peux respirer.'); else if(curPlace==='tai') placeDone('thanks','Trois coquillages dans ta poche.'); else if(curPlace==='oire'){ store.set('oireI',(PL.q||0)+1); placeDone('non','Savoir dire non, ça sʼapprend.'); } else placeDone('haapii','Une étape à la fois. Faʻaitoito !'); }; }
@@ -2270,7 +2294,7 @@ function nightKey(){ const d=new Date(); if(d.getHours()<5) d.setDate(d.getDate(
 function bedDone(){ return store.get('bedNight','')===nightKey(); }
 function bedTick(){ if(!lateNow() || bedDone() || !store.get('welcomed',false)) return; if(!QUIET || !visitFree() || bubbleEl.classList.contains('show')){ setTimeout(bedTick, 12000); return; }
   birdEl.classList.remove('sleeping'); sayHTML(`Il est tard… <i>(bâille)</i> Moi je vais dormir. Et toi ?<div class="mini"><button data-m="bed:sleep">Bonne nuit</button><button data-m="bed:talk">Jʼai besoin de parler</button></div>`, 30000); }
-function bedSleep(){ store.set('bedNight',nightKey()); const himene=TUNES.find(t=>t.id==='himenepo');
+function bedSleep(){ try{ pepeCall('po'); }catch(e){} store.set('bedNight',nightKey()); const himene=TUNES.find(t=>t.id==='himenepo');
   openSheet(`<div class="head"><div><div class="eyebrow">Te pō · la nuit</div><h2>Bonne nuit</h2></div><button class="x" id="sx" aria-label="Fermer">×</button></div>
     <div style="display:flex;gap:10px;align-items:center"><div style="width:72px;flex:none">${birdSVG(cfg,'bd')}</div><p>Le sommeil répare le corps et range les émotions de la journée. Demain, ce qui pèse ce soir pèsera souvent un peu moins.</p></div>
     <div class="card flat"><h3>Avant de fermer les yeux</h3><p class="small">Trois souffles lents : inspire par le nez, souffle longtemps. Puis pose ton téléphone loin de ton oreiller, écran vers le bas.</p></div>
@@ -2392,6 +2416,71 @@ function umWire(){ const box=$('#umBox'); if(!box) return; box.addEventListener(
   else if(d.umno){ umDrop(d.umno); openChest(); }
   else if(d.umback){ const code=d.umback, o=umMap('umOut'), q=o[code]; if(!q) return; umTake(ITEMS[q.id].duo[q.part],1); delete o[code]; store.set('umOut',o); umPut(code,'umeteNon','',()=>{}); toast('Ta part est revenue dans ton coffre'); openChest(); } }); }
 function umPut(code,g,p,ok){ if(!SYNC_URL){ toast('Les liens ne marchent pas ici.'); return; } fetch(`${SYNC_URL}/visits/${code}/${myCode}.json`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({g, p:String(p).slice(0,12), t:Date.now(), name:share.name||''})}).then(r=>{ if(!r.ok){ toast('Envoi impossible, réessaie plus tard'); return; } ok(); }).catch(()=>toast('Pas de connexion, réessaie plus tard')); }
+
+/* ---------- vānira : la plante secrète ---------- */
+PLANTS.vanira.days=8; PLANTS.vanira.worth=60;
+if(!Array.isArray(garden.got)) garden.got=Object.keys(garden.store||{}).filter(k=>PLANTS[k] && k!=='haari' && garden.store[k]>0);
+if(garden.van===undefined) garden.van = !!((garden.seeds.vanira||0)>0 || (garden.store.vanira||0)>0 || garden.plots.some(pl=>pl&&pl.p==='vanira') || garden.got.includes('vanira') || (garden.known||[]).includes('monoivan'));
+store.set('garden',garden);
+function vanOpen(){ return !!garden.van; }
+function gotAdd(p){ if(!Array.isArray(garden.got)) garden.got=[]; if(PLANTS[p] && !garden.got.includes(p)) garden.got.push(p); }
+function vanWaits(pl){ return !!(pl && pl.p==='vanira' && !pl.m && (Date.now()-pl.t)/(PLANTS.vanira.days*864e5)>=.6); }
+function vanSteps(){ const got=garden.got||[]; const n=got.filter(k=>k!=='vanira').length; return [{ok:got.includes('uru')||got.includes('vi')||got.includes('haari')||got.includes('tamanu'), t:'Elle grimpe : il lui faut un grand arbre, déjà récolté une fois.'}, {ok:n>=6, t:`Elle aime les jardins variés : six plantes différentes récoltées (${Math.min(n,6)} / 6).`}, {ok:days.length>=7, t:`Elle vient à ceux qui prennent le temps : sept journées complètes (${Math.min(days.length,7)} / 7).`}]; }
+function vanTick(){ if(garden.van) return; if((garden.seeds.vanira||0)>0){ garden.van=true; saveGarden(); setTimeout(()=>toast('Plante secrète découverte : vānira !'),600); return; }
+  if(vanSteps().every(x=>x.ok)){ garden.van=true; garden.seeds.vanira=(garden.seeds.vanira||0)+1; saveGarden(); setTimeout(()=>{ toast('Plante secrète découverte : vānira ! Une graine tʼattend.'); }, 600); } }
+function vanCard(){ if(garden.van) return `<div class="card flat"><div class="eyebrow">Vānira · la plante secrète</div><p class="small muted">La plus précieuse du faʻaʻapu. Elle met ${PLANTS.vanira.days} jours, et quand sa fleur sʼouvre il faut la « marier » à la main, comme le font les planteurs : sans ce geste, pas de gousse. La fleur tʼattend le temps quʼil faut.</p></div>`;
+  return `<div class="card flat"><div class="eyebrow">???? · la plante secrète</div><p class="small muted">On dit quʼune plante très précieuse se cache dans ce faʻaʻapu. Trois indices :</p>${vanSteps().map(x=>`<p class="small" style="margin:4px 0">${x.ok?'✓':'·'} ${x.t}</p>`).join('')}<p class="small muted">Ou bien un·e ami·e qui la connaît tʼen offre une.</p></div>`; }
+function vanWed(i){ const pl=garden.plots[i]; if(!vanWaits(pl)) return; const D=PLANTS.vanira.days*864e5; pl.m=true; pl.t=Math.max(pl.t, Date.now()-.6*D); saveGarden(); openGarden(); toast('Fleur mariée. La gousse va mûrir doucement.'); if(visitFree()) say('Un geste tout petit, et pourtant sans lui rien ne vient. Prendre soin, cʼest souvent ça.'); }
+
+/* ---------- raʻau tahiti : plantes qui soignent (volontairement simple : aucune préparation) ---------- */
+Object.assign(PLANTS,{ nono:{name:'nono', un:'des fruits de nono', days:4, worth:22}, metua:{name:'metuapuaʻa', un:'des feuilles de metuapuaʻa', days:3, worth:18}, tamanu:{name:'tāmanu', un:'des noix de tāmanu', days:10, worth:45} });
+const RAAU={ nono:{short:'pousse partout', fr:'le noni', clue:'Le plus robuste : il pousse partout, même entre les pierres.', aura:'#C9D36A', days:1, line:'Le nono pousse là où rien dʼautre ne pousse. Il me rappelle quʼon peut tenir bon.'},
+  metua:{short:'à lʼombre', fr:'une fougère', clue:'Elle aime lʼombre : il lui faut un grand arbre déjà planté dans le faʻaʻapu.', aura:'#7CC3A1', days:1, line:'La metuapuaʻa pousse à lʼombre, au calme. On respire un peu ensemble ?', calm:true},
+  tamanu:{short:'bord de mer', fr:'un grand arbre du rivage', clue:'Un arbre du sable et de la pleine lumière : il ne se plante que quand ton décor est la plage. Il pousse très lentement.', aura:'#B7C94B', days:3, line:'Le tāmanu met longtemps à grandir, puis il abrite tout le monde. Je me sens protégé.'} };
+['nono','metua','tamanu'].forEach(k=>{ if(typeof garden.seeds[k]!=='number') garden.seeds[k]=0; });
+['nono','tamanu'].forEach(k=>{ if(!ING.includes(k)) ING.splice(ING.length-1,0,k); if(typeof garden.store[k]!=='number') garden.store[k]=0; });
+Object.assign(ITEMS,{
+  nonojus:{name:'Jus de nono', un:'un jus de nono', worth:60, aura:'#C9D36A', mood:'la force de se relever', need:{nono:2,anani:1}, days:0, hint:'Deux fruits amers, adoucis par une orange.'},
+  tamanuhuile:{name:'Huile de tāmanu', un:'un flacon dʼhuile de tāmanu', worth:95, aura:'#B7C94B', mood:'la protection', need:{tamanu:1,haari:1}, days:4, hint:'Pour la peau seulement. La noix du grand arbre, longtemps, dans lʼhuile de coco.'}});
+['metuabain','raautoru'].forEach(k=>{ if(garden.items && garden.items[k]) delete garden.items[k]; if(Array.isArray(garden.known)) garden.known=garden.known.filter(x=>x!==k); }); if(garden.mac && !ITEMS[garden.mac.id]) garden.mac=null;
+store.set('garden',garden);
+function raauWhy(k){ if(k==='tamanu' && curPlace!=='tai') return 'Le tāmanu est un arbre du rivage : choisis dʼabord le décor de la plage (Lieux).';
+  if(k==='metua' && !garden.plots.some(pl=>pl && ['uru','vi','haari','tamanu'].includes(pl.p))) return 'La metuapuaʻa aime lʼombre : plante dʼabord un grand arbre (ʻuru, vī, haʻari ou tāmanu).';
+  return ''; }
+function raauFind(place){ try{ const k=dayKey(Date.now()), m=store.get('raauDay',{}); if(m[place]===k) return; m[place]=k; store.set('raauDay',m);
+    const p = place==='vai' ? 'metua' : ((garden.seeds.nono||0)===0 || (store.get('raauN',0)%3)!==2) ? 'nono' : 'tamanu'; if(place==='tai') store.set('raauN',(store.get('raauN',0)||0)+1);
+    addSeed(p); setTimeout(()=>toast(place==='vai' ? 'Au bord de la rivière, tu trouves une jeune metuapuaʻa pour ton faʻaʻapu.' : p==='nono' ? 'Sur la plage, tu trouves une graine de nono pour ton faʻaʻapu.' : 'Sur le sable, une noix de tāmanu : une graine pour ton faʻaʻapu.'), 1800); }catch(e){} }
+function raauCard(){ return `<div class="card flat"><div class="eyebrow">Raʻau tahiti · les plantes qui soignent</div><p class="small muted">Trois plantes que les anciens connaissent bien. Ici, on les fait seulement pousser :</p>${Object.keys(RAAU).map(k=>`<p class="small" style="margin:4px 0"><b>${PLANTS[k].name}</b> (${RAAU[k].fr}) · ${RAAU[k].clue}</p>`).join('')}<p class="small muted">Le nono et le tāmanu vont au coffre : dans la calebasse, lʼun donne un jus, lʼautre une huile pour la peau. La metuapuaʻa est à part : on ne prépare rien avec elle ici, on la garde seulement près de ${esc(cfg.name)}. Les vrais remèdes sont lʼaffaire de ceux qui savent : ne goûte jamais une plante sans un adulte qui la connaît.</p></div>`; }
+function raauUse(i){ const pl=garden.plots[i]; if(!pl || !RAAU[pl.p] || plotStage(pl)!==3) return; const R=RAAU[pl.p]; gotAdd(pl.p); garden.plots[i]=null; GSEL=null; saveGarden();
+  store.set('shine',{until:Date.now()+R.days*864e5, color:R.aura}); applyShine(); closeSheet(); say(R.line); toast(R.days>1?'Aura pendant '+R.days+' jours':'Aura jusquʼà demain');
+  if(R.calm) setTimeout(()=>{ if(visitFree()) openBreath(null); },3200); }
+function raauFx(id){ try{ if(ITEMS[id] && Object.keys(ITEMS[id].need||{}).length>=3) pepeCall('anu'); }catch(e){} if(id==='nonojus'){ let n=0; garden.plots.forEach(pl=>{ if(pl && PLANTS[pl.p] && plotStage(pl)<3 && pl.p!=='nono'){ pl.t-=864e5; n++; } }); saveGarden(); setTimeout(()=>{ say('Pouah, cʼest amer ! Mais ça remet debout.'+(n?' Tout le faʻaʻapu en profite : un jour de gagné.':'')); },900); }
+  else if(id==='tamanuhuile'){ store.set('shine',{until:Date.now()+3*864e5, color:ITEMS[id].aura}); applyShine(); setTimeout(()=>{ say('De lʼhuile de tāmanu sur mes plumes : je me sens protégé pour trois jours. Cʼest pour la peau, jamais pour la bouche.'); },900); } }
+
+/* ---------- pepe : les papillons qui suivent le manu ---------- */
+const PEPE={ hau:{n:'Pepe bleu', c:'#4FB6E8', c2:'#BFE9FF', how:'Il vient quand tu respires avec la vague, jusquʼau bout.', gift:'Il apporte le calme : tes plantes gagnent une demi-journée.'},
+  tiare:{n:'Pepe des fleurs', c:'#F28C38', c2:'#FFD9A0', how:'Il vient quand trois fleurs différentes poussent en même temps dans le faʻaʻapu.', gift:'Il apporte une graine de fleur.'},
+  here:{n:'Pepe rose', c:'#F06FA0', c2:'#FFD0E0', how:'Il vient quand ton manu porte un signe à un cœur lié.', gift:'Il apporte 5 plumes.'},
+  anu:{n:'Pepe arc-en-ciel', c:'#9B6BD6', c2:'#FFE27A', how:'Il vient quand tu utilises une création faite de trois ingrédients différents.', gift:'Lʼaura de ton manu dure un jour de plus.'},
+  po:{n:'Pepe de nuit', c:'#8FA3C8', c2:'#E6ECF8', how:'Il vient quand tu dis bonne nuit à ton manu à lʼheure du coucher.', gift:'Il apporte 3 plumes pour demain.'} };
+function pepeSVG(k){ const P=PEPE[k]; return `<svg viewBox="0 0 22 18" aria-hidden="true"><g class="pw"><path d="M11 9 C7 0 0 0 1 6 C1.5 9 6 10 11 9Z" fill="${P.c}"/><path d="M11 9 C15 0 22 0 21 6 C20.5 9 16 10 11 9Z" fill="${P.c}"/><path d="M11 9 C6 10 2 13 5 16 C8 18 10 13 11 9Z" fill="${P.c2}"/><path d="M11 9 C16 10 20 13 17 16 C14 18 12 13 11 9Z" fill="${P.c2}"/><circle cx="5" cy="5" r="1.3" fill="${P.c2}"/><circle cx="17" cy="5" r="1.3" fill="${P.c2}"/></g><path d="M11 4.5 V14" stroke="#3A2A1C" stroke-width="1.6" stroke-linecap="round"/><path d="M11 4.5 l-2 -3 M11 4.5 l2 -3" stroke="#3A2A1C" stroke-width=".7" fill="none" stroke-linecap="round"/></svg>`; }
+function pepeNow(){ const m=store.get('pepe',{}), t=Date.now(); return Object.keys(PEPE).filter(k=>m && m[k]>t); }
+function pepeRender(){ let box=birdEl.querySelector('.pepes'); if(!box){ box=document.createElement('div'); box.className='pepes'; birdEl.appendChild(box); }
+  const act=pepeNow(); const key=act.join(','); if(box.dataset.k===key) return; box.dataset.k=key;
+  box.innerHTML=act.map((k,i)=>{ const a=i*1.9, r=(x,y)=>`${Math.round(x)}px,${Math.round(y)}px`; const pts=[[-46+i*8,-30-i*6],[30-i*5,-52+i*4],[52-i*6,-8-i*8],[-18+i*10,-58+i*5]];
+    return `<div class="pepe" style="--d:${6+i*1.3}s;--dl:${-i*1.7}s;--x1:${pts[0][0]}px;--y1:${pts[0][1]}px;--x2:${pts[1][0]}px;--y2:${pts[1][1]}px;--x3:${pts[2][0]}px;--y3:${pts[2][1]}px;--x4:${pts[3][0]}px;--y4:${pts[3][1]}px">${pepeSVG(k)}</div>`; }).join(''); }
+function pepeCall(k){ if(!PEPE[k]) return false; const m=store.get('pepe',{}), t=Date.now(); if(m[k]>t) return false; m[k]=t+864e5; store.set('pepe',m);
+  const seen=store.get('pepeSeen',[]); const first=!seen.includes(k); if(first){ seen.push(k); store.set('pepeSeen',seen); }
+  if(k==='hau'){ garden.plots.forEach(pl=>{ if(pl && PLANTS[pl.p] && plotStage(pl)<3) pl.t-=432e5; }); saveGarden(); }
+  else if(k==='tiare'){ addSeed(['tiare','aute','tipanie'][Math.floor(Math.random()*3)]); }
+  else if(k==='here'){ feathers+=5; store.set('feathers',feathers); renderFeathers(); }
+  else if(k==='po'){ feathers+=3; store.set('feathers',feathers); renderFeathers(); }
+  else if(k==='anu'){ const sh=store.get('shine',null); if(sh && sh.until>t){ sh.until+=864e5; store.set('shine',sh); applyShine(); } }
+  pepeRender(); setTimeout(()=>toast((first?'Nouveau : ':'')+PEPE[k].n+' ! '+PEPE[k].gift), 2200); return true; }
+function pepeFlowers(){ const fl=['tiare','aute','tipanie']; if(fl.every(k=>garden.plots.some(pl=>pl && pl.p===k))) pepeCall('tiare'); }
+function pepeCard(){ const seen=store.get('pepeSeen',[]), act=pepeNow();
+  return `<div class="card flat"><div class="eyebrow">Les pepe · papillons</div><p class="small muted">Certains papillons viennent voler près de ${esc(cfg.name)} pendant un jour, et apportent un petit cadeau. Chacun a sa raison de venir.</p>${Object.keys(PEPE).map(k=>{ const P=PEPE[k], ok=seen.includes(k); return `<div class="pepeRow"><span class="pi" style="${ok?'':'opacity:.3;filter:grayscale(1)'}">${pepeSVG(k)}</span><span class="small">${ok?`<b>${P.n}</b>${act.includes(k)?' · <span style="color:var(--fern);font-weight:700">il est là</span>':''}<br>${P.how} ${P.gift}`:`<b>????</b><br>${P.how}`}</span></div>`; }).join('')}</div>`; }
+try{ pepeRender(); }catch(e){} setInterval(()=>{ try{ pepeRender(); }catch(e){} }, 60000);
 
 /* ---------- install button ---------- */
 const CAN_INSTALL = !!document.querySelector('link[rel="manifest"]');

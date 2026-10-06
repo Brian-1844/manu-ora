@@ -273,6 +273,48 @@ Tout tient dans `index.html` (pas de serveur, pas de compte). Les données reste
 - Petites histoires à choix ('a'amu) pour apprendre à reconnaître les émotions chez les autres.
 - Mode école / groupe de jeunes, en lien avec le label « École en santé ».
 
+## Les pepe, papillons qui suivent le manu (version 59)
+
+Cinq papillons viennent voler autour du manu pendant un jour, chacun pour une raison, avec un petit cadeau. La liste (et les « ???? » pas encore vus) est en bas du faʻaʻapu.
+
+| Papillon | Il vient quand… | Cadeau |
+|---|---|---|
+| Pepe bleu | on finit la respiration avec la vague | les plantes en cours gagnent une demi-journée |
+| Pepe des fleurs | tiare, ʻaute et tīpaniē poussent en même temps | une graine de fleur |
+| Pepe rose | le manu porte un signe à un cœur lié | 5 plumes |
+| Pepe arc-en-ciel | on utilise une création faite de trois ingrédients différents | l'aura dure un jour de plus |
+| Pepe de nuit | on dit bonne nuit au manu à l'heure du coucher | 3 plumes |
+
+Un même papillon ne revient pas tant qu'il est là (donc une fois par jour au plus). Rien n'est perdu s'il repart. Le mot *pepe* est à faire valider.
+
+## Raʻau tahiti : les plantes qui soignent (versions 55 à 58)
+
+Trois plantes médicinales, chacune avec sa condition de culture :
+
+| Plante | Où trouver la graine | Condition pour planter | Durée |
+|---|---|---|---|
+| **nono** (noni) | activité de la plage (trois coquillages) | aucune : il pousse partout ; le compost ne lui sert à rien | 4 j |
+| **metuapuaʻa** (fougère) | activité de la rivière (poser un souci) | un grand arbre déjà planté (ʻuru, vī, haʻari, tāmanu) | 3 j |
+| **tāmanu** | parfois sur la plage | le décor choisi doit être la plage (arbre du rivage, pleine lumière) | 10 j |
+
+Une graine au plus par lieu et par jour.
+
+**Volontairement simple (versions 57-58).**
+
+- **nono** et **tāmanu** vont au coffre et servent d'ingrédients : *Jus de nono* (2 nono + 1 ʻānani ; les autres plantes en cours gagnent un jour) et *Huile de tāmanu* (1 tāmanu + 1 coco, 4 jours ; aura 3 jours). L'huile est présentée comme **pour la peau seulement**, et le manu le redit quand on l'utilise.
+- **metuapuaʻa** est un cas à part : aucune préparation, elle ne va pas dans la calebasse. Mûre, on la « garde près du manu » (aura, et proposition de respirer). Raison : elle peut être dangereuse si on l'avale.
+- L'appli dit : « Ne goûte jamais une plante sans un adulte qui la connaît. »
+
+**À faire valider** par une personne qui connaît le raʻau tahiti : le choix des plantes, leurs noms, et le fait de les montrer ainsi.
+
+## Vānira, la plante secrète (version 54)
+
+La vanille n'apparaît plus dans la liste : elle est affichée « ???? · plante secrète » avec trois indices dans le faʻaʻapu. Elle se révèle (avec une graine) quand les trois sont réunis : un grand arbre déjà récolté (ʻuru, vī ou haʻari), six plantes différentes récoltées, sept journées complètes. Autre chemin : un·e ami·e qui la connaît en offre une. Ceux qui l'avaient déjà la gardent.
+
+C'est la plante la plus précieuse (60 plumes, 8 jours). Quand sa fleur s'ouvre, il faut la « marier » à la main (un bouton), comme le font les planteurs ; la fleur attend sans limite de temps, rien ne se perd.
+
+Ukulele : démarrage immédiat des airs (attente du réveil du son avant de lancer l'air, intro du *Pehe tōʻere* raccourcie, tōʻere plus fort).
+
 ## À deux : ukulele et calebasse partagés (version 53)
 
 Deux choses qui ne se font qu'avec un cœur lié. Personne n'a besoin d'être connecté en même temps : le manu fait l'aller-retour.
