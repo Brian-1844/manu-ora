@@ -77,9 +77,9 @@ Les recettes secrètes apparaissent comme « ??? » avec un indice dans le carne
 
 Quand quelqu'un choisit un ami comme personne de confiance, son manu lui porte une étoile qui brille en haut de l'écran de veille. En la touchant, l'ami lit ce que cela veut dire et peut la garder ou la rendre. S'il la rend, la personne est prévenue et peut choisir quelqu'un d'autre.
 
-## Gros stress · calmer la tempête
+## Trop de stress · calmer la tempête
 
-Un bouton corail « Gros stress ? » est toujours visible sur l'écran calme (aussi dans le petit menu du manu et sur la carte d'accueil). Il ouvre un guide court, en quatre pas :
+Un bouton corail « Trop de stress ? » est toujours visible sur l'écran calme (aussi dans le petit menu du manu et sur la carte d'accueil). Il ouvre un guide court, en quatre pas :
 
 1. **Souffler** – un cercle guide la respiration (expirer plus longtemps qu'inspirer).
 2. **Relâcher le corps** – poings, épaules, mâchoire.
@@ -100,6 +100,8 @@ Sur l'écran calme, le bouton « Choisir un lieu » (aussi dans le petit menu du
 | **Te fare haʻapiʻiraʻa** · l'école | ballon, arbre | *Un moment difficile à l'école* : le trac, une dispute (phrase en « je »), les moqueries (victime, témoin, auteur) |
 
 Chaque activité terminée donne une plume (dans la limite de trois par jour). Les textes sur les moqueries et la pression du groupe sont à faire relire en priorité par un·e psychologue ; les noms de lieux en reo tahiti par un locuteur.
+
+**Jour ou nuit** : l'apparence claire ou sombre suit l'heure (clair de 6 h à 18 h), et non plus le thème sombre du téléphone. Dans « Choisir un lieu », trois boutons permettent de forcer : Automatique, Toujours le jour, Toujours la nuit.
 
 ## Te tere (le voyage)
 

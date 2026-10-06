@@ -1,8 +1,9 @@
 <!doctype html>
-<html lang="fr">
+<html lang="fr" translate="no" class="notranslate">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="google" content="notranslate">
 <meta name="theme-color" content="#1AA3B1">
 <meta name="description" content="Manu Ora : un compagnon-oiseau polynésien pour nommer ses émotions en reo tahiti et en français, et trouver de l'aide.">
 <link rel="manifest" href="./manifest.webmanifest">
@@ -356,7 +357,11 @@ body.quiet .app{display:none}
 @keyframes rivgo{0%{transform:translate(8px,0) rotate(-3deg);opacity:1}40%{transform:translate(30vw,8px) rotate(4deg);opacity:1}100%{transform:translate(110vw,-4px) rotate(-6deg);opacity:0}}
 @media (prefers-reduced-motion: reduce){.rivbox:before,.rivleaf{animation:none}}
 .plot svg{max-width:104px}
-.installfloat{position:absolute;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));white-space:nowrap}
+.installfloat{display:flex;align-items:center;padding:0}
+.installfloat[hidden]{display:none}
+.installfloat button{border:0;background:none;font:inherit;color:inherit;padding:6px 4px 6px 12px;cursor:pointer}
+.installfloat #installX{padding:6px 11px 6px 6px;font-size:1.05rem;line-height:1;opacity:.7}
+.installfloat{position:absolute;right:14px;bottom:calc(132px + env(safe-area-inset-bottom,0px));white-space:nowrap}
 .qfeather span:empty{display:none}
 .bird.shiny svg{filter:drop-shadow(0 0 7px var(--aura,#FFD66E)) drop-shadow(0 0 3px var(--aura,#FFD66E)) drop-shadow(0 6px 6px rgba(0,0,0,.18))}
 .bird.rainbow svg{animation:rainbowAura 5s linear infinite}
@@ -406,7 +411,7 @@ body.quiet .app{display:none}
             <button class="btn" id="btnBreathe" data-i18n="breathe">Respirer 1 min</button>
             <button class="btn" id="btnUke">Ukulele</button>
             <button class="btn" id="btnPlace">Lieux du jour</button>
-            <button class="btn coral" id="btnStress">Gros stress</button>
+            <button class="btn coral" id="btnStress">Trop de stress</button>
           </div>
         </div>
 
@@ -551,10 +556,10 @@ body.quiet .app{display:none}
     <button class="menubtn" id="menuBtn" aria-label="Ouvrir tout Manu Ora">≡</button>
   </div>
   <div class="stars" id="stars"></div>
-  <button class="tbtn installfloat" id="installBtn" hidden>Installer lʼappli</button>
+  <span class="tbtn installfloat" id="installBtn" hidden><button id="installGo">Installer lʼappli</button><button id="installX" aria-label="Masquer ce bouton">×</button></span>
   <button class="tbtn terefloat" id="tereBtn" hidden>Défi du jour</button>
   <button class="tbtn placefloat" id="placeBtn">Choisir un lieu</button>
-  <button class="tbtn stressfloat" id="stressBtn">Gros stress ?</button>
+  <button class="tbtn stressfloat" id="stressBtn">Trop de stress ?</button>
   <p class="qhint" id="qhint">Touche deux fois ton manu pour dire comment tu te sens.</p>
 </div>
 <div class="ringbg" id="ringbg" hidden></div>
@@ -1104,7 +1109,7 @@ function quietMove(){ if(B.asking){ idle(2); return; } const hm=homePoint(); if(
 function setQuiet(on){ QUIET=on; store.set('quiet',on); document.body.classList.toggle('quiet',on); closeRing(); bubbleEl.classList.remove('show'); B.asking=false; B.afterIdle=null; B.onArrive=null;
   if(on){ renderHeart(); goHome(); } else { B.perched=false; renderHome(); startFly({x:Math.min(60,innerWidth-BW-8), y:groundY()}); } }
 function sayHTML(html, ms){ bubbleEl.innerHTML=html; bubbleEl.classList.add('show'); placeBubble(); clearTimeout(say.t); say.t=setTimeout(()=>bubbleEl.classList.remove('show'), ms||6000); }
-function miniMenu(){ sayHTML(`${esc(randomLine())}<div class="mini"><button data-m="stress">Gros stress</button><button data-m="check">Faire le point</button><button data-m="place">Lieux</button><button data-m="tere">Te tere</button><button data-m="breathe">Respirer</button><button data-m="uke">Ukulele</button><button data-m="heart">Mon cœur</button><button data-m="garden">Faʻaʻapu</button><button data-m="chest">Coffre</button><button data-m="sky">Te raʻi</button>${has('x:dance')?'<button data-m="dance">Danser</button>':''}${has('x:flip')?'<button data-m="flip">Salto</button>':''}${QUIET?'<button data-m="app">Tout Manu Ora</button>':'<button data-m="quiet">Mode veille</button>'}</div>`, 9000); }
+function miniMenu(){ sayHTML(`${esc(randomLine())}<div class="mini"><button data-m="stress">Trop de stress</button><button data-m="check">Faire le point</button><button data-m="place">Lieux</button><button data-m="tere">Te tere</button><button data-m="breathe">Respirer</button><button data-m="uke">Ukulele</button><button data-m="heart">Mon cœur</button><button data-m="garden">Faʻaʻapu</button><button data-m="chest">Coffre</button><button data-m="sky">Te raʻi</button>${has('x:dance')?'<button data-m="dance">Danser</button>':''}${has('x:flip')?'<button data-m="flip">Salto</button>':''}${QUIET?'<button data-m="app">Tout Manu Ora</button>':'<button data-m="quiet">Mode veille</button>'}</div>`, 9000); }
 bubbleEl.addEventListener('click', e=>{ const b=e.target.closest('[data-m]'); if(!b) return; e.stopPropagation(); bubbleEl.classList.remove('show'); const m=b.dataset.m;
   if(m==='stress') openStress(true); else if(m==='place') openPlace(); else if(m==='tere') openTere(); else if(m==='garden') openGarden(); else if(m==='chest') openChest(); else if(m==='sky') openSky(); else if(m==='dance'||m==='flip') playAnim(m); else if(m==='breathe') openBreath(null); else if(m==='check') openCheckin(); else if(m==='uke') playUke(); else if(m==='heart') openHeart(); else if(m==='app') setQuiet(false); else if(m==='quiet') setQuiet(true); else if(m==='pet') say('Glisse ton doigt sur mes plumes, tout doucement.'); });
 
@@ -1602,7 +1607,7 @@ function nightInner(){ let seed=11; const rnd=()=>{ seed=(seed*16807)%2147483647
     o.pts.forEach(pt=>{ const c=pt[3]||'#FFFFFF'; h+=`<circle cx="${pt[0]}" cy="${pt[1]}" r="${pt[2]*2.4}" fill="${c}" opacity=".16"/><circle cx="${pt[0]}" cy="${pt[1]}" r="${pt[2]}" fill="${c}"/>`; }); });
   pillars.slice(0,10).forEach((p,i)=>{ const q=ANA_POS[i]; h+=`<circle cx="${q[0]}" cy="${q[1]}" r="9" fill="#FFE2A8" opacity=".16"/><polygon points="${starPts(q[0],q[1],5)}" fill="#FFE2A8"/>`; });
   return h+moonSVG(312,118,17); }
-function renderNight(){ const q=$('#quiet'), el=$('#nightSky'); if(!q||!el) return; const on=isNight(); q.classList.toggle('night',on); if(on){ el.innerHTML=nightInner(); el.removeAttribute('hidden'); } else { el.innerHTML=''; el.setAttribute('hidden',''); } try{ renderPlace(); }catch(e){} }
+function renderNight(){ const q=$('#quiet'), el=$('#nightSky'); if(!q||!el) return; const on=isNight(); try{ document.documentElement.setAttribute('data-theme', on?'dark':'light'); }catch(e){} q.classList.toggle('night',on); if(on){ el.innerHTML=nightInner(); el.removeAttribute('hidden'); } else { el.innerHTML=''; el.setAttribute('hidden',''); } try{ renderPlace(); }catch(e){} }
 setInterval(renderNight,5*60000);
 const STAR_MSG=['Je pense à toi.','Merci dʼêtre là.','Courage, je suis avec toi.','Je suis fier·e de toi.','Pardon.','Tu me manques.'];
 function starGift(p){ const m=/^s(\d)?_([a-z]+)$/.exec(typeof p==='string'?p:''); if(!m) return null; const o=SKY.find(x=>x.id===m[2]); return o ? {o, msg:STAR_MSG[+(m[1]||0)]||STAR_MSG[0]} : null; }
@@ -1894,9 +1899,13 @@ function openPlace(){ PL={};
   openSheet(`<div class="head"><div><div class="eyebrow">Les lieux du jour</div><h2>Où se pose ${esc(cfg.name)} ?</h2></div><button class="x" id="sx" aria-label="Fermer">×</button></div>
     <div class="ptiles" id="ptiles">${tiles}</div>
     ${cur?`<div class="card"><div class="eyebrow">Lʼactivité de ce lieu</div><h3>${cur.a}</h3><p class="small">${cur.d}</p><button class="btn primary" id="plGo">Commencer</button></div>`:'<p class="small muted">Choisis un lieu : chacun a son décor et une petite activité pour apprendre à vivre avec ses émotions.</p>'}
-    <p class="small muted">Le décor sʼaffiche le jour. La nuit, cʼest le ciel étoilé qui revient.</p>`);
+    <div class="card flat"><div class="eyebrow">Jour ou nuit</div><div class="opt" id="plNight">${[['auto','Automatique'],['off','Toujours le jour'],['on','Toujours la nuit']].map(x=>`<button class="${(cfg.night||'auto')===x[0]?'on':''}" data-n="${x[0]}">${x[1]}</button>`).join('')}</div><p class="small muted">En automatique, lʼécran est clair de 6 h à 18 h, puis le ciel étoilé revient. Les décors sʼaffichent le jour.</p></div>`);
+  $('#plNight').addEventListener('click', e=>{ const b=e.target.closest('[data-n]'); if(!b) return; cfg.night=b.dataset.n; store.set('cfg',cfg); renderNight(); openPlace(); });
   $('#sx').onclick=closeSheet;
-  $('#ptiles').addEventListener('click', e=>{ const b=e.target.closest('[data-pl]'); if(!b) return; setPlace(b.dataset.pl); openPlace(); });
+  $('#ptiles').addEventListener('click', e=>{ const b=e.target.closest('[data-pl]'); if(!b) return; const k=b.dataset.pl;
+    if(k!=='none'){ if(cfg.night==='on'){ cfg.night='auto'; store.set('cfg',cfg); renderNight(); } if(!QUIET) setQuiet(true); }
+    setPlace(k); openPlace();
+    if(k!=='none') toast(isNight() ? 'Il fait nuit : le décor reviendra au matin. Pour le voir maintenant, choisis « Toujours le jour ».' : 'Décor choisi : '+PLACES[k].n); });
   if(cur) $('#plGo').onclick=()=>{ PL={i:0}; placeAct(); }; }
 function placeHead(t){ return `<div class="head"><div><div class="eyebrow">${PLACES[curPlace].n} · ${PLACES[curPlace].s}</div><h2>${t}</h2></div><button class="x" id="sx" aria-label="Fermer">×</button></div>`; }
 function placeDone(act,msg){ award(act); closeSheet(); say(msg||'Māuruuru. Tu as pris soin de toi.'); }
@@ -1953,19 +1962,21 @@ renderPlace(); setInterval(renderPlace,5*60000);
 const CAN_INSTALL = !!document.querySelector('link[rel="manifest"]');
 const STANDALONE = matchMedia('(display-mode: standalone)').matches || navigator.standalone===true;
 let deferredInstall=null;
-function setInstall(on){ const a=$('#installBtn'), c=$('#installCard'); if(a) a.hidden=!on; if(c) c.hidden=!on; }
+function hideInstall(){ store.set('instHide',true); const a=$('#installBtn'); if(a) a.hidden=true; }
+function setInstall(on){ const a=$('#installBtn'), c=$('#installCard'); if(a) a.hidden=!on || store.get('instHide',false); if(c) c.hidden=!on; }
 window.addEventListener('beforeinstallprompt', e=>{ e.preventDefault(); deferredInstall=e; if(!STANDALONE) setInstall(true); });
-window.addEventListener('appinstalled', ()=>{ deferredInstall=null; setInstall(false); toast('Manu Ora est installé sur ton écran dʼaccueil'); });
+window.addEventListener('appinstalled', ()=>{ deferredInstall=null; hideInstall(); setInstall(false); toast('Manu Ora est installé sur ton écran dʼaccueil'); });
 function doInstall(){
-  if(deferredInstall){ const p=deferredInstall; p.prompt(); p.userChoice.then(r=>{ if(r && r.outcome==='accepted') setInstall(false); deferredInstall=null; }).catch(()=>{}); return; }
+  if(deferredInstall){ const p=deferredInstall; p.prompt(); p.userChoice.then(r=>{ if(r && r.outcome==='accepted'){ hideInstall(); setInstall(false); } deferredInstall=null; }).catch(()=>{}); return; }
   const ua=navigator.userAgent||''; const ios=/iPhone|iPad|iPod/.test(ua); const android=/Android/.test(ua);
   const steps = ios ? ['Ouvre cette page dans <b>Safari</b>.','Touche le bouton <b>Partager</b> (le carré avec une flèche vers le haut).','Choisis <b>« Sur lʼécran dʼaccueil »</b>, puis <b>Ajouter</b>.']
     : android ? ['Touche le menu <b>⋮</b> en haut à droite du navigateur.','Choisis <b>« Ajouter à lʼécran dʼaccueil »</b> ou <b>« Installer lʼapplication »</b>.','Confirme avec <b>Installer</b>.']
     : ['Dans la barre dʼadresse, clique sur lʼicône <b>Installer</b> (un écran avec une flèche).','Sinon : menu du navigateur → <b>« Installer Manu Ora »</b>.'];
   openSheet(`<div class="head"><h2>Installer Manu Ora</h2><button class="x" id="sx" aria-label="Fermer">×</button></div><p class="small muted">Lʼicône du manu apparaîtra sur ton écran dʼaccueil, et Manu Ora sʼouvrira comme une appli.</p><div class="stack">${steps.map((t,i)=>`<div class="card flat"><p><b>${i+1}.</b> ${t}</p></div>`).join('')}</div><button class="btn" id="instOk">Compris</button>`);
-  $('#sx').onclick=closeSheet; $('#instOk').onclick=closeSheet; }
+  $('#sx').onclick=closeSheet; $('#instOk').onclick=()=>{ hideInstall(); closeSheet(); }; }
 $('#gardenBtn').onclick=()=>openGarden(); gardenBadge(); $('#skyBtn').onclick=()=>openSky(); $('#tereHomeBtn').onclick=()=>openTere();
-$('#installBtn').onclick=doInstall; $('#installBtn2').onclick=doInstall;
+$('#installGo').onclick=doInstall; $('#installX').onclick=()=>{ hideInstall(); toast('Bouton masqué. Tu le retrouves dans lʼaccueil.'); }; $('#installBtn2').onclick=doInstall;
+try{ document.documentElement.setAttribute('translate','no'); document.documentElement.classList.add('notranslate'); }catch(e){}
 if(CAN_INSTALL && !STANDALONE) setInstall(true);
 
 /* ---------- boot ---------- */
