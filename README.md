@@ -4,6 +4,16 @@ Ton manu, tes émotions. Un compagnon-oiseau polynésien qui se promène sur l'�
 
 **Prototype** : ce n'est pas un soin médical. En cas d'idées noires, l'appli renvoie vers SOS Suicide Polynésie, le 3114 et le 15.
 
+## Première ouverture et menu
+
+- **Bienvenue en deux écrans** : on nomme le manu et on choisit sa couleur, puis deux choses à savoir (pas un soin médical, données sur le téléphone). En fermant, le manu propose tout de suite la ronde des couleurs.
+- **Première semaine guidée** : chaque nouveau jour d'utilisation, le manu présente une porte de plus (le défi du jour, le faʻaʻapu, respirer, le cœur lié, les lieux, le ciel). Rien n'est verrouillé : tout reste accessible dans le menu, l'entrée du jour porte l'étiquette « Nouveau ». Les pastilles jardin, coffre et ciel en haut de l'écran n'apparaissent qu'une fois ces portes ouvertes (ou quand une récolte attend).
+- **Un seul menu** : le bouton « Menu » de l'écran calme ouvre toutes les entrées avec un libellé et une ligne d'explication. Sur l'écran calme ne reste que « Trop de stress ? », le filet de sécurité.
+- **Partager l'appli** : dans le menu, envoie le lien du site (partage du téléphone, ou copie du lien).
+- **Accessibilité** : contrastes des boutons conformes (texte blanc sur bleu foncé, corail plus profond), zones tactiles d'au moins 44 px, petits textes agrandis. Vérifié avec axe-core : zéro violation WCAG 2 A/AA sur l'écran calme, le menu et l'accueil.
+- **Polices locales** : Fredoka et Nunito sont dans le dossier `fonts/` (148 Ko), mises en cache hors ligne. Plus aucun appel à Google Fonts.
+- **Version des données** : la clé `manuora.v` (actuellement 2) permet de migrer les anciennes données lors des prochaines mises à jour. Les utilisateurs existants gardent tout et voient toutes les portes ouvertes.
+
 ## Comment ça marche
 
 **Mode veille (écran par défaut).** Le manu se repose dans un coin de l'écran (choix du coin dans « Mon manu »). En haut à gauche, un petit cœur se remplit des couleurs de la journée ; en haut à droite, « ≡ » ouvre tout Manu Ora (point complet, mots, personnalisation, aide).

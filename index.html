@@ -14,8 +14,17 @@
 <title>Manu Ora</title>
 </head>
 <body>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:ital,wght@0,400;0,600;0,700;1,400&display=swap">
 <style>
+@font-face{font-family:'Fredoka';font-style:normal;font-weight:500;font-display:swap;src:url(./fonts/fredoka-latin-500-normal.woff2) format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}
+@font-face{font-family:'Fredoka';font-style:normal;font-weight:500;font-display:swap;src:url(./fonts/fredoka-latin-ext-500-normal.woff2) format('woff2');unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF}
+@font-face{font-family:'Fredoka';font-style:normal;font-weight:600;font-display:swap;src:url(./fonts/fredoka-latin-600-normal.woff2) format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}
+@font-face{font-family:'Fredoka';font-style:normal;font-weight:600;font-display:swap;src:url(./fonts/fredoka-latin-ext-600-normal.woff2) format('woff2');unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF}
+@font-face{font-family:'Nunito';font-style:normal;font-weight:400;font-display:swap;src:url(./fonts/nunito-latin-400-normal.woff2) format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}
+@font-face{font-family:'Nunito';font-style:normal;font-weight:400;font-display:swap;src:url(./fonts/nunito-latin-ext-400-normal.woff2) format('woff2');unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF}
+@font-face{font-family:'Nunito';font-style:normal;font-weight:700;font-display:swap;src:url(./fonts/nunito-latin-700-normal.woff2) format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}
+@font-face{font-family:'Nunito';font-style:normal;font-weight:700;font-display:swap;src:url(./fonts/nunito-latin-ext-700-normal.woff2) format('woff2');unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF}
+@font-face{font-family:'Nunito';font-style:italic;font-weight:400;font-display:swap;src:url(./fonts/nunito-latin-400-italic.woff2) format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}
+@font-face{font-family:'Nunito';font-style:italic;font-weight:400;font-display:swap;src:url(./fonts/nunito-latin-ext-400-italic.woff2) format('woff2');unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF}
 /* Layout: a one-screen phone app. A roaming bird lives on a fixed layer above a scrolling panel; four tabs below; check-in and help open as bottom sheets. */
 :root{
   --bg:#EDF5F4;        /* lagoon-tinted off-white */
@@ -26,7 +35,10 @@
   --line:#CBE0DF;
   --lagoon:#1AA3B1;    /* accent */
   --lagoon-ink:#0F6E78;
-  --coral:#E4583F;     /* warning / crisis */
+  --coral:#C8402F;     /* warning / crisis : lisible en texte sur blanc (4.9:1) */
+  --btn:#137F8B;       /* fond des boutons sous texte blanc (4.7:1) */
+  --btn-ink:#FFFFFF;
+  --coral-ink:#FFFFFF;
   --sun:#F0A23A;
   --fern:#3B8C58;
   --tiare:#FFF6E3;
@@ -39,12 +51,14 @@
   :root:not([data-theme="light"]){
     --bg:#0B1C25; --surface:#13303B; --surface-2:#0F2730; --fg:#E7F3F2; --muted:#9FBBC1; --line:#22434F;
     --lagoon:#38C8D3; --lagoon-ink:#9EE6EC; --coral:#FF7A62; --sun:#FFBB5E; --fern:#62C486; --tiare:#2B3F3C;
+    --btn:#38C8D3; --btn-ink:#0B1C25; --coral-ink:#0B1C25;
     --shadow:0 10px 30px rgba(0,0,0,.45); color-scheme:dark;
   }
 }
 :root[data-theme="dark"]{
   --bg:#0B1C25; --surface:#13303B; --surface-2:#0F2730; --fg:#E7F3F2; --muted:#9FBBC1; --line:#22434F;
   --lagoon:#38C8D3; --lagoon-ink:#9EE6EC; --coral:#FF7A62; --sun:#FFBB5E; --fern:#62C486; --tiare:#2B3F3C;
+  --btn:#38C8D3; --btn-ink:#0B1C25; --coral-ink:#0B1C25;
   --shadow:0 10px 30px rgba(0,0,0,.45); color-scheme:dark;
 }
 *{box-sizing:border-box}
@@ -61,7 +75,7 @@ h3{font-size:1.05rem}
 p{margin:0}
 .muted{color:var(--muted)}
 .small{font-size:.85rem}
-.eyebrow{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.eyebrow{font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:700}
 
 .app{height:100%;max-width:520px;margin:0 auto;display:flex;flex-direction:column;position:relative;padding-top:env(safe-area-inset-top,0px)}
 .top{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 16px 8px}
@@ -70,16 +84,16 @@ p{margin:0}
 .brand h1{font-size:1.25rem}
 .brand .sub{font-size:.75rem;color:var(--muted);line-height:1.1}
 .topbtns{display:flex;gap:8px}
-.tbtn{border:1.5px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 12px;font-family:var(--display);font-weight:600;font-size:.9rem}
-.tbtn.on{background:var(--lagoon);border-color:var(--lagoon);color:#fff}
+.tbtn{border:1.5px solid var(--line);background:var(--surface);border-radius:999px;padding:8px 14px;min-height:44px;font-family:var(--display);font-weight:600;font-size:.9rem}
+.tbtn.on{background:var(--btn);border-color:var(--btn);color:var(--btn-ink)}
 .tbtn.help{border-color:var(--coral);color:var(--coral)}
 
 .panel{flex:1;overflow:auto;padding-block:6px 150px;padding-inline:16px;display:flex;flex-direction:column;gap:14px;min-width:0}
 .card{background:var(--surface);border-radius:var(--r);padding:16px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:10px;min-width:0}
 .card.flat{box-shadow:none;border:1.5px solid var(--line)}
 .btn{border:0;border-radius:14px;padding:12px 16px;background:var(--surface-2);font-family:var(--display);font-weight:600;font-size:1rem;display:inline-flex;align-items:center;justify-content:center;gap:8px}
-.btn.primary{background:var(--lagoon);color:#fff}
-.btn.coral{background:var(--coral);color:#fff}
+.btn.primary{background:var(--btn);color:var(--btn-ink)}
+.btn.coral{background:var(--coral);color:var(--coral-ink)}
 .btn.ghost{background:transparent;border:1.5px solid var(--line)}
 .btn.sm{padding:8px 12px;font-size:.9rem;border-radius:12px}
 .row{display:flex;gap:10px;flex-wrap:wrap}
@@ -88,7 +102,7 @@ p{margin:0}
 
 /* week strip */
 .week{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;text-align:center}
-.week .d{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:.72rem;color:var(--muted);font-weight:700}
+.week .d{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:.78rem;color:var(--muted);font-weight:700}
 .week .dot{width:26px;height:26px;border-radius:50%;border:2px dashed var(--line);background:transparent}
 .week .dot.on{border-style:solid;border-color:transparent}
 .week.example .dot.on{opacity:.45}
@@ -180,11 +194,11 @@ input[type=range]{width:100%;accent-color:var(--lagoon)}
 .bodymap .zone.on{fill:var(--lagoon);stroke:var(--lagoon-ink)}
 .zones{display:flex;flex-wrap:wrap;gap:6px}
 .zones button{border:1.5px solid var(--line);background:var(--surface);border-radius:10px;padding:6px 10px;font-size:.85rem}
-.zones button.on{background:var(--lagoon);border-color:var(--lagoon);color:#fff}
+.zones button.on{background:var(--btn);border-color:var(--btn);color:var(--btn-ink)}
 
 /* activity cards */
 .act{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;border:1.5px solid var(--line);border-radius:16px;padding:12px;background:var(--surface)}
-.act .p{font-size:.72rem;color:var(--lagoon-ink);font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.act .p{font-size:.78rem;color:var(--lagoon-ink);font-weight:700;letter-spacing:.06em;text-transform:uppercase}
 .act h3{margin-top:2px}
 .act p.d{font-size:.9rem;color:var(--muted);margin-top:4px}
 
@@ -202,7 +216,7 @@ input[type=range]{width:100%;accent-color:var(--lagoon)}
 .swatch.on{border-color:var(--fg)}
 .opt{display:flex;flex-wrap:wrap;gap:8px}
 .opt button{border:1.5px solid var(--line);background:var(--surface);border-radius:12px;padding:8px 12px;font-weight:700;font-size:.9rem}
-.opt button.on{background:var(--lagoon);border-color:var(--lagoon);color:#fff}
+.opt button.on{background:var(--btn);border-color:var(--btn);color:var(--btn-ink)}
 .preview{display:grid;place-items:center;background:linear-gradient(180deg,var(--surface-2),var(--surface));border-radius:var(--r);padding:10px}
 .preview svg{width:170px;height:156px;overflow:visible}
 
@@ -226,7 +240,7 @@ body.quiet .app{display:none}
 .qtop{position:absolute;left:0;right:0;top:0;padding:calc(10px + env(safe-area-inset-top,0px)) 14px 0;display:flex;justify-content:space-between;align-items:center}
 .heartbtn{border:0;background:transparent;padding:4px;display:grid;place-items:center;cursor:pointer}
 .heartbtn svg{width:42px;height:38px;display:block;filter:drop-shadow(0 2px 4px rgba(0,0,0,.15))}
-.menubtn{width:40px;height:40px;border-radius:50%;border:1.5px solid var(--line);background:var(--surface);font-size:1.3rem;line-height:1;display:grid;place-items:center;color:var(--fg)}
+.menubtn{width:44px;height:44px;border-radius:50%;border:1.5px solid var(--line);background:var(--surface);font-size:1.3rem;line-height:1;display:grid;place-items:center;color:var(--fg)}
 .qhint{position:absolute;left:16px;right:16px;bottom:calc(130px + env(safe-area-inset-bottom,0px));text-align:center;color:var(--muted);font-family:var(--display);font-size:.95rem;margin:0}
 .ringbg{position:fixed;inset:0;z-index:26;background:color-mix(in srgb,var(--bg) 72%,transparent)}
 .ringsvg{position:fixed;inset:0;z-index:28;width:100%;height:100%;pointer-events:none}
@@ -244,7 +258,7 @@ body.quiet .app{display:none}
 .hrow b{font-family:var(--display);font-weight:600}
 .x.sm{width:28px;height:28px;font-size:1rem}
 .days{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center}
-.dayh{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:.72rem;color:var(--muted);font-weight:700}
+.dayh{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:.78rem;color:var(--muted);font-weight:700}
 .friend{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;border:1.5px solid var(--line);border-radius:12px;padding:8px 10px}
 .code{font-family:var(--display);font-size:1.3rem;letter-spacing:.08em;font-variant-numeric:tabular-nums}
 .bigheart{display:grid;place-items:center}
@@ -265,8 +279,8 @@ body.quiet .app{display:none}
 .swatch{display:grid;place-items:center;font-family:var(--display);font-weight:700;font-size:.72rem;padding:0}
 .swatch.lock{opacity:.6;border:2px dashed var(--muted)}
 .opt button.lock{border-style:dashed;opacity:.85}
-.opt button .price{display:block;font-size:.72rem;color:var(--muted);font-weight:700}
-.opt button.on .price{color:#fff}
+.opt button .price{display:block;font-size:.78rem;color:var(--muted);font-weight:700}
+.opt button.on .price{color:var(--btn-ink)}
 .heartbtn.pop svg{animation:hpop .65s ease-out}
 @keyframes hpop{0%{transform:scale(1)}35%{transform:scale(1.5)}60%{transform:scale(.9)}100%{transform:scale(1)}}
 .star{position:absolute;left:0;top:0;width:16px;height:16px;pointer-events:none}
@@ -275,7 +289,7 @@ body.quiet .app{display:none}
 @keyframes fallDown{from{opacity:.95;margin-top:0}to{opacity:0;margin-top:70px}}
 .mrow{display:grid;grid-template-columns:repeat(12,1fr);gap:4px}
 .mrow button{border:1.5px solid var(--line);background:var(--surface);border-radius:8px;padding:6px 0;font-weight:700;font-size:.75rem}
-.mrow button.on{background:var(--lagoon);border-color:var(--lagoon);color:#fff}
+.mrow button.on{background:var(--btn);border-color:var(--btn);color:var(--btn-ink)}
 .bird.visitor{pointer-events:none;cursor:default}
 .friend{display:flex;flex-wrap:wrap}
 .friend>div:nth-child(2){flex:1 1 90px;min-width:0}
@@ -291,25 +305,25 @@ body.quiet .app{display:none}
 .bird.shiny svg{filter:drop-shadow(0 0 7px rgba(255,214,110,.95)) drop-shadow(0 6px 6px rgba(0,0,0,.18)) saturate(1.2) brightness(1.06)}
 .nightsky{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
 .quiet.night{background:linear-gradient(180deg,#071426 0%,#12304A 100%);--fg:#E7F3F2;--muted:#9FBBC1;--surface:#13303B;--surface-2:#0F2730;--line:#2A4C5A;--lagoon-ink:#9EE6EC;color:#E7F3F2}
-.linkbtn{border:0;background:none;padding:0;color:var(--lagoon-ink);text-decoration:underline;font:inherit;font-weight:700;cursor:pointer}
+.linkbtn{border:0;background:none;padding:12px 0;margin:-12px 0;color:var(--lagoon-ink);text-decoration:underline;font:inherit;font-weight:700;cursor:pointer}
 .qtop{flex-wrap:wrap;gap:4px;padding-left:10px;padding-right:10px}
 #qgarden,#qchest,#qsky{padding:5px 7px;gap:3px}
-.stressfloat{position:absolute;left:14px;bottom:calc(84px + env(safe-area-inset-bottom,0px));border-color:var(--coral);color:var(--coral)}
+.stressfloat{position:absolute;left:14px;bottom:calc(36px + env(safe-area-inset-bottom,0px));border-color:var(--coral);color:var(--coral)}
 .sbwrap{display:grid;place-items:center;height:190px}
 .sbreath{width:150px;height:150px;border-radius:50%;background:radial-gradient(circle at 40% 35%,var(--lagoon),var(--lagoon-ink));box-shadow:0 0 0 14px color-mix(in srgb,var(--lagoon) 18%,transparent);animation:sbreath 10s ease-in-out infinite}
 @keyframes sbreath{0%{transform:scale(.55)}40%{transform:scale(1)}100%{transform:scale(.55)}}
-.terefloat{position:absolute;left:14px;bottom:calc(36px + env(safe-area-inset-bottom,0px));background:var(--lagoon);border-color:var(--lagoon);color:#fff}
+.terefloat{position:absolute;left:14px;bottom:calc(36px + env(safe-area-inset-bottom,0px));background:var(--btn);border-color:var(--btn);color:var(--btn-ink)}
 .tsteps{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
 .tstep{border:1.5px solid var(--line);border-radius:12px;padding:8px 4px;text-align:center;display:flex;flex-direction:column;gap:2px;min-width:0;background:var(--surface)}
 .tstep b{font-family:var(--display);font-weight:600;font-size:.95rem}
-.tstep span{font-size:.7rem;color:var(--muted)}
-.tstep i{font-style:normal;font-size:.68rem;font-weight:700;color:var(--muted)}
+.tstep span{font-size:.78rem;color:var(--muted)}
+.tstep i{font-style:normal;font-size:.76rem;font-weight:700;color:var(--muted)}
 .tstep.cur{border-color:var(--lagoon);box-shadow:inset 0 0 0 1.5px var(--lagoon)}
 .tstep.ok i{color:var(--fern)}
 .tchoice{text-align:left;justify-content:flex-start;font-family:var(--body);font-weight:700;font-size:.95rem;line-height:1.35}
 .awaypill{position:fixed;left:50%;transform:translateX(-50%);top:calc(64px + env(safe-area-inset-top,0px));z-index:30;border:0;border-radius:999px;padding:9px 16px;font:inherit;font-size:13px;font-weight:700;color:#fff;background:rgba(11,28,37,.78);box-shadow:0 4px 14px rgba(0,0,0,.18);max-width:calc(100vw - 32px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
-.bkpill{display:flex;padding:0;cursor:default;background:var(--teal,#1AA3B1)}
-.bkpill button{border:0;background:none;color:#fff;font:inherit;font-weight:700;padding:10px 6px 10px 16px;cursor:pointer}
+.bkpill{display:flex;padding:0;cursor:default;background:var(--btn)}
+.bkpill button{border:0;background:none;color:var(--btn-ink);font:inherit;font-weight:700;padding:10px 6px 10px 16px;cursor:pointer}
 .bkpill .bkx{padding:10px 14px 10px 8px;font-size:17px;line-height:1;opacity:.85}
 .bksel{font:inherit;font-size:14px;padding:5px 8px;border-radius:10px;border:1px solid rgba(0,0,0,.18);background:#fff}
 .awaypill small{font-weight:400;opacity:.85}
@@ -342,13 +356,13 @@ body.quiet .app{display:none}
 @keyframes scDriftW{from{transform:translateX(-700px)}to{transform:translateX(1100px)}}
 @keyframes scDriveW{from{transform:translateX(-800px)}to{transform:translateX(1100px)}}
 .quiet.scene .qhint{left:50%;right:auto;transform:translateX(-50%);width:max-content;max-width:calc(100% - 32px);background:rgba(255,255,255,.86);color:#16303B;border-radius:999px;padding:7px 14px;font-size:.88rem}
-.qhint{bottom:calc(184px + env(safe-area-inset-bottom,0px))}
+.qhint{bottom:calc(100px + env(safe-area-inset-bottom,0px))}
 .placefloat{position:absolute;left:14px;bottom:calc(132px + env(safe-area-inset-bottom,0px))}
 .ptiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .ptile{border:2px solid var(--line);background:var(--surface);border-radius:14px;padding:6px 6px 8px;display:flex;flex-direction:column;gap:2px;text-align:left;min-width:0;font:inherit;color:inherit}
 .ptile.on{border-color:var(--lagoon)}
 .ptile b{font-family:var(--display);font-weight:600;font-size:.86rem;line-height:1.15}
-.ptile .small{font-size:.7rem;line-height:1.15}
+.ptile .small{font-size:.78rem;line-height:1.15}
 .pthumb{display:block;position:relative;width:100%;aspect-ratio:1/1;border-radius:9px;overflow:hidden;margin-bottom:4px}
 .pthumb svg{position:absolute;inset:0;width:100%;height:100%}
 .pans{border:1.5px solid var(--line);background:var(--surface);border-radius:14px;padding:11px 13px;text-align:left;font:inherit;color:inherit;display:flex;flex-direction:column;gap:5px}
@@ -363,6 +377,17 @@ body.quiet .app{display:none}
 @keyframes rivgo{0%{transform:translate(8px,0) rotate(-3deg);opacity:1}40%{transform:translate(30vw,8px) rotate(4deg);opacity:1}100%{transform:translate(110vw,-4px) rotate(-6deg);opacity:0}}
 @media (prefers-reduced-motion: reduce){.rivbox:before,.rivleaf{animation:none}}
 .plot svg{max-width:104px}
+.menubtn{width:auto;min-width:44px;height:44px;border-radius:22px;padding:0 14px 0 10px;font-family:var(--display);font-weight:600;font-size:.95rem;gap:6px;display:inline-flex;align-items:center}
+.menubtn .ico{font-size:1.3rem;line-height:1}
+.mgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.mitem{border:1.5px solid var(--line);background:var(--surface);border-radius:14px;padding:10px 10px;display:flex;gap:10px;align-items:flex-start;text-align:left;font:inherit;color:inherit;min-height:64px}
+.micon{width:30px;height:30px;border-radius:10px;background:var(--surface-2);display:grid;place-items:center;font-size:1rem;flex:none}
+.mtxt{display:flex;flex-direction:column;gap:2px;min-width:0}
+.mtxt b{font-family:var(--display);font-weight:600;font-size:.95rem;line-height:1.15}
+.mtxt .small{font-size:.78rem;line-height:1.2}
+.newtag{display:inline-block;margin-left:6px;background:var(--btn);color:var(--btn-ink);border-radius:999px;padding:1px 7px;font-size:.68rem;font-weight:800;vertical-align:middle}
+.wprev{width:120px;margin:0 auto 6px}
+.swatches{display:flex;flex-wrap:wrap;gap:8px}
 .installfloat{display:flex;align-items:center;padding:0}
 .installfloat[hidden]{display:none}
 .installfloat button{border:0;background:none;font:inherit;color:inherit;padding:6px 4px 6px 12px;cursor:pointer}
@@ -559,12 +584,9 @@ body.quiet .app{display:none}
   <svg id="nightSky" class="nightsky" viewBox="0 0 360 520" preserveAspectRatio="xMidYMid meet" hidden aria-hidden="true"></svg>
   <div class="qtop">
     <div style="display:flex;gap:6px;align-items:center"><button class="heartbtn" id="heartBtn" aria-label="Mon cœur aujourdʼhui"></button><button class="qfeather" id="qfeather" aria-label="Mes plumes"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 3C12 3 6 8 5 16l-2 5 2-.5C9 20 13 19 16 15c2-3 4-7 4-12Z" fill="currentColor" opacity=".25"/><path d="M20 3C12 3 6 8 5 16l-2 5M5 16c4-1 8-4 11-9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span id="qfeatherN">0</span></button><button class="qfeather" id="qgarden" aria-label="Mon faʻaʻapu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21V11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M12 12C12 7 8 5 4 5c0 5 3 8 8 7Z" fill="currentColor" opacity=".3" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M12 15c0-4 3-6 8-6 0 5-3 7-8 6Z" fill="currentColor" opacity=".3" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg><span id="qgardenN"></span></button><button class="qfeather" id="qchest" aria-label="Mon coffre"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10V8a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v2" fill="currentColor" opacity=".3" stroke="currentColor" stroke-width="1.6"/><rect x="4" y="10" width="16" height="9" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.6"/><rect x="10.5" y="9" width="3" height="4" rx="1" fill="currentColor"/></svg><span id="qchestN"></span></button><button class="qfeather" id="qsky" aria-label="Te raʻi, le ciel"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 3a8 8 0 1 0 4 11 6.5 6.5 0 0 1-4-11Z" fill="currentColor" opacity=".3" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="6" cy="5" r="1.2" fill="currentColor"/><circle cx="4.5" cy="12" r="1" fill="currentColor"/></svg></button></div>
-    <button class="menubtn" id="menuBtn" aria-label="Ouvrir tout Manu Ora">≡</button>
+    <button class="menubtn" id="menuBtn" aria-label="Menu"><span class="ico" aria-hidden="true">≡</span>Menu</button>
   </div>
   <div class="stars" id="stars"></div>
-  <span class="tbtn installfloat" id="installBtn" hidden><button id="installGo">Installer lʼappli</button><button id="installX" aria-label="Masquer ce bouton">×</button></span>
-  <button class="tbtn terefloat" id="tereBtn" hidden>Défi du jour</button>
-  <button class="tbtn placefloat" id="placeBtn">Choisir un lieu</button>
   <button class="tbtn stressfloat" id="stressBtn">Trop de stress ?</button>
   <p class="qhint" id="qhint">Touche deux fois ton manu pour dire comment tu te sens.</p>
 </div>
@@ -1117,6 +1139,7 @@ function setQuiet(on){ QUIET=on; store.set('quiet',on); document.body.classList.
 function sayHTML(html, ms){ bubbleEl.innerHTML=html; bubbleEl.classList.add('show'); placeBubble(); clearTimeout(say.t); say.t=setTimeout(()=>bubbleEl.classList.remove('show'), ms||6000); }
 function miniMenu(){ sayHTML(`${esc(randomLine())}<div class="mini"><button data-m="stress">Trop de stress</button><button data-m="check">Faire le point</button><button data-m="place">Lieux</button><button data-m="tere">Te tere</button><button data-m="breathe">Respirer</button><button data-m="uke">Ukulele</button><button data-m="heart">Mon cœur</button><button data-m="garden">Faʻaʻapu</button><button data-m="chest">Coffre</button><button data-m="sky">Te raʻi</button>${has('x:dance')?'<button data-m="dance">Danser</button>':''}${has('x:flip')?'<button data-m="flip">Salto</button>':''}${QUIET?'<button data-m="app">Tout Manu Ora</button>':'<button data-m="quiet">Mode veille</button>'}</div>`, 9000); }
 bubbleEl.addEventListener('click', e=>{ const b=e.target.closest('[data-m]'); if(!b) return; e.stopPropagation(); bubbleEl.classList.remove('show'); const m=b.dataset.m;
+  if(m.indexOf('door:')===0){ openDoor(m.slice(5)); return; } if(m==='later') return;
   if(m==='stress') openStress(true); else if(m==='place') openPlace(); else if(m==='tere') openTere(); else if(m==='garden') openGarden(); else if(m==='chest') openChest(); else if(m==='sky') openSky(); else if(m==='dance'||m==='flip') playAnim(m); else if(m==='breathe') openBreath(null); else if(m==='check') openCheckin(); else if(m==='uke') playUke(); else if(m==='heart') openHeart(); else if(m==='app') setQuiet(false); else if(m==='quiet') setQuiet(true); else if(m==='pet') say('Glisse ton doigt sur mes plumes, tout doucement.'); });
 
 /* colour ring */
@@ -1133,20 +1156,20 @@ function showRing(auto){ const svg=$('#ringsvg'); const W=innerWidth, H=innerHei
 function closeRing(){ RING.open=false; $('#ringbg').hidden=true; $('#ringsvg').setAttribute('hidden',''); }
 $('#ringbg').addEventListener('click', ()=>{ closeRing(); release(); });
 $('#ringsvg').addEventListener('click', e=>{ const g=e.target.closest('.dot'); if(g) pickRing(g.dataset.id); });
-function addEntry(id){ log.push({ts:Date.now(), emo:id, intensity:0, body:[], text:'', acts:[], ring:true}); store.set('log',log); renderHeart(); renderHome(); pushHeart(); checkDay(); heartFx(); }
+function addEntry(id){ log.push({ts:Date.now(), emo:id, intensity:0, body:[], text:'', acts:[], ring:true}); store.set('log',log); try{ markDoor('ring'); }catch(e){} renderHeart(); renderHome(); pushHeart(); checkDay(); heartFx(); }
 function pickRing(id){ closeRing(); if(id==='__dark'){ B.asking=false; openCrisis(); setTimeout(release,300); return; }
   const e=EMO.find(m=>m.id===id); addEntry(id); try{ navigator.vibrate && navigator.vibrate(20); }catch(_){}
   if(e.cat==='ok') sayHTML(`<b>${esc(e.ty)}</b> · ${esc(e.fr)}. Noté dans ton cœur. ${['Faʻaitoito !','ʻOaʻoa !','Māuruuru.'][Math.floor(Math.random()*3)]}`, 5000);
   else sayHTML(`<b>${esc(e.ty)}</b> · ${esc(e.fr)}. Noté. Un coup de main ?<div class="mini"><button data-m="breathe">Respirer</button><button data-m="check">Faire le point</button><button data-m="pet">Me caresser</button></div>`, 10000);
   setTimeout(()=>{ if(!RING.open) release(); }, 2200); }
 $('#quiet').addEventListener('pointerup', e=>{ if(e.target.closest('button')) return; const now=Date.now(); if(now-TAP.q<380){ TAP.q=0; askRing(false); } else TAP.q=now; });
-$('#menuBtn').onclick=()=>setQuiet(false);
+/* menuBtn : voir openQuietMenu plus bas */
 $('#heartBtn').onclick=openHeart;
 $('#qfeather').onclick=()=>{ setQuiet(false); showTab('bird'); };
 $('#qgarden').onclick=()=>openGarden();
 $('#qchest').onclick=()=>openChest();
 $('#qsky').onclick=()=>openSky();
-$('#tereBtn').onclick=()=>openTere();
+if($('#tereBtn')) $('#tereBtn').onclick=()=>openTere();
 $('#stressBtn').onclick=()=>openStress(true);
 function quietFree(){ return QUIET && !RING.open && $('#sheet').hidden && $('#crisis').hidden && $('#breath').hidden && !UKE.on && !PET.active; }
 setInterval(()=>{ if(!quietFree()) return; const now=Date.now(); if(now-lastEntryTs()>ASK_EVERY && now-lastAsk>ASK_EVERY){ lastAsk=now; store.set('lastAsk',lastAsk); askRing(true); } }, 30000);
@@ -1291,7 +1314,7 @@ function saveGarden(){ store.set('garden',garden); gardenBadge(); }
 function addSeed(kind){ const pool=['tiare','tiare','tiare','aute','aute','tipanie','tipanie','meia','meia','painapo','painapo','iita','iita','taro','taro','vi','anani','uru','vanira']; const k=(kind&&PLANTS[kind])?kind:pool[Math.floor(Math.random()*pool.length)]; garden.seeds[k]=(garden.seeds[k]||0)+1; saveGarden(); return k; }
 function plotStage(pl){ const f=(Date.now()-pl.t)/(PLANTS[pl.p].days*864e5); return f>=1?3:f>=.6?2:f>=.2?1:0; }
 function plotLeft(pl){ const ms=pl.t+PLANTS[pl.p].days*864e5-Date.now(); if(ms<=0) return 'Mûr !'; const h=Math.ceil(ms/36e5); return h>=24 ? `Mûr dans ${Math.floor(h/24)} j ${h%24} h` : `Mûr dans ${h} h`; }
-function gardenBadge(){ const n=garden.plots.filter(pl=>pl&&PLANTS[pl.p]&&plotStage(pl)===3).length; const el=$('#qgardenN'); if(el) el.textContent=n?String(n):''; const hc=$('#gardenHome'); if(hc) hc.textContent = n ? `${n} récolte${n>1?'s':''} prête${n>1?'s':''} !` : 'Plante une graine et reviens la voir pousser.'; }
+function gardenBadge(){ const n=garden.plots.filter(pl=>pl&&PLANTS[pl.p]&&plotStage(pl)===3).length; const el=$('#qgardenN'); if(el) el.textContent=n?String(n):''; try{ renderQuietPills(); }catch(e){} const hc=$('#gardenHome'); if(hc) hc.textContent = n ? `${n} récolte${n>1?'s':''} prête${n>1?'s':''} !` : 'Plante une graine et reviens la voir pousser.'; }
 function plantSVG(p,stage){
   const R=(a)=>a*Math.PI/180, f1=n=>(+n).toFixed(1);
   const G={d:'#1F6B3F', m:'#2F8A50', l:'#5DB36E', h:'#8FD08A'};
@@ -1471,7 +1494,7 @@ const needTxt = n => ING.filter(k=>n[k]).map(k=>n[k]+' '+ingName(k)).join(' + ')
 function matchRecipe(){ return Object.keys(ITEMS).find(id=>ING.every(k=>(MIX[k]||0)===(ITEMS[id].need[k]||0))); }
 function macState(){ const m=garden.mac; if(!m||!ITEMS[m.id]) return 0; return (Date.now()-m.t)>=ITEMS[m.id].days*864e5 ? 2 : 1; }
 function macLeft(){ const m=garden.mac; const h=Math.max(1,Math.ceil((m.t+ITEMS[m.id].days*864e5-Date.now())/36e5)); return h>=24 ? `${Math.floor(h/24)} j ${h%24} h` : `${h} h`; }
-function chestBadge(){ const n=Object.keys(ITEMS).reduce((a,k)=>a+(garden.items[k]||0),0)+(macState()===2?1:0); const el=$('#qchestN'); if(el) el.textContent=n?String(n):''; }
+function chestBadge(){ const n=Object.keys(ITEMS).reduce((a,k)=>a+(garden.items[k]||0),0)+(macState()===2?1:0); const el=$('#qchestN'); if(el) el.textContent=n?String(n):''; try{ renderQuietPills(); }catch(e){} }
 function learn(id){ if(!garden.known.includes(id)) garden.known.push(id); }
 function mixNow(){ const total=ING.reduce((a,k)=>a+(MIX[k]||0),0); if(!total){ toast('Mets dʼabord des ingrédients dans la calebasse'); return; }
   const id=matchRecipe(); if(!id){ toast('Ce mélange ne donne rien de connu. Rien nʼest perdu : essaie un autre dosage.'); return; }
@@ -1754,7 +1777,7 @@ function openPrivacy(){
   openSheet(`<div class="head"><div><div class="eyebrow">Tes données</div><h2>Confidentialité</h2></div><button class="x" id="sx" aria-label="Fermer">×</button></div>
     <div class="card flat"><h3>Ce qui reste sur ton téléphone</h3><p class="small">Ton cœur et ses couleurs, tes notes, tes plumes, ton faʻaʻapu, ton coffre, ton plan dʼaide et les numéros de ton ama. Personne dʼautre ne peut les lire, pas même la personne qui a créé Manu Ora.</p></div>
     <div class="card flat"><h3>Ce qui est partagé, seulement si tu lies ton cœur</h3><p class="small">Le prénom ou surnom que tu écris, les couleurs de ta journée, lʼapparence de ton manu, les codes de tes ami·e·s lié·e·s, et les signes ou cadeaux que tu envoies. Ces informations sont rangées sous un code au hasard, sur un service de Google (Firebase) situé aux États-Unis.</p></div>
-    <div class="card flat"><h3>Ce qui nʼest jamais envoyé</h3><p class="small">Ce que tu écris dans tes notes ou ton plan, ton numéro de téléphone, ta position. Il nʼy a ni publicité ni compte à créer. Les polices dʼécriture sont chargées depuis Google Fonts.</p></div>
+    <div class="card flat"><h3>Ce qui nʼest jamais envoyé</h3><p class="small">Ce que tu écris dans tes notes ou ton plan, ton numéro de téléphone, ta position. Il nʼy a ni publicité ni compte à créer..</p></div>
     <div class="card flat"><h3>Si tu as moins de 15 ans</h3><p class="small">Montre Manu Ora à un parent ou à un adulte de confiance avant de lier ton cœur à quelquʼun, et ne lie ton cœur quʼà des personnes que tu connais vraiment.</p></div>
     <div class="card flat"><h3>Sauvegarde</h3><p class="small">Si le navigateur est vidé ou réinitialisé, ou si tu changes de téléphone, tout ce qui est ici disparaît. Enregistre de temps en temps un fichier de sauvegarde : il te permet de tout retrouver, sur ce téléphone ou sur un autre. Ce fichier contient ton cœur et tes notes : garde-le pour toi.</p><p class="small muted" id="bkInfo"></p><p class="small">Me le rappeler : <select id="bkEvery" class="bksel"><option value="7">chaque semaine</option><option value="30">chaque mois</option><option value="0">jamais</option></select></p><div class="row"><button class="btn" id="bkSave">Enregistrer une sauvegarde</button><button class="btn ghost" data-restore>Restaurer une sauvegarde</button></div></div>
     <div class="card flat"><h3>Effacer</h3><p class="small">« Changer mon code » (dans Cœurs liés) supprime ce qui était partagé sous lʼancien code. Le bouton ci-dessous efface tout : ce qui est partagé et ce qui est sur ce téléphone. Cʼest définitif.</p><button class="btn ghost" id="wipeBtn">Tout effacer</button></div>
@@ -1762,15 +1785,27 @@ function openPrivacy(){
   $('#sx').onclick=closeSheet;
   $('#bkSave').onclick=saveBackup; bkInfo(); $('#bkEvery').value=String(store.get('bkEvery',7)); $('#bkEvery').onchange=e=>{ store.set('bkEvery',Number(e.target.value)); toast('Rappel enregistré'); };
   const wb=$('#wipeBtn'); wb.onclick=()=>{ if(wb.dataset.sure!=='1'){ wb.dataset.sure='1'; wb.textContent='Confirmer : tout effacer définitivement'; wb.classList.remove('ghost'); wb.classList.add('coral'); return; } wipeAll(); }; }
-function openWelcome(){
-  openSheet(`<div class="head"><div><div class="eyebrow">ʻIa ora na</div><h2>Bienvenue dans Manu Ora</h2></div></div>
-    <div style="display:flex;gap:10px;align-items:center"><div style="width:72px;flex:none">${birdSVG(cfg,'wl')}</div><p>Voici ton manu. Il tʼaide à mettre des mots et des couleurs sur ce que tu ressens, un peu chaque jour.</p></div>
-    <div class="card flat" style="border-color:var(--coral)"><p class="small"><b>Manu Ora nʼest pas un soin médical.</b> Il ne remplace ni un médecin, ni un psychologue, ni une personne à qui parler. Si tu vas très mal, le bouton <b>Aide</b> donne des numéros à appeler.</p></div>
-    <div class="card flat"><p class="small"><b>Tes données restent sur ton téléphone.</b> Rien nʼest partagé tant que tu ne lies pas ton cœur à un·e ami·e. <button class="linkbtn" data-priv>Lire la page Confidentialité</button></p></div>
-    <p class="small"><button class="linkbtn" data-restore>Jʼai déjà une sauvegarde à restaurer</button></p>
-    <p class="small muted">Version dʼessai : il peut rester des erreurs.</p>
-    <button class="btn primary" id="welOk">Jʼai compris</button>`);
-  $('#welOk').onclick=()=>{ store.set('welcomed',true); closeSheet(); }; }
+function openWelcome(step){ step=step||1;
+  if(step===1){ const cols=COLORS.filter(c=>has('c:'+c));
+    openSheet(`<div class="head"><div><div class="eyebrow">ʻIa ora na</div><h2>Voici ton manu</h2></div></div>
+      <div class="wprev" id="wprev">${birdSVG(cfg,'wl')}</div>
+      <p class="small">Il vivra dans un coin de ton écran et tʼaidera à mettre des mots et des couleurs sur ce que tu ressens, un peu chaque jour.</p>
+      <label class="small" for="wname" style="font-weight:700">Son nom</label><input type="text" id="wname" maxlength="12" value="${esc(cfg.name)}" autocomplete="off">
+      <div class="small" style="font-weight:700;margin-top:10px">Sa couleur</div><div class="swatches" id="wsw">${cols.map(c=>`<button class="swatch ${cfg.body===c?'on':''}" style="background:${c}" data-c="${c}" aria-label="Plumage ${c}"></button>`).join('')}</div>
+      <p class="small muted">Tu pourras tout changer plus tard, et gagner dʼautres couleurs.</p>
+      <button class="btn primary" id="wNext">Cʼest lui !</button>`);
+    $('#wsw').addEventListener('click', e=>{ const b=e.target.closest('[data-c]'); if(!b) return; cfg.body=b.dataset.c; store.set('cfg',cfg); $('#wprev').innerHTML=birdSVG(cfg,'wl'); $('#wsw').querySelectorAll('.swatch').forEach(x=>x.classList.toggle('on',x===b)); renderBird(); });
+    $('#wNext').onclick=()=>{ const n=($('#wname').value||'').trim().slice(0,12); if(n) cfg.name=n; store.set('cfg',cfg); renderBird(); openWelcome(2); }; }
+  else {
+    openSheet(`<div class="head"><div><div class="eyebrow">Avant de commencer</div><h2>Deux choses à savoir</h2></div></div>
+      <div class="card flat" style="border-color:var(--coral)"><p class="small"><b>Manu Ora nʼest pas un soin médical.</b> Il ne remplace ni un médecin, ni un psychologue, ni une personne à qui parler. Si tu vas très mal, le bouton <b>Aide</b> donne des numéros à appeler.</p></div>
+      <div class="card flat"><p class="small"><b>Tes données restent sur ton téléphone.</b> Rien nʼest partagé tant que tu ne lies pas ton cœur à un·e ami·e. <button class="linkbtn" data-priv>Lire la page Confidentialité</button></p></div>
+      <p class="small"><button class="linkbtn" data-restore>Jʼai déjà une sauvegarde à restaurer</button></p>
+      <p class="small muted">Version dʼessai : il peut rester des erreurs.</p>
+      <div class="row"><button class="btn ghost" id="wBack">Retour</button><button class="btn primary" id="welOk">Jʼai compris, on essaie</button></div>`);
+    $('#wBack').onclick=()=>openWelcome(1);
+    $('#welOk').onclick=()=>{ store.set('welcomed',true); closeSheet(); guide.seen=guide.seen.filter(x=>x!=='ring'); store.set('guide',guide);
+      setTimeout(()=>{ if(!QUIET) setQuiet(true); say(cfg.name+' est là. Touche-le deux fois quand tu veux dire comment tu te sens.'); setTimeout(()=>{ if(!RING.open && $('#sheet').hidden) askRing(true); }, 2600); }, 400); }; } }
 document.addEventListener('click', e=>{ const b=e.target.closest('[data-priv]'); if(b){ e.preventDefault(); store.set('welcomed',true); openPrivacy(); } });
 if(!store.get('welcomed',false)) setTimeout(()=>{ if($('#sheet').hidden && !RING.open) openWelcome(); },900);
 
@@ -1961,8 +1996,70 @@ function placeAct(){ let h='';
   if($('#plAmi')) $('#plAmi').onclick=()=>openHeart();
   if($('#plHelp')) $('#plHelp').onclick=()=>{ closeSheet(); openCrisis(); };
   if(en) en.onclick=()=>{ if(curPlace==='vai') placeDone('net','La rivière sʼen occupe. Tu peux respirer.'); else if(curPlace==='tai') placeDone('thanks','Trois coquillages dans ta poche.'); else if(curPlace==='oire'){ store.set('oireI',(PL.q||0)+1); placeDone('non','Savoir dire non, ça sʼapprend.'); } else placeDone('haapii','Une étape à la fois. Faʻaitoito !'); }; }
-$('#placeBtn').onclick=openPlace; if($('#btnPlace')) $('#btnPlace').onclick=openPlace;
+if($('#btnPlace')) $('#btnPlace').onclick=openPlace;
 renderPlace(); setInterval(renderPlace,5*60000);
+
+/* ---------- menu de l'écran calme, première semaine guidée, partage, version des données ---------- */
+const APP_URL='https://brian-1844.github.io/manu-ora/';
+const GUIDE=[
+  {id:'ring',   t:'Dire comment tu te sens', d:'Touche deux fois ton manu : une couleur, et ton cœur du jour se remplit.', b:'Essayer', open:()=>askRing(false)},
+  {id:'tere',   t:'Un petit défi chaque jour', d:'Te tere, le voyage : une compétence par semaine, un geste par jour. Rien nʼest obligatoire.', b:'Voir le défi', open:()=>openTere()},
+  {id:'garden', t:'Ton faʻaʻapu', d:'Plante une graine, laisse le temps faire, récolte, offre. Rien ne meurt ici.', b:'Planter', open:()=>openGarden()},
+  {id:'calm',   t:'Pour les jours tendus', d:'Respirer avec la vague, me caresser, ou le bouton « Trop de stress ? » quand ça déborde.', b:'Respirer une minute', open:()=>openBreath(null)},
+  {id:'heart',  t:'Lier ton cœur à un·e ami·e', d:'Si tu veux, un·e ami·e peut voir les couleurs de ta journée, et toi les siennes. Chacun peut couper le lien.', b:'Voir mon cœur', open:()=>openHeart()},
+  {id:'place',  t:'Choisir un lieu', d:'La rivière, la plage, la ville ou lʼécole : un décor, et une activité pour chacun.', b:'Choisir', open:()=>openPlace()},
+  {id:'sky',    t:'Te raʻi, le ciel', d:'Apprends les étoiles par leur nom tahitien. Elles sʼallument la nuit sur ton écran.', b:'Regarder le ciel', open:()=>openSky()}];
+let guide=store.get('guide',null);
+if(!guide || !Array.isArray(guide.seen) || !Array.isArray(guide.days)) guide={seen:[], days:[], today:'', todayDay:''};
+const DATA_V=2;
+(function(){ const v=store.get('v',0);
+  if(v<2 && store.get('welcomed',false) && !guide.seen.length){ guide.seen=GUIDE.map(g=>g.id); guide.days=[dayKey(Date.now())]; }
+  store.set('guide',guide); if(v!==DATA_V) store.set('v',DATA_V); })();
+function doorSeen(id){ return guide.seen.includes(id); }
+function markDoor(id){ if(!doorSeen(id)){ guide.seen.push(id); store.set('guide',guide); renderQuietPills(); } }
+function renderQuietPills(){ const g=$('#qgarden'), c=$('#qchest'), s=$('#qsky'); const gn=$('#qgardenN'), cn=$('#qchestN');
+  if(g) g.hidden = !(doorSeen('garden') || (gn && gn.textContent)); if(c) c.hidden = !(doorSeen('garden') || (cn && cn.textContent)); if(s) s.hidden = !doorSeen('sky'); }
+function guideTick(){ const k=dayKey(Date.now()); if(!guide.days.includes(k)){ guide.days.push(k); guide.days=guide.days.slice(-14); store.set('guide',guide); }
+  if(!store.get('welcomed',false)) return;
+  const n=guide.days.length; const door=GUIDE.find((g,i)=>i<n && !doorSeen(g.id)); if(door) setTimeout(()=>guideShow(door.id), 6000); }
+function guideShow(id){ const d=GUIDE.find(g=>g.id===id); if(!d || doorSeen(id)) return;
+  if(!QUIET || !visitFree() || RM && false){ setTimeout(()=>guideShow(id), 15000); return; }
+  guide.seen.push(id); guide.today=id; guide.todayDay=dayKey(Date.now()); store.set('guide',guide); renderQuietPills();
+  sayHTML(`<b>${esc(d.t)}</b><br>${esc(d.d)}<div class="mini"><button data-m="door:${id}">${esc(d.b)}</button><button data-m="later">Plus tard</button></div>`, 25000); }
+function openDoor(id){ const d=GUIDE.find(g=>g.id===id); if(!d) return; markDoor(id); d.open(); }
+function shareApp(){ const text='Manu Ora : un petit manu qui tʼaide à dire ce que tu ressens. Gratuit, sans compte, en reo tahiti et en français.';
+  if(navigator.share){ navigator.share({title:'Manu Ora', text, url:APP_URL}).catch(()=>{}); return; }
+  try{ navigator.clipboard.writeText(APP_URL).then(()=>toast('Lien copié : '+APP_URL)).catch(()=>prompt('Copie ce lien', APP_URL)); }catch(e){ prompt('Copie ce lien', APP_URL); } }
+function openQuietMenu(){ const k=dayKey(Date.now()); const isNew=id=>(guide.today===id && guide.todayDay===k) ? '<span class="newtag">Nouveau</span>' : '';
+  const canInst = (typeof CAN_INSTALL!=='undefined') && CAN_INSTALL && !STANDALONE;
+  const tereDone = (()=>{ try{ const n=tereNow(), r=tere.w[n.key]; return !!(r && r.days.includes(k)); }catch(e){ return false; } })();
+  const item=(id,icon,t,d,extra)=>`<button class="mitem" data-mi="${id}"><span class="micon" aria-hidden="true">${icon}</span><span class="mtxt"><b>${t}${extra||''}</b><span class="small muted">${d}</span></span></button>`;
+  openSheet(`<div class="head"><div><div class="eyebrow">Manu Ora</div><h2>Menu</h2></div><button class="x" id="sx" aria-label="Fermer">×</button></div>
+    <div class="mgrid">
+      ${item('tere','🌙','Défi du jour', tereDone?'Fait pour aujourdʼhui. Māuruuru.':'Un petit pas, deux minutes.', isNew('tere'))}
+      ${item('heart','💗','Mon cœur','Ta journée en couleurs, tes cœurs liés.', isNew('heart'))}
+      ${item('check','✎','Faire le point','Nommer ce que tu ressens, plus en détail.')}
+      ${item('calm','〰','Respirer','Une minute avec la vague.', isNew('calm'))}
+      ${item('place','🏝','Lieux du jour','Rivière, plage, ville, école.', isNew('place'))}
+      ${item('garden','🌱','Faʻaʻapu','Ton jardin : planter, récolter, offrir.', isNew('garden'))}
+      ${item('chest','🧺','Coffre et atelier','Hei, monoï, recettes secrètes.')}
+      ${item('sky','✦','Te raʻi','Le ciel et ses étoiles.', isNew('sky'))}
+      ${item('uke','♪','Ukulele','Un petit air pour sourire.')}
+      ${item('bird','🪶','Mon manu','Couleurs, tatouages, accessoires, plumes.')}
+      ${item('app','▦','Tout Manu Ora','Lʼappli complète, avec les mots et lʼaide.')}
+      ${item('share','↗','Partager lʼappli','Envoyer le lien à quelquʼun.')}
+      ${canInst?item('install','⤓','Installer lʼappli','Sur lʼécran dʼaccueil, comme une appli.'):''}
+      ${item('privacy','🔒','Confidentialité et sauvegarde','Tes données, le fichier de sauvegarde.')}
+      ${item('help','☎','Aide','Les numéros, tout de suite.')}
+    </div>`);
+  $('#sx').onclick=closeSheet;
+  sheetInner.querySelectorAll('[data-mi]').forEach(b=>{ b.onclick=()=>{ const m=b.dataset.mi; closeSheet();
+    if(m==='tere'){ markDoor('tere'); openTere(); } else if(m==='heart'){ markDoor('heart'); openHeart(); } else if(m==='check') openCheckin(); else if(m==='calm'){ markDoor('calm'); openBreath(null); }
+    else if(m==='place'){ markDoor('place'); openPlace(); } else if(m==='garden'){ markDoor('garden'); openGarden(); } else if(m==='chest'){ markDoor('garden'); openChest(); } else if(m==='sky'){ markDoor('sky'); openSky(); }
+    else if(m==='uke') playUke(); else if(m==='bird'){ setQuiet(false); showTab('bird'); } else if(m==='app') setQuiet(false); else if(m==='share') shareApp(); else if(m==='install') doInstall(); else if(m==='privacy') openPrivacy(); else if(m==='help') openCrisis(); }; }); }
+$('#menuBtn').onclick=openQuietMenu;
+renderQuietPills(); guideTick(); document.addEventListener('visibilitychange', ()=>{ if(!document.hidden) guideTick(); });
+setTimeout(()=>{ try{ const k=dayKey(Date.now()); if(!QUIET || !doorSeen('tere') || store.get('tereNag','')===k || !visitFree() || bubbleEl.classList.contains('show')) return; const n=tereNow(), r=tere.w[n.key]; if(r && r.days.includes(k)) return; store.set('tereNag',k); sayHTML('Un petit défi aujourdʼhui ? Deux minutes.<div class="mini"><button data-m="door:tere">Voir le défi</button><button data-m="later">Plus tard</button></div>', 15000); }catch(e){} }, 25000);
 
 /* ---------- install button ---------- */
 const CAN_INSTALL = !!document.querySelector('link[rel="manifest"]');
@@ -1977,11 +2074,12 @@ function doInstall(){
   const ua=navigator.userAgent||''; const ios=/iPhone|iPad|iPod/.test(ua); const android=/Android/.test(ua);
   const steps = ios ? ['Ouvre cette page dans <b>Safari</b>.','Touche le bouton <b>Partager</b> (le carré avec une flèche vers le haut).','Choisis <b>« Sur lʼécran dʼaccueil »</b>, puis <b>Ajouter</b>.']
     : android ? ['Touche le menu <b>⋮</b> en haut à droite du navigateur.','Choisis <b>« Ajouter à lʼécran dʼaccueil »</b> ou <b>« Installer lʼapplication »</b>.','Confirme avec <b>Installer</b>.']
+    : /OPR\/|Opera|Firefox/.test(ua) ? ['Ce navigateur (Opera ou Firefox sur ordinateur) ne propose en général pas dʼinstaller une appli web.','Ouvre <b>brian-1844.github.io/manu-ora</b> dans <b>Chrome</b> ou <b>Edge</b>, puis clique sur lʼicône <b>Installer</b> dans la barre dʼadresse.','Sur téléphone, lʼinstallation marche avec Chrome (Android) ou Safari (iPhone).']
     : ['Dans la barre dʼadresse, clique sur lʼicône <b>Installer</b> (un écran avec une flèche).','Sinon : menu du navigateur → <b>« Installer Manu Ora »</b>.'];
   openSheet(`<div class="head"><h2>Installer Manu Ora</h2><button class="x" id="sx" aria-label="Fermer">×</button></div><p class="small muted">Lʼicône du manu apparaîtra sur ton écran dʼaccueil, et Manu Ora sʼouvrira comme une appli.</p><div class="stack">${steps.map((t,i)=>`<div class="card flat"><p><b>${i+1}.</b> ${t}</p></div>`).join('')}</div><button class="btn" id="instOk">Compris</button>`);
   $('#sx').onclick=closeSheet; $('#instOk').onclick=()=>{ hideInstall(); closeSheet(); }; }
 $('#gardenBtn').onclick=()=>openGarden(); gardenBadge(); $('#skyBtn').onclick=()=>openSky(); $('#tereHomeBtn').onclick=()=>openTere();
-$('#installGo').onclick=doInstall; $('#installX').onclick=()=>{ hideInstall(); toast('Bouton masqué. Tu le retrouves dans lʼaccueil.'); }; $('#installBtn2').onclick=doInstall;
+if($('#installGo')) $('#installGo').onclick=doInstall; if($('#installX')) $('#installX').onclick=()=>{ hideInstall(); toast('Bouton masqué. Tu le retrouves dans lʼaccueil.'); }; $('#installBtn2').onclick=doInstall;
 try{ document.documentElement.setAttribute('translate','no'); document.documentElement.classList.add('notranslate'); }catch(e){}
 if(CAN_INSTALL && !STANDALONE) setInstall(true);
 
