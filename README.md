@@ -41,6 +41,8 @@ Respirer, faire le point et l'aide ne sont jamais verrouillés.
 
 ## Faʻaʻapu (le jardin)
 
+**Mise à jour** : les plantes ont été redessinées (pousse, jeune plant, plante mûre propres à chaque espèce) et le jardin compte maintenant **9 parcelles** et **12 plantes** : tiare, ʻaute, tīpaniē, meiʻa, painapo, ʻīʻītā, taro, vī, ʻānani, ʻuru, vānira et haʻari. Quatre recettes s'ajoutent à l'atelier : hei tīpaniē, jus de fruits frais, poʻe taro, et une recette secrète à la vānira.
+
 Six emplacements. On plante une graine, elle pousse avec le temps réel (appli ouverte ou non), puis on récolte. Rien ne meurt : un fruit mûr attend.
 
 | Plante | Mûre en | Vaut |
@@ -85,6 +87,19 @@ Un bouton corail « Gros stress ? » est toujours visible sur l'écran calme (au
 4. **Nommer** – choisir le mot qui va avec la tension ; il colore le cœur du jour.
 
 La personne note sa tension de 1 à 5 avant et après, voit la différence, reçoit quelques conseils pour la suite (boire de l'eau, bouger, parler à un ama, attendre avant de répondre à un message) et gagne une plume. Si la tension reste à 4 ou 5, le manu propose l'écran d'aide (numéros d'urgence). Ce guide ne remplace pas un professionnel : les textes sont à faire relire par un·e psychologue.
+
+## Les lieux du jour
+
+Sur l'écran calme, le bouton « Choisir un lieu » (aussi dans le petit menu du manu et sur l'accueil) propose quatre décors de jour, chacun avec une petite animation et une activité. « Écran simple » garde l'écran sans décor. La nuit, le ciel étoilé reprend la place du décor.
+
+| Lieu | Animation | Activité |
+|---|---|---|
+| **Te vai** · la montagne et la rivière | cascade, eau qui coule, feuille qui descend | *Poser un souci sur la rivière* : écrire ce qui pèse (rien n'est gardé), dire si cela dépend de soi ou non, recevoir un conseil adapté |
+| **Tahatai** · la plage | vagues, pirogue, cocotier | *Trois coquillages* : trois bonnes choses de la journée, gardées sur le téléphone et relisibles les jours difficiles |
+| **Te ʻoire** · la ville | truck et voiture qui passent, roulotte | *Dire non, sans se fâcher* : quatre situations de pression du groupe, trois réponses possibles, un retour sur chacune |
+| **Te fare haʻapiʻiraʻa** · l'école | ballon, arbre | *Un moment difficile à l'école* : le trac, une dispute (phrase en « je »), les moqueries (victime, témoin, auteur) |
+
+Chaque activité terminée donne une plume (dans la limite de trois par jour). Les textes sur les moqueries et la pression du groupe sont à faire relire en priorité par un·e psychologue ; les noms de lieux en reo tahiti par un locuteur.
 
 ## Te tere (le voyage)
 
