@@ -313,6 +313,132 @@ Deuxième activité de la plage (« Lieux du jour » → plage → « Apprendre 
 
 Idée portée : une émotion forte monte, tient, puis redescend toute seule ; on n'a ni à lui obéir ni à la combattre. La fin compte comme un exercice de respiration (une plume, le pepe bleu, et le tupa sort de son trou).
 
+**Version 84 : « Glisser sur la vague », le vrai jeu.** À côté de la version calme, un second bouton sur l'écran du surf : « Jouer : glisser sur la vague ». Cette fois on dirige le manu : on glisse le doigt de haut en bas sur la vague (ou on tient les boutons ▲ ▼, ou les flèches du clavier) pour cueillir les tiare et éviter les noix de coco. Une vague dure 40 secondes ; elle monte, devient forte (tout va plus vite), puis redescend.
+
+- **On ne peut pas perdre.** Toucher une noix de coco fait tomber le manu, qui remonte tout seul sur sa planche ; la vague continue. À la fin, l'appli dit combien de fois on est tombé et remonté, sans score ni record, et sans classement.
+- Idée portée : personne ne surfe sans tomber ; avec les émotions, on n'apprend pas à être parfait, on apprend à remonter.
+- Une plume pour la première vague du jour. Le jeu **ne compte pas** comme exercice de calme : il ne fait pas avancer les niveaux du surf calme et n'ouvre pas le niveau « À l'aube » des anguilles.
+- Les textes de ce jeu sont à faire relire par un·e psychologue, comme les autres.
+
+**Version 85 : garder son calme sous la pression.** Le jeu de surf porte maintenant une idée précise : *quand on perd son calme, on perd la main ; le souffle la rend*.
+
+- Avant de partir, on peut nommer la vague du jour : le stress, la colère, la peur, le trac (ou ne pas la nommer). Rien n'est gardé.
+- Une **jauge de calme** baisse toute seule, d'autant plus vite que la vague est forte, et d'un coup à chaque chute. Quand elle est basse, le manu tremble et on dirige moins bien.
+- Le bouton **Souffler** (ou la barre d'espace), tenu, fait remonter le calme ; pendant ce temps on se déplace moins vite. Il faut donc choisir son moment, entre deux noix de coco : c'est toute la leçon.
+- L'écran de fin dit combien de fois on a soufflé, relie le jeu à la vraie vie (avant de répondre, avant un contrôle, avant un match) et se termine par : « On ne choisit pas la vague. On choisit le moment où l'on respire. »
+
+**Une activité spéciale à débloquer : caresser le dauphin (*ʻōuʻa*).** À la plage, après 3 jours différents de surf (version calme ou jeu). On glisse le doigt lentement sur l'animal ; une jauge de confiance se remplit. Un geste trop rapide et il s'écarte un peu : on reprend plus lentement. On peut aussi simplement poser la main sans bouger. Idée portée : une main lente calme celui qui la reçoit et celui qui la donne, et le calme se partage. Compte comme exercice de calme (une plume par jour). L'écran de fin rappelle qu'en vrai on ne touche pas et on ne poursuit pas les dauphins sauvages. **À vérifier** : la règle exacte en Polynésie française pour l'approche des mammifères marins ; le mot *ʻōuʻa*.
+
+**Version 86 : l'anguille ne se caresse plus ; on lui offre un repas.** La caresse de l'anguille (version 85) est retirée : un enfant pourrait vouloir le refaire en vrai, et une anguille mord. À la place, à la rivière, après avoir nourri les anguilles 3 jours différents : **« Le repas des anguilles »**.
+
+- Le manu pose jusqu'à trois aliments du coffre sur une pierre plate au bord de l'eau, puis recule. On ne tend pas la main. Ce qui est posé est donné. Un repas par jour.
+- Trois anguilles, trois goûts, donnés par des indices : la curieuse (rare et très sucré), la craintive (ce qui pousse les pieds dans l'eau), la vieille (le fruit d'une très vieille histoire d'anguille). Chacune a un plat préféré et deux qu'elle accepte ; le reste, personne n'y touche. Les plats préférés trouvés restent notés.
+- Une plume par anguille qui a mangé.
+- **Objet secret** : quand les trois reçoivent leur plat préféré dans le même repas, elles laissent sur la pierre une **noix aux trois yeux** (aura 5 jours, deux noix de haʻari à planter, 200 plumes, peut s'offrir). Dans le carnet elle apparaît comme « ??? » tant qu'on ne l'a pas eue. La combinaison n'est volontairement pas écrite ici.
+- Idée portée : faire plaisir à quelqu'un, c'est chercher ce qu'il aime, lui (aroha, voir l'autre) ; offrir, c'est donner sans être sûr du résultat.
+- L'écran de fin dit qu'en vrai on ne nourrit jamais une anguille à la main et qu'on y va avec quelqu'un du lieu.
+
+**À faire valider** : l'allusion au récit du cocotier né d'une anguille (personne de culture) ; les textes (psychologue). **À décider** : l'activité plus ancienne « Nourrir les anguilles » (version 80) montre encore une main tendue dans l'eau et dit « elles mangent dans ta main ».
+
+## Te ʻū : l'atelier des couleurs (version 91)
+
+Dans « Coffre et atelier », une nouvelle carte permet de tirer des teintures des récoltes, comme les anciens pour le tapa. On essaie une récolte : certaines donnent un pot de couleur, d'autres non (et dans ce cas rien n'est consommé). Les six couleurs se découvrent en essayant, avec un indice pour chacune.
+
+| Couleur | Dans le jeu | Dans la source consultée |
+|---|---|---|
+| Jaune | 1 rēʻa, ou 1 nono | rhizome du reʻa ; écorce interne de la racine du nono |
+| Violet | 2 ʻaute, ou 1 fēʻī | fleurs d'ʻaute ; sève du fēʻī |
+| Vert | 1 ʻīʻītā, ou 1 fara | feuilles du papayer ; écorce de la racine du pandanus |
+| Brun | 1 meiʻa | sève du bananier |
+| Rouge | 1 mati + 1 tou, ensemble | baies du mati écrasées sur la feuille du tou |
+| Noir | 1 tiʻaʻiri | noix du bancoulier |
+| Bleu | impossible | « à l'exception de la couleur bleue » |
+
+**Trois plantes nouvelles** : mati (5 jours), tou (6 jours), tiʻaʻiri (7 jours). Une graine de mati et une de tou sont offertes ; les trois viennent ensuite du tirage au hasard et du marché.
+
+**À quoi servent les pots.** Un pot et deux vavai donnent un pāreu de cette couleur, porté trois jours. Un pot seul teint le bout de la queue du manu pendant cinq jours. Les cœurs liés voient l'un et l'autre. Trois plumes à chaque couleur découverte, dix de plus pour les six.
+
+**Recettes corrigées.** Le pāreu rouge demandait des fleurs d'ʻaute ; or l'ʻaute donne du violet. Désormais : pāreu rouge = 2 vavai + 1 mati + 1 tou ; nouveau pāreu violet = 2 vavai + 2 ʻaute ; pāreu couleur de couchant = 2 vavai + 1 mati + 1 tou + 1 rēʻa. Les pāreu déjà fabriqués restent utilisables.
+
+**Volontairement absent**, selon la règle fixée pour les plantes qui soignent : aucune étape de préparation (macération, noix brûlées), et pas de jeu avec le vinaigre ou le bicarbonate, pour que personne n'essaie seul. Le jeu dit seulement quelle plante donne quelle couleur.
+
+**Source** : fiche « La fabrication du tapa », Direction de la culture et du patrimoine de la Polynésie française ; atelier de teinture végétale de la foire agricole 2024 (Direction de l'agriculture). **À faire valider par une personne de culture** : les usages, les noms (*ʻū*, *mati*, *tou*, *tiʻaʻiri*), et le dessin très simplifié des trois arbres.
+
+## Savoir-faire du faʻaʻapu : parcelles, marcottage, croisement (version 90)
+
+Une carte « Savoir-faire du faʻaʻapu » montre où l'on en est. Tout se débloque par ce qu'on a déjà fait au jardin, pas avec des plumes.
+
+| Étape | Se débloque | Ce que ça donne |
+|---|---|---|
+| 12 parcelles | 6 espèces différentes récoltées | une rangée de plus |
+| Marcottage | 8 espèces récoltées | sur un arbuste ou un arbre bien poussé (tiare, ʻaute, tīpaniē, vī, ʻānani, ʻuru, tāmanu et les plantes croisées) : une branche entourée de terre fait ses racines en 2 jours, puis on la coupe et on reçoit un plant de la même espèce. Une seule marcotte à la fois ; on ne récolte pas la plante avant de l'avoir coupée |
+| 15 parcelles | 12 espèces récoltées | une rangée de plus |
+| Croisement | 3 marcottes réussies | quand deux ʻaute, deux tīpaniē ou deux vī sont mûrs en même temps, on porte le pollen de l'un à l'autre : la fleur croisée donne en 1 jour une graine nouvelle (ʻaute bicolore, tīpaniē rose, vī croisée). On renonce à la récolte de cette plante-là |
+| 18 parcelles | une plante croisée récoltée | une dernière rangée |
+
+Une plante croisée ne rend pas de graine : pour la garder, il faut la marcotter (c'est ainsi qu'on multiplie vraiment hibiscus et frangipaniers). Deux ʻaute bicolores et deux tīpaniē roses donnent une recette secrète de la calebasse.
+
+Idées portées, dites par le manu la première fois : la marcotte reste attachée à sa mère jusqu'à ce qu'elle ait ses propres racines (grandir, partir quand on est prêt) ; la plante croisée tient de ses deux parents et reste elle-même. **À faire relire** : ces deux phrases (psychologue), et le réalisme horticole (le jeu ne croise que des plantes de la même espèce, par souci de vraisemblance ; les noms des variétés sont descriptifs, en français).
+
+## Équilibre des graines (version 89)
+
+**Ce que donnait le jeu.** Les neuf parcelles consomment environ 2,6 graines par jour quand elles sont toutes occupées. Un joueur qui ne fait que sa journée complète en reçoit un peu plus d'une par jour ; un joueur qui fait toutes les activités en recevait six à sept. Une simulation de 60 jours (dans `tools/tests/sim_seeds.py`) montrait deux défauts opposés :
+
+- **trop facile en quantité** pour le joueur très actif : environ 270 graines inutilisées au bout de 60 jours, surtout metuapuaʻa, nono, fēʻī et haʻari, données chaque jour ;
+- **trop difficile pour certaines espèces** : le fara et le rēʻa ne venaient que du tirage au hasard (1 chance sur 23). Les trois fara de la natte n'étaient en général pas réunis en 60 jours, et les deux rēʻa du tīfaifai demandaient environ six semaines.
+
+**Ce qui change.**
+
+| Réglage | Avant | Maintenant |
+|---|---|---|
+| Graine au hasard | tirage fixe | de préférence une espèce dont on a moins de 3 graines ; fara, rēʻa, ʻuru, vī, ʻānani deux fois plus fréquents |
+| Graine du marché | tiare, tīpaniē, vī ou meiʻa | parmi neuf espèces (dont fara, rēʻa, vavai, ʻuru), celle qu'on a le moins |
+| Arbres | seul le haʻari rendait une graine | haʻari, ʻuru, vī, ʻānani, tāmanu, fara rendent une graine quand la récolte va au coffre (pas quand on l'échange contre des plumes) |
+| Sac de graines | sans limite | 5 par espèce ; le surplus devient une plume |
+| Jardin vide et plus aucune graine | on attendait la prochaine journée complète | une graine de tiare offerte, une fois par jour |
+
+**Résultat dans la simulation (médianes sur 300 parties).** Troisième fara récolté : vers le jour 24 (joueur minimal), 18 (régulier), au lieu de plus de 60. Deuxième rēʻa : jour 28, 13, au lieu de 42. Premier ʻuru : jour 16, 10, au lieu de 22. Graines inutilisées du joueur très actif : environ 85 au lieu de 270. Ces chiffres viennent d'un modèle simplifié, pas de vrais joueurs : à revoir après un essai réel.
+
+Les plumes ne sont presque pas touchées : les arbres ne rendent pas de graine quand on vend la récolte, et le surplus de graines rapporte au plus une plume à la fois.
+
+## Le marché de Papeete et la cour de l'école : empathie et regard sans jugement (version 88)
+
+**Te mātete, le marché de Papeete (décor de la ville).** Bouton « Te mātete : le marché de Papeete » dans « Lieux du jour » → ville. Le manu entre au marché Mapuru a Paraita, non pour acheter mais pour regarder les gens. Trois rencontres par visite, prises à tour de rôle parmi six : une māmā qui vend des couronnes depuis quatre heures, un petit garçon perdu, un pêcheur à qui il reste du poisson, une voyageuse qui n'ose pas demander son chemin, une jeune fille qui vend ses premiers pāreu, un vieux monsieur qui compte ses pièces.
+
+Pour chacune, trois temps : **regarder** (un indice sur le corps : épaules, mains, yeux), **deviner** l'émotion (se tromper ne coûte rien, l'appli explique l'indice), puis **vérifier** en choisissant quoi dire. Idées portées : le sourire ne dit pas tout ; l'inquiétude se déguise souvent en colère ; on dit ce qu'on voit et on demande, on n'affirme pas ; parfois l'empathie est de la discrétion ; un enfant perdu, on reste avec lui sur place et on prévient un adulte. Une plume et une graine par jour.
+
+**La cour : derrière les apparences (décor de l'école).** Bouton dans « Lieux du jour » → école. Cinq élèves inconnus, dessinés volontairement différents (couleurs de peau, filles, garçons, et Tehei dont on ne dit pas si c'est un garçon ou une fille).
+
+1. On demande d'abord « qui peut t'aider ? » alors qu'on ne connaît personne. Quel que soit le choix, l'appli fait remarquer, sans reproche, qu'on n'avait que l'apparence pour choisir.
+2. On va parler à chacun : prénom, ce qu'il sait faire, et une chose plus fragile. Aucun talent ne suit le cliché.
+3. Trois demandes d'aide : on trouve la bonne personne grâce à ce qu'on a écouté.
+4. Une situation de mise à l'écart, à tour de rôle parmi quatre (« le foot, c'est pas pour les filles » ; une moquerie sur la couleur de la peau ; « la danse, c'est pas pour les garçons » ; « t'es un garçon ou une fille ? »), avec trois réponses commentées, comme dans « Dire non, sans se fâcher ».
+
+Phrase de fin : on ne choisit ni sa couleur de peau, ni d'être fille ou garçon, ni son allure ; ce qu'on choisit, c'est d'aller vers l'autre ou pas. L'écran rappelle que si l'on est soi-même moqué, on en parle à un adulte, et donne accès aux numéros d'aide.
+
+L'activité reste neutre : elle ne défend aucune opinion, elle dit seulement qu'on ne se moque de personne pour ce qu'il est et qu'on ne juge pas sur l'apparence. **À faire valider** : psychologue et professionnel de santé scolaire (toutes les situations, en particulier celle de Tehei) ; les prénoms et le mot *mātete*.
+
+## Te marama : planter avec les nuits de la lune (version 87)
+
+Dans le faʻaʻapu, une carte « Te marama » donne le nom de la nuit de lune en cours, ce qu'elle vaut pour planter, et les trois prochaines bonnes nuits. **C'est la nuit où l'on met la graine en terre qui compte.**
+
+| Nuit (rang approximatif) | Ce que dit le calendrier consulté | Dans le jeu |
+|---|---|---|
+| Tireo (1) | ananas, manioc ; bonne germination des graines | tout −15 %, painapo −25 % |
+| Hiro hiti (2) | ʻumara et ufi | taro −25 % |
+| Māitu (14) | potirons, à l'aube | mention seulement (pas de potiron dans le jeu) |
+| Māraʻi (16) | fruits et légumes comestibles | plantes qui se mangent −15 % |
+| Turu (17) | tout planter, surtout bananiers, fēʻī, cocotiers | tout −15 %, meiʻa, fēʻī, haʻari −25 % |
+| Rāʻau roto (19) | plantes comestibles | plantes qui se mangent −15 % |
+| Rāʻau muri (20) | favorable aux cultures | tout −15 % |
+| ʻOreʻore mua (21) | bananiers | meiʻa −25 % |
+| Tāne (27) | ʻumara ou tubercules | taro −25 % |
+| Mutu (30) | rien d'indiqué | **règle du jeu** : démarrage 15 % plus lent |
+
+Les autres nuits sont ordinaires. Une graine favorisée porte ☾ + ou ☾ ++ au moment de choisir ; la plante garde ensuite la mention « plantée une bonne nuit ». Rien ne meurt et rien n'est perdu : une mauvaise nuit ne fait que retarder un peu. Idée portée : il y a un bon moment pour chaque chose, et attendre ce moment, c'est le choisir.
+
+**Sources et limites.** L'ordre des trente nuits (de Tireo à Mutu) suit la liste tahitienne classique (Teuira Henry, J. F. Stimson). Les usages pour planter viennent du calendrier publié sur tarena-maohi.com. Ce qui est de moi et pas de la tradition : les pourcentages, le taro mis à la place des tubercules cités, et surtout le ralentissement de la nuit Mutu, car la source consultée ne nomme aucune « mauvaise » nuit pour planter. Le rang de la nuit est calculé (cycle moyen, Tireo un jour après la nouvelle lune) : il peut différer d'une nuit du calendrier observé. Le tableau tient dans une seule constante (`PO_PLANT`), facile à corriger. **À faire valider par une personne de culture**, les usages variant selon les îles et les familles.
+
 ## Les habitants de la plage : petit crabe et tupa (version 77)
 
 Sur le décor de la plage, de jour, deux crabes apparaissent sous condition :
