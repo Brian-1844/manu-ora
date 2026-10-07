@@ -283,6 +283,45 @@ Dans « Mon cœur », le bouton « Couper et bloquer » devient **« Poser une l
 
 Un rappel et un accès à l'aide si l'ami·e menace, fait peur ou force. Aucune règle Firebase à changer. Textes à faire relire par un·e psychologue.
 
+## La rivière : les anguilles et le sentier de la montagne (version 80)
+
+Deux activités de plus sur le décor rivière et montagne (« Lieux du jour » → rivière).
+
+**Nourrir les anguilles.** Deux anguilles, une curieuse et une craintive. On garde le doigt posé sur un bouton (« Tendre la main, sans bouger ») une dizaine de secondes : la curieuse vient d'abord, puis la craintive. Si on lâche, la craintive recule un peu et on recommence ; on ne peut pas perdre. Idée portée : la confiance d'une personne timide ou blessée ne se force pas, elle se laisse venir. Une plume par jour.
+
+**Le sentier de la montagne** se débloque après avoir nourri les anguilles deux jours différents. Le manu monte de drapeau en drapeau, avec une chose « trop grande » en tête : regarder d'où l'on vient (ce qu'on a déjà surmonté), poser son sac (souffler), le passage raide (choisir le plus petit pas possible), le sommet (quelle taille a le problème vu d'en haut ?). Si la réponse est « toujours grand », l'appli invite à en parler et donne l'accès à l'aide. Deux plumes et une graine de fougère par jour.
+
+**Version 81 : trois montées au choix.** Au départ du sentier, on choisit ce qu'on emporte : *quelque chose de trop grand* (le parcours ci-dessus), *une émotion difficile* (la nommer ; la situer dans le corps ; entendre ce qu'elle veut dire, par exemple « la colère dit qu'une limite a été franchie » ; choisir un petit pas pour ne pas la laisser décider), ou *quelque chose qui me tient à cœur* (ce à quoi l'on est attaché ; peur de perdre, lien qui change, ou perte ; « tenir sans serrer »). Rien de ce qui est choisi n'est conservé. Textes à faire relire par un·e psychologue.
+
+**Version 82 : ce qu'on rapporte du sommet.** Chaque jour où l'on termine une montée, on rapporte deux plumes et un rejet de **fēʻī**, le bananier des montagnes, qu'on ne trouve nulle part ailleurs (il se plante quand le décor est la rivière, 6 jours, 38 plumes ; recette *Fēʻī au lait de coco*, aura 2 jours). Quand les trois montées ont été faites au moins une fois, on reçoit un **hei maire**, couronne de fougère des hauteurs, qui ne se fabrique pas (aura 5 jours, 150 plumes). Mots et usages à faire valider : *fēʻī*, *hei maire*.
+
+**Version 83 : des niveaux qui se débloquent en pratiquant.** Ce ne sont pas des classements : un niveau plus haut est plus long, pas plus « réussi », et on ne peut toujours pas perdre.
+
+| Activité | Niveau 1 | Niveau 2 | Niveau 3 |
+|---|---|---|---|
+| Surf | Petite houle : 3 vagues | Belle vague : 4 vagues plus longues (après 3 jours différents) | Grande vague : 5 longues vagues, en nommant l'émotion qu'on traverse (après 7 jours) |
+| Anguilles | Le bassin : 2 anguilles, 10 s | Le trou d'eau : une troisième, très méfiante, 16 s (après 3 jours) | À l'aube : 22 s, et seulement un jour où l'on a d'abord respiré ou surfé (après 6 jours) |
+| Montagne | Le sentier : 4 drapeaux | Le sentier des crêtes : un passage de plus, le brouillard (après les trois montées) | |
+
+Les récompenses montent un peu avec le niveau (plumes, et deux rejets de fēʻī sur les crêtes).
+
+À faire valider par une personne de culture : la place des anguilles (animal respecté, lié à des récits) dans un jeu.
+
+## Apprendre à surfer sur ses émotions (versions 78-79)
+
+Deuxième activité de la plage (« Lieux du jour » → plage → « Apprendre à surfer sur ses émotions »). Le manu prend trois vagues, en surf ou en bodyboard au choix. Chaque vague a trois temps : elle monte (inspirer), on est dessus (tenir), elle redescend (souffler), environ 13 secondes. Rien à réussir, on peut arrêter à tout moment.
+
+Idée portée : une émotion forte monte, tient, puis redescend toute seule ; on n'a ni à lui obéir ni à la combattre. La fin compte comme un exercice de respiration (une plume, le pepe bleu, et le tupa sort de son trou).
+
+## Les habitants de la plage : petit crabe et tupa (version 77)
+
+Sur le décor de la plage, de jour, deux crabes apparaissent sous condition :
+
+- **Le petit crabe** marche de côté sur le sable les jours où l'on a fait l'activité des trois coquillages.
+- **Le tupa**, craintif, sort de son trou les jours où l'on a terminé l'exercice de respiration.
+
+On peut les toucher : le petit crabe file et laisse une plume (une fois par jour) ; le tupa rentre dans son trou et pousse dehors une noix de coco à planter (une fois par jour). La liste et les indices sont dans « Lieux du jour » quand la plage est choisie (« ???? » tant qu'on ne les a pas vus).
+
 ## Manu meli : les abeilles et le miel (version 75)
 
 - **Les abeilles viennent** quand deux fleurs différentes (tiare, ʻaute, tīpaniē, vānira) poussent en même temps dans le faʻaʻapu. Avant cela, la carte affiche « ???? » avec un indice.

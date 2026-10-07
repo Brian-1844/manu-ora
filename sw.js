@@ -1,5 +1,5 @@
 // Manu Ora – cache hors ligne. Réseau d'abord (toujours la dernière version), cache si pas de connexion.
-const CACHE = 'manu-ora-v76';
+const CACHE = 'manu-ora-v83';
 const FILES = ['./', './index.html', './manifest.webmanifest', './icon.svg', './icon-192.png', './icon-512.png', './fonts/fredoka-latin-500-normal.woff2', './fonts/fredoka-latin-ext-500-normal.woff2', './fonts/fredoka-latin-600-normal.woff2', './fonts/fredoka-latin-ext-600-normal.woff2', './fonts/nunito-latin-400-normal.woff2', './fonts/nunito-latin-ext-400-normal.woff2', './fonts/nunito-latin-700-normal.woff2', './fonts/nunito-latin-ext-700-normal.woff2', './fonts/nunito-latin-400-italic.woff2', './fonts/nunito-latin-ext-400-italic.woff2'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES)).then(() => self.skipWaiting())); });
 self.addEventListener('activate', e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim())); });
