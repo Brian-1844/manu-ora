@@ -1,0 +1,5 @@
+Manu Ora v92 — les 8 patchs déjà appliqués
+
+1. Sur GitHub (Brian-1844/manu-ora), remplacer index.html et sw.js par ceux de ce zip (Add file > Upload files, puis Commit).
+2. Attendre 1 à 2 minutes, puis ouvrir le site et recharger la page deux fois (le téléphone garde l'ancienne version en mémoire au premier chargement).
+3. Conseillé : supprimer du dépôt les dossiers *-patch, apply_all.py et NOTE.md. Ils ne servent plus et ils révèlent les surprises (Te reva, ?ciel=1) à quiconque regarde le dépôt.
