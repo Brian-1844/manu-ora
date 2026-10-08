@@ -1,0 +1,14 @@
+const {chromium}=require('playwright');
+(async()=>{const b=await chromium.launch({executablePath:'/opt/pw-browsers/chromium',args:['--headless=new']});
+const ctx=await b.newContext({viewport:{width:390,height:800},deviceScaleFactor:2});const p=await ctx.newPage();p.errs=[];p.on('pageerror',e=>p.errs.push(e.message));
+await p.addInitScript(()=>{const S=(k,v)=>localStorage.setItem('manuora.'+k,JSON.stringify(v));if(!localStorage.getItem('manuora.welcomed')){S('welcomed',true);localStorage.setItem('manuora.v','3');S('bedHour',0);S('place','oire');S('cfg',{name:'Vini',body:'#2E86DE',belly:'#F6F1E7',tattoo:'none',animal:'manu',night:'off',tiare:true});}window.fetch=async()=>({ok:true,json:async()=>null});});
+await p.goto('file:///tmp/claude-0/v91s.html');await p.waitForTimeout(1800);
+const clean=()=>p.evaluate(()=>{try{closeSheet()}catch(e){};if(RING.open){closeRing();release();}bubbleEl.classList.remove('show');const t=$('#toast');if(t)t.classList.remove('show');const h=$('#qhint');if(h)h.style.visibility='hidden';});
+await clean();await p.waitForTimeout(500);await p.screenshot({path:'/home/claude/work/c0.png'});
+console.log('count via placeDone',await p.evaluate(()=>{const a=sceneLv().city;placeDone('non','ok');const b=sceneLv().city;placeDone('non','ok');return [a,b,sceneLv().city,sceneSig('oire')];}));
+await clean();await p.waitForTimeout(1500);await clean();await p.screenshot({path:'/home/claude/work/c1.png'});
+await p.evaluate(()=>{store.set('placeDays',{oire:['a','b','c','d','e','f'],haapii:['a','b','c','d','e','f']});renderPlace();});await p.waitForTimeout(1500);await clean();await p.screenshot({path:'/home/claude/work/c2.png'});
+await p.evaluate(()=>{store.set('placeDays',{});setPlace('haapii');});await p.waitForTimeout(600);await clean();await p.screenshot({path:'/home/claude/work/h0.png'});
+await p.evaluate(()=>{store.set('placeDays',{haapii:['a','b','c','d','e','f']});renderPlace();});await p.waitForTimeout(1500);await clean();await p.screenshot({path:'/home/claude/work/h2.png'});
+console.log('card',await p.evaluate(()=>{openPlace();const c=[...sheetInner.querySelectorAll('.card.flat')].find(x=>x.textContent.includes('grandit'));return c?c.innerText.replace(/\n+/g,' | ').slice(0,300):null;}));
+console.log('errs',p.errs);await b.close();})();
