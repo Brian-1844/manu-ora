@@ -20,6 +20,7 @@ for path in sys.argv[1:]:
 .qdock.right .qplaces{left:auto;right:72px}
 .qplaces .qdk{width:52px}.qplaces .qdk i{width:42px;height:42px;box-shadow:none}.qplaces .qdk span{background:transparent;font-size:.62rem}
 .qplaces .qdk.on i{border-color:var(--lagoon);border-width:2.5px;background:#E3F2F1}
+@media (max-height:720px){.qdock{gap:3px;top:calc(56px + env(safe-area-inset-top,0px))}.qdk{width:52px}.qdk i{width:36px;height:36px}.qdk i svg{width:22px;height:22px}.qdk span{font-size:.6rem;padding:0 4px}}
 .wel0{text-align:center}.wel0 .wprev{margin:6px auto}.wel0 h2{font-size:1.5rem}
 .pepes{position:absolute;""")
     rep("function openWelcome(step){ step=step||1;","function openWelcome(step){ if(step===undefined){ openWelcome0(); return; } step=step||1;")
@@ -58,12 +59,14 @@ function dockRender(){ const q=$('#quiet'); if(!q) return; let d=$('#qDock'); if
       if(b.dataset.pl!==undefined){ const k=b.dataset.pl; QDOCK.open=false; if(k!=='none'){ if(cfg.night==='on'){ cfg.night='auto'; store.set('cfg',cfg); renderNight(); } } setPlace(k); if(k!=='none' && isNight()) toast('Il fait nuit : le décor reviendra au matin. Les activités restent ouvertes.'); return; }
       if(b.dataset.a!==undefined){ const x=QDOCK.acts[+b.dataset.a]; if(x){ QDOCK.open=false; x.go(); } } });
     document.addEventListener('click', e=>{ if(QDOCK.open && !e.target.closest('#qDock')){ QDOCK.open=false; dockRender(); } }); }
-  d.classList.toggle('right', /l$/.test(cfg.corner||'br') && !cfg.spot);
+  d.classList.remove('right');
   if(store.get('noDock',false)){ d.innerHTML=''; return; }
   QDOCK.acts = curPlace!=='none' ? qActs() : [];
   d.innerHTML=`<button class="qdk place" id="qPlace" aria-expanded="${QDOCK.open}" aria-label="Changer de lieu. Lieu actuel : ${curPlace==='none'?'écran simple':PLACES[curPlace].s}">${qIco(curPlace)}<span>${curPlace==='none'?'Lieux':QPL[curPlace]}</span></button>`
     +(QDOCK.open?`<div class="qplaces" role="group" aria-label="Choisir un lieu">${['none'].concat(Object.keys(PLACES)).map(k=>`<button class="qdk ${curPlace===k?'on':''}" data-pl="${k}" aria-label="${k==='none'?'Écran simple':PLACES[k].s}">${qIco(k)}<span>${QPL[k]||PLACES[k].n}</span></button>`).join('')}</div>`:'')
-    +QDOCK.acts.map((x,i)=>`<button class="qdk ${x.lock?'lock':''}" data-a="${i}" aria-label="${esc(x.t)}${x.lock?' (à découvrir)':''}">${qIco(x.k)}<span>${x.l}</span></button>`).join(''); }
+    +QDOCK.acts.map((x,i)=>`<button class="qdk ${x.lock?'lock':''}" data-a="${i}" aria-label="${esc(x.t)}${x.lock?' (à découvrir)':''}">${qIco(x.k)}<span>${x.l}</span></button>`).join('');
+  try{ const raw=_homePoint0(), r=d.getBoundingClientRect(); if(raw.x < r.right+4 && r.bottom+8+BH > innerHeight-96) d.classList.add('right'); if(QUIET && B.state==='idle' && !B.asking && !RING.open){ const hm=homePoint(); if(Math.hypot(hm.x-B.x,hm.y-B.y)>4) goHome(); } }catch(e){} }
+const _homePoint0=homePoint; homePoint=function(){ const p=_homePoint0.apply(this,arguments); try{ const d=$('#qDock'); if(!d || !QUIET || d.classList.contains('right') || !d.children.length) return p; const r=d.getBoundingClientRect(); if(p.x < r.right+4 && p.y < r.bottom+6 && p.y+BH > r.top) p.y=Math.min(innerHeight-BH-90, r.bottom+8); }catch(e){} return p; };
 { const _rp=renderPlace; renderPlace=function(){ _rp.apply(this,arguments); try{ dockRender(); }catch(e){} }; const _cs=closeSheet; closeSheet=function(){ const r=_cs.apply(this,arguments); try{ dockRender(); }catch(e){} return r; }; }
 setTimeout(()=>{ try{ dockRender(); }catch(e){} },0);
 function welSteps(){ const ua=navigator.userAgent||''; return /iPhone|iPad|iPod/.test(ua) ? ['Ouvre cette page dans <b>Safari</b>.','Touche <b>Partager</b> (le carré avec une flèche vers le haut).','Choisis <b>« Sur lʼécran dʼaccueil »</b>, puis <b>Ajouter</b>.'] : /Android/.test(ua) ? ['Touche le menu <b>⋮</b> en haut à droite du navigateur.','Choisis <b>« Ajouter à lʼécran dʼaccueil »</b> ou <b>« Installer lʼapplication »</b>.'] : ['Dans la barre dʼadresse, clique sur lʼicône <b>Installer</b>.','Sinon : menu du navigateur → <b>« Installer Manu Ora »</b>.']; }

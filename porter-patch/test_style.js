@@ -1,0 +1,17 @@
+// node test_style.js — cordelette / étui (2 fara la première fois), rendu de chaque instrument dans les deux styles.
+const {chromium}=require('playwright');const FILE=process.argv[2]||'/tmp/claude-0/v91j.html',O='/home/claude/work/';
+(async()=>{const b=await chromium.launch({executablePath:'/opt/pw-browsers/chromium',args:['--headless=new']});const p=await b.newPage({viewport:{width:390,height:800},deviceScaleFactor:2});const errs=[];p.on('pageerror',e=>errs.push(e.message));
+await p.route('**/test.invalid/**',r=>r.fulfill({status:200,body:'null'}));
+await p.addInitScript(()=>{if(localStorage.getItem('manuora.welcomed'))return;localStorage.setItem('manuora.welcomed','true');localStorage.setItem('manuora.v','3');localStorage.setItem('manuora.cfg',JSON.stringify({name:'Vini',body:'#2F80D8',belly:'#F6F1E7',night:'off'}));localStorage.setItem('manuora.instr',JSON.stringify({uke:{fin:'nat',day:''},toere:{fin:'nacre',day:'',owned:['nat','nacre']},pahu:{fin:'grav',day:''}}));localStorage.setItem('manuora.vivo',JSON.stringify({ofe:true,made:true,day:'',retry:''}));});
+await p.goto('file://'+FILE);await p.waitForTimeout(1500);const clear=()=>p.evaluate(()=>{try{if(RING.open)closeRing()}catch(e){};if(!$('#sheet').hidden)closeSheet();bubbleEl.classList.remove('show');});await clear();
+const zoom=async(n)=>{const r=await p.evaluate(()=>{const e=$('#bird').getBoundingClientRect();return {x:e.left-30,y:e.top-30,w:e.width+60,h:e.height+60};});await p.screenshot({path:O+n,clip:{x:Math.max(0,r.x),y:Math.max(0,r.y),width:r.w,height:r.h}});};
+await p.evaluate(()=>{openInstr();sheetInner.querySelector('[data-carry="uke"]').click();});await clear();
+await p.evaluate(()=>openInstr());console.log('choix',await p.evaluate(()=>[...sheetInner.querySelectorAll('[data-sty]')].map(x=>x.dataset.sty).join()));await p.screenshot({path:O+'sty_sheet.png'});
+await p.evaluate(()=>{garden.store.fara=0;saveGarden();sheetInner.querySelector('[data-sty="etui"]').click();});await p.waitForTimeout(200);console.log('étui sans fara',await p.evaluate(()=>[cfg.carryStyle||'',store.get('etuiMade',false),$('#birdFlip .carry').dataset.id]));
+await clear();await p.evaluate(()=>{garden.store.fara=3;saveGarden();openInstr();sheetInner.querySelector('[data-sty="etui"]').click();});await p.waitForTimeout(200);console.log('étui avec 3 fara',await p.evaluate(()=>[cfg.carryStyle,store.get('etuiMade',false),garden.store.fara,$('#birdFlip .carry').dataset.id]));
+await clear();
+for(const id of ['uke','toere','pahu','vivo']){ for(const st of ['cord','etui']){ await p.evaluate(([id,st])=>{cfg.carry=id;cfg.carryStyle=st;store.set('cfg',cfg);carryRender();},[id,st]); await p.waitForTimeout(100); console.log(id,st,await p.evaluate(()=>$('#birdFlip .carry').dataset.id)); await zoom('sty_'+id+'_'+st+'.png'); } }
+await p.evaluate(()=>{openInstr();sheetInner.querySelector('[data-sty="etui"]').click();});await p.waitForTimeout(200);console.log('étui déjà fait, fara inchangé',await p.evaluate(()=>garden.store.fara));
+await clear();await p.evaluate(()=>{openInstr();sheetInner.querySelector('[data-sty="cord"]').click();});await clear();console.log('retour cord',await p.evaluate(()=>[cfg.carryStyle,$('#birdFlip .carry').dataset.id]));
+await p.reload();await p.waitForTimeout(2500);console.log('rechargé',await p.evaluate(()=>[JSON.parse(localStorage.getItem('manuora.cfg')).carry,cfg.carry,cfg.carryStyle,vivoGet().made,!!$('#birdFlip .carry')]));
+console.log('errs',errs);await b.close();})();
