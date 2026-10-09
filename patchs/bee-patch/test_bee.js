@@ -1,0 +1,12 @@
+const {chromium}=require('playwright');
+(async()=>{const b=await chromium.launch({executablePath:'/opt/pw-browsers/chromium',args:['--headless=new']});
+const p=await b.newPage({viewport:{width:390,height:800}});const errs=[];p.on('pageerror',e=>errs.push(e.message));
+await p.addInitScript(()=>{localStorage.setItem('manuora.welcomed','true');localStorage.setItem('manuora.v','3');});
+await p.goto('file://'+process.argv[2]);await p.waitForTimeout(1200);
+const bee=()=>p.evaluate(()=>{pepeRender();return /\+bee/.test(birdEl.querySelector('.pepes').dataset.k||'')});
+await p.evaluate(()=>{try{closeRing()}catch(e){};closeSheet();garden.hive={n:1,day:'',seen:true};garden.plots[0]={p:'tiare',t:Date.now()};garden.plots[1]={p:'aute',t:Date.now()};});
+console.log('fleurs, 1 rayon → abeille ?',await bee());
+await p.evaluate(()=>{garden.hive.n=3});console.log('3 rayons → abeille ?',await bee());
+await p.screenshot({path:'/home/claude/work/bee.png'});
+await p.evaluate(()=>hiveHarvest());await p.waitForTimeout(300);console.log('après récolte → abeille ?',await bee(),'miel',await p.evaluate(()=>garden.store.meli));
+console.log('errs',errs);await b.close()})();
